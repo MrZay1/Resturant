@@ -9,7 +9,7 @@ import QRCode from "qrcode";
  */
 export const dynamic = "force-dynamic";
 
-export default async function PrintCardPage({ searchParams }: PageProps<"/print/card">) {
+export default async function PrintCardPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
   const get = (k: string, d = "") => {
     const v = sp[k];

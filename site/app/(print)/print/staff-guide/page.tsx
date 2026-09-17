@@ -10,7 +10,7 @@ import { TapMark } from "@/components/ui/Logo";
  */
 export const dynamic = "force-dynamic";
 
-export default async function StaffGuide({ searchParams }: PageProps<"/print/staff-guide">) {
+export default async function StaffGuide({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
   const name = (Array.isArray(sp.name) ? sp.name[0] : sp.name) || "Your Restaurant";
   const design = { ...DEFAULT_DESIGN, restaurantName: name };

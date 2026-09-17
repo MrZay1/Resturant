@@ -5,7 +5,7 @@ import { PACKS_DIR } from "../route";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: Request, ctx: RouteContext<"/api/pitch-packs/[slug]">) {
+export async function GET(_req: Request, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
   if (!/^[a-z0-9-]{1,40}$/.test(slug)) {
     return NextResponse.json({ error: "bad slug" }, { status: 400 });

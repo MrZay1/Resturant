@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "Design your tap-to-review card, choose a quantity, add the monthly report, and check out securely.",
 };
 
-export default async function OrderPage({ searchParams }: PageProps<"/order">) {
+export default async function OrderPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
   // The report is included by default; ?report=0 removes it.
   const report = !(sp.report === "0" || sp.report === "false");

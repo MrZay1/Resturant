@@ -93,7 +93,7 @@ const STEPS: { title: string; body: ReactNode; icon: LucideIcon }[] = [
   },
 ];
 
-export default async function Page(props: PageProps<"/order/success">) {
+export default async function Page(props: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const searchParams = await props.searchParams;
   const raw = searchParams.session_id;
   const sessionId = Array.isArray(raw) ? raw[0] : raw;

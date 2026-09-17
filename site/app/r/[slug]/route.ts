@@ -8,7 +8,7 @@ import { recordTap } from "@/lib/taps";
  * changed later without re-encoding, and taps can be counted.
  * Optional: ?c=<counter> for NTAG ASCII-mirror tap counters.
  */
-export async function GET(req: NextRequest, ctx: RouteContext<"/r/[slug]">) {
+export async function GET(req: NextRequest, ctx: { params: Promise<{ slug: string }> }) {
   const { slug } = await ctx.params;
   const entry = resolveLink(slug);
   const url = new URL(req.url);
