@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
+import { sendEmail } from "@/lib/email";
+import { renderOrderEmail, type OrderRecord } from "@/lib/orderEmail";
 
 /**
  * Stripe webhook: turns a completed Checkout into an order record.
  * Configure in Stripe Dashboard > Developers > Webhooks: event checkout.session.completed,
  * endpoint https://<your domain>/api/stripe/webhook, and put the signing secret in STRIPE_WEBHOOK_SECRET.
- * The order is POSTed as JSON to ORDER_WEBHOOK_URL (falls back to LEAD_WEBHOOK_URL) so it lands in your tracker.
+ * The order is emailed to ORDER_EMAIL_TO and, if set, POSTed as JSON to
+ * ORDER_WEBHOOK_URL (falls back to LEAD_WEBHOOK_URL) so it also lands in a tracker.
  */
 export async function POST(req: Request) {
   const stripe = getStripe();
@@ -50,6 +53,14 @@ export async function POST(req: Request) {
       subscription: typeof s.subscription === "string" ? s.subscription : s.subscription?.id ?? null,
       customer: typeof s.customer === "string" ? s.customer : s.customer?.id ?? null,
     };
+    // Email first: this is the copy you actually act on.
+    const to = process.env.ORDER_EMAIL_TO;
+    if (to) {
+      const mail = renderOrderEmail(order as OrderRecord);
+      const sent = await sendEmail({ to, subject: mail.subject, html: mail.html, text: mail.text, replyTo: order.email || undefined });
+      if (!sent.ok) console.error("[order] email failed:", sent.detail);
+    }
+
     const url = process.env.ORDER_WEBHOOK_URL || process.env.LEAD_WEBHOOK_URL;
     if (url) {
       try {
@@ -64,7 +75,7 @@ export async function POST(req: Request) {
         // 500 makes Stripe retry later
         return NextResponse.json({ error: "forward failed" }, { status: 500 });
       }
-    } else {
+    } else if (!to) {
       console.log("[order]", JSON.stringify(order));
     }
   }
