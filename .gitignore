@@ -1,0 +1,36 @@
+# Secrets. Never commit these: they carry your Stripe key and webhook secrets.
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Playwright and test artifacts
+test-results/
+playwright-report/
+.playwright/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Generated logo staging for card exports (rebuilt by scripts/export-cards.mjs)
+site/public/_logos/

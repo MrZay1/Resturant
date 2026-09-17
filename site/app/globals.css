@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f7f4ee;
+  --paper-2: #efe9df;
+  --ink: #15130f;
+  --ink-2: #3a3631;
+  --muted: #605b54;
+  --line: #e2dccf;
+  --line-strong: #cfc7b6;
+  --accent: #1f4d3a;       /* basil green */
+  --accent-2: #163a2c;
+  --accent-soft: #e2ece5;
+  --gold: #e6b455;         /* review star gold */
+  --gold-2: #cf9a35;
+  --dark: #0f1a14;         /* dark section background */
+  --dark-2: #16241c;
+  --white: #ffffff;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-gold: var(--gold);
+  --color-gold-2: var(--gold-2);
+  --color-dark: var(--dark);
+  --color-dark-2: var(--dark-2);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --radius-xl2: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(21 19 15 / 0.06), 0 12px 32px -12px rgb(21 19 15 / 0.25);
+  --shadow-lift: 0 30px 60px -20px rgb(21 19 15 / 0.35), 0 8px 20px -10px rgb(21 19 15 / 0.2);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* Display type */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  font-weight: 400;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Subtle paper grain */
+.grain {
+  position: relative;
+}
+.grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hairline dividers */
+.hairline {
+  border-color: var(--line);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus rings */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Print pages must not inherit page chrome */
+@media print {
+  body {
+    background: white;
+  }
+}

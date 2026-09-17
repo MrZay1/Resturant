@@ -1,0 +1,94 @@
+{
+ "name": "Dominique's",
+ "city": "Stonecrest, GA",
+ "owner": "",
+ "address": "2940 Stonecrest Cir, Stonecrest, GA 30038",
+ "website": "https://www.dominiquesatstonecrest.com/",
+ "cuisine": "Upscale steakhouse and seafood with Southern influence",
+ "rating": "4.4",
+ "reviewCount": "1,240",
+ "lastReview": "today, about 10 in the last 4 days",
+ "query": "steakhouse stonecrest",
+ "hook": "About 70 new Google reviews a month, 1,240 in total. The steak and seafood rooms you compete with are running two to three times that.",
+ "competitors": [
+  {
+   "name": "Kampai Sushi & Steak",
+   "rating": 3.7,
+   "count": 1912,
+   "note": "0.2 mi, hibachi steakhouse"
+  },
+  {
+   "name": "Rockin Crab Seafood & Bar",
+   "rating": 4.2,
+   "count": 1543,
+   "note": "0.5 mi, Cajun seafood"
+  },
+  {
+   "name": "Coaxum's Low Country Cuisine",
+   "rating": 4.1,
+   "count": 2535,
+   "note": "4.5 mi, Southern seafood, live jazz"
+  },
+  {
+   "name": "LongHorn Steakhouse (Conyers)",
+   "rating": 3.9,
+   "count": 4404,
+   "note": "4.5 mi, chain steakhouse"
+  }
+ ],
+ "praise": [
+  "Attentive servers who know the menu and recommend well",
+  "Seafood trio, rasta pasta and crab cakes cooked right",
+  "Elegant room chosen for date nights and birthdays",
+  "The Friday live band brings people back"
+ ],
+ "complaints": [
+  "Slow service and long waits for food",
+  "Inconsistent plates: overcooked fish, salty sides, dry chicken",
+  "Billing friction around automatic gratuity"
+ ],
+ "dishes": [
+  "Crab cakes with remoulade",
+  "Rasta pasta",
+  "Broiled seafood trio",
+  "Lamb chops",
+  "Calamari"
+ ],
+ "talkingPoints": [
+  "You are at about 70 reviews a month; STK Midtown is at 219 and Atlanta Fish Market at 119 over the same 30 days, so the gap is volume, not food.",
+  "Google's April 2026 rules ban asking guests to include a staff name, and about two thirds of your recent reviews name a server; a neutral card at every table protects the 1,240 you already have.",
+  "Kampai and Rockin Crab sit within half a mile with 1,900 and 1,500 reviews; steady volume is what keeps you first for steak searches near the mall."
+ ],
+ "likelyObjection": "\"Our servers already ask every table for a Google review.\" Answer: Then the cards cost you nothing new; they make the ask identical at every table, remove the typing for the guest, and the report turns the volume you already have into a monthly read on service and the kitchen.",
+ "offer": "Start with 10 cards and the monthly report: $200 today, then $50 a month. Cancel anytime.",
+ "logo": "https://popmenucloud.com/zlogcrpn/e5abb5f9-e994-4c01-be76-a26b883054ca.png",
+ "brandColor": "#B08A4A",
+ "notes": "Only one Dominique's exists near Stonecrest; it sits in the former Arizona's building beside The Mall at Stonecrest, off I-20 exit 75. Some listings still say Lithonia, GA 30038. Parking is the restaurant's own lot on the mall outparcel. Hours per the official site: Mon-Thu 12-10pm, Fri-Sat 12-11pm, Sun 12-9pm; lunch Mon-Fri 12-3pm; brunch Sat-Sun 12-3pm. Closed Labor Day, Monday Sept 7, 2026. Avoid Friday evenings (live band) and weekend brunch; a weekday between 3pm and 5pm is the quietest window. Happy hour runs afternoons into 7pm; the owner's Google post says 4-7pm while reviews mention 3-7pm. No owner or manager name appears on the business's own site or social pages, so ask for the owner or general manager. Phone (470) 837-7617; Facebook also lists (470) 679-3170; email Info@dominiquesatstonecrest.com. The site runs on Popmenu and shows a $500 drawing for on-site dish reviews (drawing 10/1). Do not tie the NFC card to that drawing; Google prohibits incentivized reviews. Roughly 68% of the newest 60 Google reviews name a server, often posted within minutes on the same night, so staff already ask at the table. None of the newest 60 Google reviews had an owner reply, including a 1-star posted today about a tip charge. Third-party hours conflict on Yelp, EatOkra and Restaurantji, which is a listings-cleanup talking point. Google flags the listing as Black-owned and women-owned, price $30-90 per person. Social: Facebook @dominiquesstonecrest, Instagram @dominiquesatstonecrest, TikTok @dominiquesatstonecrest. Logo is a black script wordmark; if the pack needs a dark color use #101010, with #E6D0A9 as the gold accent. Smokey Bones next door closed in April 2026, so a nearby review-volume competitor is gone. Card accent uses a darker shade of the site's champagne gold (#E6D0A9) for print legibility. A FOX 5 Atlanta segment from July 2024 names the owner as Cheryl; that is press-sourced, so confirm at the host stand before using it. Apple Maps shows 67% on 39 ratings and Yelp 3.0 on 68, so off-Google sentiment lags Google; mention only if they bring up Yelp. Review velocity measured Aug 13 to Sep 5 2026 is about 66 to 76 a month, so say 'about 70', never '50'. Benchmarks counted over Aug 6 to Sep 5 2026: STK Midtown 219/mo (25,120 total, 4.6), Atlanta Fish Market 119/mo (10,314, 4.6), Fogo de Chao Buckhead 94/mo (15,905, 4.7), Twin Peaks Kennesaw 156/mo, Mary Mac's 91/mo. Famous national names are weak comparisons: Franklin Barbecue runs about 23 a month. If he pushes back that those rooms are bigger, agree; the card raises the share of guests who review, which is the lever a smaller room controls. The zero-owner-replies observation from the review scrape was never verified on Google Maps, so check it on your phone before saying it out loud.",
+ "template": "noir",
+ "reviewsPerMonth": "about 70",
+ "reviewsPerMonthBasis": "counted from your timestamped reviews, Aug 13 to Sep 5",
+ "gapTitle": "The rooms you compete with are getting three times the reviews.",
+ "benchmarks": [
+  {
+   "name": "STK Steakhouse, Midtown",
+   "detail": "Upscale steakhouse \u00b7 25,120 reviews \u00b7 4.6",
+   "perMonth": 219
+  },
+  {
+   "name": "Atlanta Fish Market, Buckhead",
+   "detail": "Upscale seafood \u00b7 10,314 reviews \u00b7 4.6",
+   "perMonth": 119
+  },
+  {
+   "name": "Fogo de Ch\u00e3o, Buckhead",
+   "detail": "Brazilian steakhouse \u00b7 15,905 reviews \u00b7 4.7",
+   "perMonth": 94
+  }
+ ],
+ "benchmarkNote": "Counted over the same 30 days, Aug 6 to Sep 5 2026, from timestamped Google reviews. These are larger rooms, so part of the gap is seats, not asking.",
+ "todayFacts": [
+  "1,240 reviews in total, against 10,000 to 25,000 at the rooms above",
+  "Your reviews arrive in clusters on a few nights, so the ask is not reaching every table",
+  "Nothing tells you what a month of reviews added up to"
+ ]
+}

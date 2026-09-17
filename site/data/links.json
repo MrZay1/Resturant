@@ -1,0 +1,12 @@
+{
+  "demo": {
+    "name": "Demo card (sample restaurant)",
+    "to": "/sample-report",
+    "note": "Generic demo card. Points at the sample report so any prospect can tap it."
+  },
+  "lucias": {
+    "name": "Lucia's Trattoria (fictional sample)",
+    "to": "/sample-report",
+    "note": "Replace `to` with the real Google review link for each restaurant, e.g. https://search.google.com/local/writereview?placeid=..."
+  }
+}

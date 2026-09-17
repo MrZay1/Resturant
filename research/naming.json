@@ -1,0 +1,1069 @@
+{
+ "candidates": [
+  {
+   "angle": "descriptive",
+   "name": "TapTable",
+   "rationale": "Two of the most literal words in the category, in the order the action happens: the card lands on the table, the guest taps. Reads naturally next to 'Tap to review' and a server can say 'drop the TapTable card' without stumbling. Note: I could not run live collision checks (session search budget exhausted); 'TapTable' is generic enough that a POS or ordering product may already use it, so verify USPTO and app stores before committing.",
+   "tagline": "Reviews, one tap from the table.",
+   "domains_to_check": [
+    "taptable.com",
+    "taptable.co",
+    "gettaptable.com"
+   ],
+   "available_domains": [
+    "taptable.co",
+    "gettaptable.com"
+   ],
+   "taken_domains": [
+    "taptable.com"
+   ],
+   "conflicts": "TapTable (UK) \u2014 contactless/NFC+QR order-and-pay app for restaurants and bars, active since ~2020 (Instagram @taptableuk; https://www.f6s.com/company/taptableapp; Devpost hackathon entry also named TapTable for QR/NFC restaurant ordering). Also 'Taptable' restaurant/club reservation app. taptable.com registered 2008 but currently shows an empty page.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "TableStars",
+   "rationale": "'Stars' is the universal shorthand for a rating, and 'table' anchors it in dine-in restaurants specifically. The AI report can be positioned as 'your stars, explained.' No known conflict with a review/NFC company from memory, but it is a plausible restaurant-award or reservation brand name, so check.",
+   "tagline": "Every table, five stars closer.",
+   "domains_to_check": [
+    "tablestars.com",
+    "tablestars.co",
+    "tablestarscards.com"
+   ],
+   "available_domains": [
+    "tablestars.co",
+    "tablestarscards.com"
+   ],
+   "taken_domains": [
+    "tablestars.com"
+   ],
+   "conflicts": "No tech/review-software conflicts found. Only hits: 'Tablestars' a small business listing in Palm Harbor FL (MapQuest), and 'Table Stars' a Dutch youth table-tennis program (tafeltennis.nl). tablestars.com (GoDaddy, 2015) does not resolve to a live site.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "descriptive",
+   "name": "CheckTap",
+   "rationale": "Plays on the restaurant 'check' (the bill) and the moment the card is dropped with it, plus 'tap.' Distinctive enough to own; two hard consonants make it crisp on a card. Low risk of collision with major review/NFC players from memory, but verify.",
+   "tagline": "Drop the check. Collect the review.",
+   "domains_to_check": [
+    "checktap.com",
+    "checktap.co",
+    "getchecktap.com"
+   ],
+   "available_domains": [
+    "checktap.co",
+    "getchecktap.com"
+   ],
+   "taken_domains": [
+    "checktap.com"
+   ],
+   "conflicts": "Checktap \u2014 defunct South Korean smart power-strip maker (https://tracxn.com, 'deadpooled'), plus a dormant UK shell 'Checktap Limited' (Companies House). Neither in restaurant/review tech. checktap.com is a GoDaddy for-sale parked page. Note: name is a near-reversal of Tapcheck (registered TM, see below), which could cause confusion.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "descriptive",
+   "name": "GuestTap",
+   "rationale": "'Guest' is hospitality's own word for a customer, signaling the founder understands the industry; 'tap' is the action. Reads well beside 'Tap to review' and is easy for staff to say. 'GuestTap'-style names are common in hospitality tech (guest Wi-Fi, guest messaging), so a trademark search is essential.",
+   "tagline": "Turn every guest into a review.",
+   "domains_to_check": [
+    "guesttap.com",
+    "guesttap.co",
+    "getguesttap.com"
+   ],
+   "available_domains": [
+    "guesttap.co",
+    "getguesttap.com"
+   ],
+   "taken_domains": [
+    "guesttap.com"
+   ],
+   "conflicts": "No company found. 'Guest tap' is a common craft-brewery term (a tap pouring another brewery's beer; #guesttap hashtag widely used), which muddies search results and SEO for bars/breweries. guesttap.com is parked for sale on HugeDomains.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "descriptive",
+   "name": "RateCard",
+   "rationale": "A real English compound with a second meaning (a rate card is a price list), which makes it memorable and instantly describes a card you use to rate. Card-first naming fits Product 1 exactly. 'Rate card' is a generic term, so the .com is likely taken or expensive; check alternates.",
+   "tagline": "The card that asks the question.",
+   "domains_to_check": [
+    "ratecard.com",
+    "ratecard.co",
+    "getratecard.com"
+   ],
+   "available_domains": [
+    "getratecard.com"
+   ],
+   "taken_domains": [
+    "ratecard.com",
+    "ratecard.co"
+   ],
+   "conflicts": "Ratecard \u2014 established feedback & reviews SaaS for HR/recruiting/staffing (https://get.ratecard.io, ratecard.com; listed on software review sites). Same name, same category (collecting reviews/feedback). Also 'rate card' is a generic advertising-pricing term.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "StarDrop",
+   "rationale": "'Drop' is literally what the server does with the card ('drop the StarDrop card' rolls off the tongue), and 'star' says rating. Short, energetic, and friendlier than most B2B names. From memory there is no major review-tech company under this name, but the word pair is popular in gaming and fashion, so check classes carefully.",
+   "tagline": "Drop the card. Catch the stars.",
+   "domains_to_check": [
+    "stardrop.com",
+    "stardrop.co",
+    "stardropcards.com"
+   ],
+   "available_domains": [
+    "stardropcards.com"
+   ],
+   "taken_domains": [
+    "stardrop.com",
+    "stardrop.co"
+   ],
+   "conflicts": "Stardrop \u2014 popular open-source Stardew Valley mod manager (https://github.com/Floogen/Stardrop) dominates search; not a business competitor but owns the name's search results. StarDrop is also a Stardew Valley in-game item (Stardrop trademark context via ConcernedApe). stardrop.com (1999, Japanese registrar) no live site; stardrop.co parked for sale on GoDaddy.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "descriptive",
+   "name": "TipStar",
+   "rationale": "Bridges the two things a guest does at the end of a meal: leave a tip and (now) leave a star. Servers will like saying it because it associates reviews with tips. Warning: 'tip' could be read as a tipping product; the tagline and card copy need to keep it clearly about reviews. Verify no fintech/tipping app uses it.",
+   "tagline": "Leave a star with your tip.",
+   "domains_to_check": [
+    "tipstar.com",
+    "tipstar.co",
+    "gettipstar.com"
+   ],
+   "available_domains": [
+    "gettipstar.com"
+   ],
+   "taken_domains": [
+    "tipstar.com",
+    "tipstar.co"
+   ],
+   "conflicts": "TIPSTAR \u2014 major Japanese betting/keirin streaming app (https://tipstar.com, registered via MarkMonitor = corporate brand protection, likely trademarked). Tipstar \u2014 football-betting predictions app on App Store/Google Play (Squidbay Srl). Gambling associations are a poor fit for a restaurant tipping/review brand.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "ReviewDrop",
+   "rationale": "Fully descriptive: the card is dropped, the review is collected. 'Drop the ReviewDrop card' is redundant but clear; staff will simply say 'drop the ReviewDrop.' Works well for the monthly report too ('your monthly ReviewDrop'). Generic construction means the .com may be held; check alternates.",
+   "tagline": "One drop. Every review.",
+   "domains_to_check": [
+    "reviewdrop.com",
+    "reviewdrop.co",
+    "getreviewdrop.com"
+   ],
+   "available_domains": [
+    "getreviewdrop.com"
+   ],
+   "taken_domains": [
+    "reviewdrop.com",
+    "reviewdrop.co"
+   ],
+   "conflicts": "Reviewdrop \u2014 review collection/widget SaaS (https://reviewdrop.io; Crunchbase profile) AND a second ReviewDrop at https://www.reviewdrop.app that auto-sends review requests from QuickBooks invoices. Two active same-name review-software products. reviewdrop.com is parked for sale on GoDaddy.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "TapStars",
+   "rationale": "Instantly understood: tap, get stars. Reads as a natural caption under the phone-tap icon on the card face. Simple plural gives it a friendlier, consumer-facing tone that makes guests more likely to engage. Highly generic, so expect trademark neighbors in mobile games and rating apps; verify.",
+   "tagline": "Tap once. Shine on Google.",
+   "domains_to_check": [
+    "tapstars.com",
+    "tapstars.co",
+    "gettapstars.com"
+   ],
+   "available_domains": [
+    "tapstars.co",
+    "gettapstars.com"
+   ],
+   "taken_domains": [
+    "tapstars.com"
+   ],
+   "conflicts": "Direct competitors with identical name and product: TapStars (France, https://tapstars.com) sells NFC plaques for Google reviews at checkout to retail/hospitality; Tapstars (Australia, https://tapstars.com.au, Instagram @_tapstars_) sells NFC Google review cards; also 'Tap Star' NFC Google review cards Australia (tapstar.com.au). Same product category as yours.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "GuestVoice",
+   "rationale": "Shifts emphasis from the mechanism (tap) to the outcome (hearing from guests), which also sells the AI report: every month the restaurant gets the voice of its guests summarized. Sounds established and trustworthy to a 55-year-old owner. Enterprise 'voice of customer' vendors exist, so verify there is no direct hospitality conflict.",
+   "tagline": "Hear what every table is saying.",
+   "domains_to_check": [
+    "guestvoice.com",
+    "guestvoice.co",
+    "getguestvoice.com"
+   ],
+   "available_domains": [
+    "guestvoice.co",
+    "getguestvoice.com"
+   ],
+   "taken_domains": [
+    "guestvoice.com"
+   ],
+   "conflicts": "Crowded: GuestVoice (https://guestvoice.app) table-QR private feedback + Google review prompts for restaurants (nearly identical product); GuestVoice (https://guestvoice.net) table-QR guest experience for hotels/restaurants; GuestVoice (https://guestvoice.space) complaint capture before bad reviews; Guest Voice AI (https://guestvoice.ai) hotel messaging; GuestVoice is also Marriott's Medallia-powered guest feedback program. guestvoice.com parked on HugeDomains.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "TableTalk",
+   "rationale": "A real idiom for candid conversation over a meal, repurposed to mean reviews from the table plus the monthly report that 'talks back' with insights. Warm and very pronounceable. Known downside: it is a common phrase, so expect existing podcasts, restaurants and possibly a reservation/marketing product; the .com is almost certainly taken.",
+   "tagline": "What your guests say when they leave the table.",
+   "domains_to_check": [
+    "tabletalk.com",
+    "tabletalk.co",
+    "gettabletalk.com"
+   ],
+   "available_domains": [],
+   "taken_domains": [
+    "tabletalk.com",
+    "tabletalk.co",
+    "gettabletalk.com"
+   ],
+   "conflicts": "Very common name: Tabletalk Magazine (Ligonier Ministries, tabletalkmagazine.com), TableTalk 'Join the Conversation' (https://www.tabletalk.com), Tabletalk web app (https://www.tabletalk.co), Table Talk SA news (tabletalk.co.za), Table Talk Online, plus a well-known Table Talk pies brand. All three candidate domains are taken.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "FiveTap",
+   "rationale": "'Five' evokes five stars without saying it, and 'tap' is the action. Short, numeric names are easy to remember and stand out on a small card. 'Drop the FiveTap card' is smooth. Low collision risk in review tech from memory, though a similar-sounding brand (e.g., 'Five Star' variants) could argue confusion; verify.",
+   "tagline": "Five stars, one tap.",
+   "domains_to_check": [
+    "fivetap.com",
+    "fivetap.co",
+    "getfivetap.com"
+   ],
+   "available_domains": [
+    "fivetap.co",
+    "getfivetap.com"
+   ],
+   "taken_domains": [
+    "fivetap.com"
+   ],
+   "conflicts": "FiveTap (https://fivetap.net) \u2014 'Tap in, walk out booked': NFC tap tags on chairs/mirrors linking to booking page, reviews, and socials for salons/service businesses. Same NFC tap-for-reviews concept, adjacent vertical. fivetap.io also has DNS. fivetap.com parked for sale on HugeDomains.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "TapCheck",
+   "rationale": "Mirror of CheckTap, with 'tap' first so it echoes the card's 'Tap to review' instruction. Doubles as 'check in on your reviews' for the report. Caution: I recall a workforce/payroll app called Tapcheck; if that is confirmed, prefer CheckTap instead.",
+   "tagline": "Tap here. Your review counts.",
+   "domains_to_check": [
+    "tapcheck.com",
+    "tapcheck.co",
+    "gettapcheck.com"
+   ],
+   "available_domains": [],
+   "taken_domains": [
+    "tapcheck.com",
+    "tapcheck.co",
+    "gettapcheck.com"
+   ],
+   "conflicts": "Tapcheck\u00ae \u2014 large, well-funded earned-wage-access/on-demand pay company with a registered trademark (https://www.tapcheck.com), integrated with ADP, heavily used by restaurant/hospitality employers. Payments/fintech adjacency makes trademark confusion very likely. All three domains taken (tapcheck.co parked on GoDaddy).",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "descriptive",
+   "name": "TapToRate",
+   "rationale": "The most literal option in the set: it is the instruction itself. Works as brand, card copy and call to action at once, which keeps the card face uncluttered. Highly descriptive names are harder to trademark and 'tap to rate' products likely exist on marketplaces, so this is best as a fallback or as a card headline under another brand.",
+   "tagline": "Tap to rate. That's the whole job.",
+   "domains_to_check": [
+    "taptorate.com",
+    "taptorate.co",
+    "taptoratecards.com"
+   ],
+   "available_domains": [
+    "taptoratecards.com"
+   ],
+   "taken_domains": [
+    "taptorate.com",
+    "taptorate.co"
+   ],
+   "conflicts": "taptorate (https://taptorate.co, registered Jul 2026) \u2014 'Premium NFC review cards for local businesses... tap their phone and your Google review page opens instantly'; identical product. 'Tap to Rate' is also a generic descriptor used on Temu/Etsy NFC review card listings, so it is weak as a trademark. taptorate.com (2011) has no live site.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "brandable",
+   "name": "Clink",
+   "rationale": "The sound of glasses touching and the sound of a card tapping a phone in one five-letter real word. Instantly restaurant-native, verb-ready (\"clink it before you leave\"), and reads cleanly next to \"Tap to review\". Domain reality: clink.com (registered 1997), getclink.com (2022) and clinkcards.com (2026-05-08) are all taken per Verisign WHOIS on 2026-09-04, and clink.io has been registered since 2017 (whois.nic.io). Strong name, weak domain position; expect to buy a modifier domain such as clinkreviews.com or clinktap.com. No NFC/review-tech company named Clink was found, but the name is generic enough that a trademark search is essential.",
+   "tagline": "Clink. Tap. Reviewed.",
+   "domains_to_check": [
+    "clink.com",
+    "clinkreviews.com",
+    "clinktap.com"
+   ],
+   "available_domains": [],
+   "taken_domains": [
+    "clink.com (reg. 1997, GoDaddy Cayman, parked-style page)",
+    "clinkreviews.com (reg. Oct 2025, Eranet, no live site)",
+    "clinktap.com (reg. Apr 2025, Realtime Register, no live site)"
+   ],
+   "conflicts": "Crowded name. Clink 360-degree feedback/business software listed on SourceForge/Slashdot (https://sourceforge.net/software/product/Clink, https://slashdot.org/software/Clink); 'Clink' platform on LinkedIn (https://www.linkedin.com/company/joinclinkplatform); Clink dating app and Clink Smart Home app on App Store/Google Play (https://apps.apple.com/us/app/clink, https://play.google.com/store/apps/details?id=com.noid.clink); useclink.app, clink-it.app, clink.glass; Clink! restaurants in Boston (https://clinkboston.com) and Salem OR. Notably clinkreviews.com and clinktap.com were both registered by third parties in 2025, suggesting someone else may be building a 'Clink' review/tap product.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Huzzah",
+   "rationale": "An old-fashioned cheer that feels celebratory and slightly playful, which fits a card handed over at the happiest moment of a meal. Six letters, unmistakable pronunciation, memorable for servers (\"drop the Huzzah card\"). Verisign WHOIS on 2026-09-04: huzzah.com registered since 1996 and gethuzzah.com since 2013, but huzzahcards.com returned No match (unregistered). huzzah.io registered since 2014 per whois.nic.io. No review or NFC company using the name was found in checks.",
+   "tagline": "Give your guests a reason to cheer. Out loud, on Google.",
+   "domains_to_check": [
+    "huzzah.com",
+    "huzzahcards.com",
+    "huzzah.co"
+   ],
+   "available_domains": [
+    "huzzahcards.com"
+   ],
+   "taken_domains": [
+    "huzzah.com (reg. 1996, MarkMonitor - corporate brand protection registrar)",
+    "huzzah.co (reg. 2011, unfinished Webflow template site)"
+   ],
+   "conflicts": "Huzzah Media (https://huzzahmedia.com) sells a customer loyalty platform and mobile apps to small businesses, plus 'Huzzah Loyalty Rewards' app (https://apkpure.com/huzzah-loyalty-rewards/com.huzzah.customer) - adjacent to restaurant/local-business tech. Also huzzah.food, huzzah.app, Huzzah event planning app (https://apps.apple.com/za/app/huzzah), huzzah! digital agency, Huzzah Performing Arts, huzzahwin.com gambling site.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Kudoz",
+   "rationale": "Kudos with a Z: the word literally means praise, and the altered spelling makes it ownable and trademark-friendly in the Popl/Blinq tradition. Five letters, one syllable pair, easy to say. Domain reality per Verisign WHOIS on 2026-09-04: kudoz.com registered 2002 (currently serves an empty 114-byte page), getkudoz.com registered 2026-02-09 and is listed for sale, and kudozcards.com was registered 2025-09-23 by someone else (returned no content when fetched) - that last one is a yellow flag that another party may be moving on this name in the cards space. kudoz.io registered 2020.",
+   "tagline": "Kudoz: praise your guests were already thinking.",
+   "domains_to_check": [
+    "kudoz.com",
+    "getkudoz.com",
+    "kudozcards.com"
+   ],
+   "available_domains": [],
+   "taken_domains": [
+    "kudoz.com (reg. 2002, GoDaddy)",
+    "getkudoz.com (reg. Feb 2026, listed for sale)",
+    "kudozcards.com (reg. Sep 2025, Spaceship)"
+   ],
+   "conflicts": "DIRECT COMPETITOR. Kudoz Reviews (https://www.kudozreviews.com, https://apps.apple.com/us/app/kudoz-reviews, https://www.g2.com/products/kudoz-reviews/reviews) is a reputation-management platform for local businesses including restaurants, sells 'Kudoz Tap Cards' (NFC tap-to-review), smart review routing, $199/mo, 5.0 on G2/Capterra, LinkedIn https://www.linkedin.com/company/kudoz-reviews. kudozcards.com is already taken (likely by them). Also kudoz.io, kudoz.to, kudoz.ca. Do not use.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "brandable",
+   "name": "Bravvo",
+   "rationale": "Bravo is what you shout after a great performance, and a great meal is a performance. The doubled V makes it coined and searchable. Six letters, reads well on a card. Collision note: bravvo.com (registered 2007) is a live site for virtual fitness medal challenges (page title \"Bravvo | Earn Your Medals with Our Virtual Challenges\", fetched 2026-09-04), and getbravvo.com was registered 2025-12-01. That is an unrelated category, but it means the .com is gone. bravvocards.com returned No match (unregistered) per Verisign WHOIS on 2026-09-04. bravvo.io registered 2020.",
+   "tagline": "Every great meal deserves a Bravvo.",
+   "domains_to_check": [
+    "bravvocards.com",
+    "bravvo.co",
+    "bravvo.app"
+   ],
+   "available_domains": [
+    "bravvocards.com"
+   ],
+   "taken_domains": [
+    "bravvo.co (reg. 2026-09-03, one day before this check, Spaceship)",
+    "bravvo.app (registered via OVH, resolves to 213.186.33.5, no live site)"
+   ],
+   "conflicts": "Bravvo fitness challenges/medals app (https://www.bravvo.com, https://play.google.com/store/apps/details?id=com.bravvo.app, Trustpilot 4 stars); Bravvo.io employee engagement/sustainability B2B platform (https://app.bravvo.io, https://www.f6s.com/software/bravvo); Bravvo Inc registered in PA. Neither is in restaurant/review tech, but 'Bravvo' is also easily confused with Bravo (NBC app, Bravo HR app). bravvo.co being registered yesterday suggests someone else is actively pursuing this name.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "brandable",
+   "name": "Plaudo",
+   "rationale": "From plaudit and applaud, with a Latin-flavored -o ending that sounds like a real word without being one. Six letters, two syllables, no spelling ambiguity once heard. Cleanest domain position of the applause family: plaudo.com is registered (2005) but currently serves an empty 114-byte page, while getplaudo.com and plaudocards.com both returned No match (unregistered) and plaudo.io returned Domain not found, all per registry WHOIS on 2026-09-04. No company named Plaudo was found in checks. Note: Plaud (no O) is an existing AI voice-recorder brand, so keep the O prominent in logo and speech.",
+   "tagline": "Plaudo turns a good dinner into a Google review.",
+   "domains_to_check": [
+    "plaudo.com",
+    "getplaudo.com",
+    "plaudocards.com"
+   ],
+   "available_domains": [
+    "getplaudo.com",
+    "plaudocards.com"
+   ],
+   "taken_domains": [
+    "plaudo.com (reg. 2005, GoDaddy, blank page)"
+   ],
+   "conflicts": "No company called 'Plaudo' in tech; only PLAUDO LLC in Webster MA (2005 filing, https://www.bizapedia.com/ma/plaudo-llc.html) and a Spotify artist PLAUDO (169K monthly listeners). Main concern is Plaud.ai (https://www.plaud.ai), a large AI note-taking/summary brand with 2M+ users - 'Plaudo' is one letter away and both involve AI summaries, so search results for Plaudo are dominated by Plaud.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Regale",
+   "rationale": "A real word with a double meaning that is perfect for restaurants: to regale is to entertain lavishly with food and drink, and also to tell someone a story. The card asks guests to regale the world with what they just ate. Six letters, familiar, upscale. Verisign WHOIS on 2026-09-04: regale.com registered since 1999 and getregale.com since 2025-03-18, but regalecards.com returned No match (unregistered). regale.io registered 2020 per whois.nic.io. No review or NFC company found under the name.",
+   "tagline": "Regale: let your guests tell the story.",
+   "domains_to_check": [
+    "regale.com",
+    "regalecards.com",
+    "regale.co"
+   ],
+   "available_domains": [
+    "regalecards.com"
+   ],
+   "taken_domains": [
+    "regale.com (reg. 1999, Dynadot, blank page)",
+    "regale.co (reg. 2019, InternetX, currently clientHold/autoRenewPeriod - registered but on hold, may drop)"
+   ],
+   "conflicts": "Regale is a REGISTERED TRADEMARK of 3Sharp LLC for a B2B demo/sales SaaS platform (https://www.regale.cloud, Capterra https://www.capterra.com/p/Regale, listed on GetApp/Slashdot). Also a 'Regale' AI biographer iPhone app (https://appshunter.io/ios/app/regale-chronicle-your-odyssey) and confusion with Regal Cinemas app. Registered software trademark makes this risky for a SaaS product.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Lauda",
+   "rationale": "Latin root laudare, to praise (the root of applaud and laudable). Five letters, soft vowels, sounds like a premium hospitality brand rather than a gadget. Good for a logo on a dark card. Domain position per Verisign WHOIS on 2026-09-04: lauda.com registered since 1996, but getlauda.com and laudacards.com both returned No match (unregistered). lauda.io registered 2020. Association risk: Niki Lauda is a famous racing name, and Lauda is also an Austrian airline brand, so a trademark search in class 9/35/42 is required before committing.",
+   "tagline": "Lauda. Praise, captured at the table.",
+   "domains_to_check": [
+    "lauda.com",
+    "getlauda.com",
+    "laudacards.com"
+   ],
+   "available_domains": [
+    "getlauda.com",
+    "laudacards.com"
+   ],
+   "taken_domains": [
+    "lauda.com (reg. 1996, Lauda Leadership Dynamics consulting)"
+   ],
+   "conflicts": "LAUDA Dr. R. Wobser GmbH, a German lab temperature-control company with 'Lauda App' on App Store/Google Play (https://www.lauda.de, https://apps.apple.com/us/app/lauda-app); Lauda Europe / Laudamotion airline (Ryanair subsidiary, https://www.trustpilot.com/review/laudamotion.com); lauda.app exists; Niki Lauda name recognition; Lauda Leadership Dynamics at lauda.com. None in restaurant/review tech but the name is heavily used and search-dominated by others.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Hoorah",
+   "rationale": "A cheer with more warmth than Huzzah and a spelling that avoids the military hooah/oorah associations. Six letters, easy for any server to say, and it works as a verb (\"hoorah your guests\"). Best raw domain availability on the list among cheer words: hoorah.com registered 2003, but gethoorah.com and hoorahcards.com both returned No match (unregistered) per Verisign WHOIS on 2026-09-04. hoorah.io registered 2016. No review-tech company found under the name.",
+   "tagline": "Hoorah: the review that happens before the check.",
+   "domains_to_check": [
+    "hoorah.com",
+    "gethoorah.com",
+    "hoorahcards.com"
+   ],
+   "available_domains": [
+    "gethoorah.com",
+    "hoorahcards.com"
+   ],
+   "taken_domains": [
+    "hoorah.com (reg. 2003, Dynadot, blank page)"
+   ],
+   "conflicts": "'Hoorah - Rating For All' iOS app is a platform for rating anything (https://apps.apple.com/us/app/hoorah-rating-for-all) - same review/rating space, though it is a consumer social app of Chinese origin with only 5 ratings. Also Hoorah Tickets (https://www.trustpilot.com/review/hoorahtickets.com), Hoorah prop-trading firm (https://www.myfxbook.com/reviews/prop-trading-firms/hoorah), hoorah.games, shoorah.io. Common military-slang word, weak trademark.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Praisd",
+   "rationale": "Dropped-vowel spelling of praised, in the Blinq/Tumblr tradition. Six letters, one syllable, and it describes the outcome for the restaurant: you got praised. Reads well small. Domain reality per Verisign WHOIS on 2026-09-04: praisd.com was registered 2026-02-23 and currently hosts a password-gated private members-only shop (fetched 2026-09-04) that has nothing to do with reviews, NFC, or restaurants. getpraisd.com and praisdcards.com returned No match (unregistered), and praisd.io returned Domain not found. Because the .com is newly held by an unrelated party, budget for a fallback domain.",
+   "tagline": "Get Praisd. One tap at the table.",
+   "domains_to_check": [
+    "praisd.com",
+    "getpraisd.com",
+    "praisd.io"
+   ],
+   "available_domains": [
+    "getpraisd.com",
+    "praisd.io"
+   ],
+   "taken_domains": [
+    "praisd.com (reg. Feb 2026, Tucows - active Shopify jewelry brand PRAISD)"
+   ],
+   "conflicts": "PRAISD is a newly launched (2026) Canadian jewelry/apparel brand at https://praisd.com (Instagram praisd.co, Shopify store) - different industry. An old abandoned 'Praisd' Flattr SDK on GitHub (https://github.com/dereulenspiegel/praisdsdk). No review-software or restaurant-tech conflict found.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "brandable",
+   "name": "Tabbl",
+   "rationale": "Table plus tab (the check), with the vowel dropped so it is ownable. Five letters, instantly restaurant-flavored, and it names the exact moment the card gets dropped: with the tab, on the table. Verisign WHOIS on 2026-09-04: tabbl.com registered 2020 and returned no response when fetched (likely parked), while gettabbl.com and tabblcards.com returned No match (unregistered) and tabbl.io returned Domain not found. No company named Tabbl found in checks. Minor risk: some people will type Tabble or Table.",
+   "tagline": "Tabbl: reviews that land with the check.",
+   "domains_to_check": [
+    "tabbl.com",
+    "gettabbl.com",
+    "tabbl.io"
+   ],
+   "available_domains": [
+    "gettabbl.com",
+    "tabbl.io"
+   ],
+   "taken_domains": [
+    "tabbl.com (reg. 2020, GoDaddy, no live site)"
+   ],
+   "conflicts": "Several small products: Tabbl.me (https://www.tabbl.me) - 'increase your customer satisfaction, throughput and revenue' by Dot Product Ltd, 2022, appears to be an unfinished restaurant/hospitality tool built on a Bootstrap template; Tabbl App board-game scores (https://tabbl.app); tabbl.net AI document processing (https://saasbrowser.com/en/saas/tabbl); TABL Mobile POS for food vendors (https://mobile.tabl.page) - confusingly similar and in restaurant payments; tabbl.org tabletop league. Also Bing auto-corrects to 'table'.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Bravi",
+   "rationale": "Italian plural of bravo, used when applauding a whole cast - which is exactly what a good review does for the entire front and back of house. Five letters, universally pronounceable, and feels at home in Italian, American, and fine-dining contexts. Verisign WHOIS on 2026-09-04: bravi.com registered since 1999 (served no title when fetched), but getbravi.com and bravicards.com both returned No match (unregistered). bravi.io registered 2025-06-27 per whois.nic.io. No review or NFC company found under the name.",
+   "tagline": "Bravi. Applause for the whole team, on Google.",
+   "domains_to_check": [
+    "bravi.com",
+    "getbravi.com",
+    "bravicards.com"
+   ],
+   "available_domains": [
+    "getbravi.com",
+    "bravicards.com"
+   ],
+   "taken_domains": [
+    "bravi.com (reg. 1999, Tucows, no live site)"
+   ],
+   "conflicts": "Bravi (YC-backed) - AI voice/chat operating system for home-services businesses at https://www.bravi.app (https://www.ycombinator.com/companies/bravi), an active funded SMB AI SaaS; Bravi Software (Brazilian dev shop, https://www.glassdoor.com Bravi Software reviews); Sony BRAVIA app confusion. Bravi.app is a well-funded SMB-focused AI startup, likely to expand and to defend the name.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Encor",
+   "rationale": "Encore without the E: what a guest asks for after a great show, and what a five-star review earns the restaurant (guests coming back). Five letters, reads clean, and it can double as the name of the monthly report (\"your Encor report\"). Collision note: encor.com (registered 1998) is Encor International, an unrelated company (page title fetched 2026-09-04). getencor.com and encorcards.com returned No match (unregistered) and encor.io returned Domain not found, per registry WHOIS on 2026-09-04. Trademark search needed given how common Encore-derived marks are.",
+   "tagline": "Encor: bring them back with a tap.",
+   "domains_to_check": [
+    "getencor.com",
+    "encor.io",
+    "encorcards.com"
+   ],
+   "available_domains": [
+    "getencor.com",
+    "encor.io",
+    "encorcards.com"
+   ],
+   "taken_domains": [],
+   "conflicts": "NCR Voyix ENCOR is a grocery point-of-sale platform (https://www.rdspos.com NCR-Voyix-ENCOR-POS, https://www.truno.com/solutions/ncr-software) - large company in retail/hospitality payments, adjacent to your space; Encor One / Encor ESS energy apps (https://apps.apple.com/us/app/encor-one); Encor Solar (defunct, bad reputation, https://www.solarreviews.com/installers/encor-solar). Bing auto-corrects to 'encore'. All three checked domains are available, but encor.com not checked.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Chefkiss",
+   "rationale": "The chef's-kiss gesture is the universal emoji for a perfect dish, and it is already how young diners talk about food. Eight letters, two syllables, and a server saying \"drop the Chefkiss card\" sounds natural. The logo practically designs itself. Domain reality per Verisign WHOIS on 2026-09-04: chefkiss.com registered 2016 (returned no title when fetched, likely parked or dormant), but getchefkiss.com and chefkisscards.com returned No match (unregistered) and chefkiss.io returned Domain not found. No review or NFC company found under the name. Risk: the phrase is widely used in food media, so trademark distinctiveness should be checked.",
+   "tagline": "Chefkiss: when it's that good, tap it.",
+   "domains_to_check": [
+    "chefkiss.com",
+    "getchefkiss.com",
+    "chefkiss.io"
+   ],
+   "available_domains": [
+    "getchefkiss.com",
+    "chefkiss.io"
+   ],
+   "taken_domains": [
+    "chefkiss.com (reg. 2016, Network Solutions, no live site)"
+   ],
+   "conflicts": "ChefKiss software org (https://chefkiss.dev, https://github.com/ChefKissInc) - open-source Apple Silicon emulator etc.; Chef's Kiss Ristorante restaurant in Topeka KS (https://www.yelp.com/biz/chef-s-kiss-topeka); 'Chef's Kiss' Oni Press graphic novel and Pizza Tower mod. 'Chef's kiss' is a common descriptive phrase so trademark protection would be weak, and there are many restaurants and food businesses using it.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "brandable",
+   "name": "Starrd",
+   "rationale": "Starred, with the E dropped: the only name on the list that points straight at the five-star outcome without saying Google. Six letters, one syllable, and it works as both a verb and a badge (\"we got Starrd this month\"). Verisign WHOIS on 2026-09-04: starrd.com registered 2002 (no title when fetched), while getstarrd.com and starrdcards.com returned No match (unregistered) and starrd.io returned Domain not found. No review or NFC company found under the name. Spelling risk: some people will type Starred or Stard, so the logo should make the double R visually obvious.",
+   "tagline": "Starrd: five stars, one tap.",
+   "domains_to_check": [
+    "starrd.com",
+    "getstarrd.com",
+    "starrd.io"
+   ],
+   "available_domains": [
+    "getstarrd.com",
+    "starrd.io"
+   ],
+   "taken_domains": [
+    "starrd.com (reg. 2002, NameCheap, no live site)"
+   ],
+   "conflicts": "Starrd AI video generator at https://www.getstarrd.app (App Store https://apps.apple.com/us/app/starrd-ai-video-generator) - note getstarrd.app is taken even though getstarrd.com is free; Starrd creator/influencer marketing platform (India, https://apps.apple.com/in/app/starrd, https://www.f6s.com/software/starrd); Starrd Agency (https://starrdagency.com); Starrd Brands (https://starrdbrands.com); Starrd Financial Solutions. Multiple active 'Starrd' businesses, none in restaurant reviews but the AI video one uses the exact 'getstarrd' prefix. Bing auto-corrects to 'starred'.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Aftermint",
+   "rationale": "The little mint that arrives with the check is the last, sweetest gesture of the meal; Aftermint reframes the review card as that gesture. One word, two syllables, instantly understood by any server ('drop the Aftermint'). Reads cleanly on a card above 'Tap to review'. Domain status (whois.verisign-grs.com + dig, 2026-09-04): aftermint.com is registered since 2004 and parked at Sedo (aftermarket; asking price not found, do not assume it is cheap); aftermint.co and getaftermint.com return no nameservers, which is a good availability signal but must be confirmed at a registrar. Web search was unavailable this session, so no trademark clearance was run; run a USPTO TESS search before committing.",
+   "tagline": "The sweetest thing to leave with the check.",
+   "domains_to_check": [
+    "aftermint.com",
+    "aftermint.co",
+    "getaftermint.com"
+   ],
+   "available_domains": [
+    "aftermint.co",
+    "getaftermint.com"
+   ],
+   "taken_domains": [
+    "aftermint.com (registered 2004, GoDaddy; site unreachable/parked)"
+   ],
+   "conflicts": "Aftermint \u2014 an active Web3 'dapps-as-a-service' startup (founded 2023, Cupertino CA, founder Austin Yip) using the exact name: https://theaftermint.xyz/ , https://www.after-mint.io/ , https://www.linkedin.com/company/aftermint , https://tracxn.com/d/companies/aftermint . Its pitch includes letting token holders 'use tokens in Web2 and real life', so there is mild overlap with real-world customer engagement, though it is not restaurant/NFC/review software.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Last Course",
+   "rationale": "Appetizer, entree, dessert... and the last course is a 30-second review. It tells owners exactly where the card fits in service (after dessert, with the check) and turns reviewing into part of the meal rather than a chore. Two easy words for staff. Domain status (2026-09-04): lastcourse.com is registered (2006) and points to Afternic nameservers, i.e. listed for resale, price not found; lastcourse.co and getlastcourse.com show no nameservers (likely available, confirm at registrar).",
+   "tagline": "Every great meal deserves a last course.",
+   "domains_to_check": [
+    "lastcourse.com",
+    "lastcourse.co",
+    "getlastcourse.com"
+   ],
+   "available_domains": [
+    "lastcourse.co",
+    "getlastcourse.com"
+   ],
+   "taken_domains": [
+    "lastcourse.com (registered 2006, GoDaddy; parked and listed for sale on forsale.godaddy.com)"
+   ],
+   "conflicts": "'Last Course Moreton' \u2014 a small UK takeaway's food-ordering iOS app (2021): https://apps.apple.com/us/app/last-course-moreton/id1600411690 . Also a Steam game 'Last Course' (https://store.steampowered.com/app/3636740/Last_Course) and Cuphead DLC 'The Delicious Last Course'. No review-software, NFC, or payments company found.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Digestif",
+   "rationale": "A digestif is the small after-dinner drink that closes the meal; the card is the digital equivalent, the thing you do while the memory is still warm. Sophisticated, French-bistro feel that upscale independents will love, yet 'dee-zhes-TEEF' is easy enough for servers ('drop the Digestif'). Domain status (whois, 2026-09-04): digestif.com registered since 2003 at GoDaddy, expires 2029, but resolves to no nameservers, so it is held rather than used; digestif.co and digestifcards.com show no nameservers (likely available, confirm). Risk: some diners will not know the word; the card copy 'Tap to review' carries the meaning anyway.",
+   "tagline": "The perfect finish to every meal.",
+   "domains_to_check": [
+    "digestif.com",
+    "digestif.co",
+    "digestifcards.com"
+   ],
+   "available_domains": [
+    "digestif.co",
+    "digestifcards.com"
+   ],
+   "taken_domains": [
+    "digestif.com (registered 2003, GoDaddy; site unreachable)"
+   ],
+   "conflicts": "Generic dictionary word (after-dinner drink), which dominates all search results. Minor same-name apps: 'Restobar DIGESTIF' Russian restaurant delivery app (APK listing), and 'EatSense: Journal Digestif IA' (French digestion-diary app). No restaurant-tech, NFC, review, or payments company named Digestif found.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Placecard",
+   "rationale": "A place card is the small card that already lives on restaurant tables, so the name describes the physical object and the ritual of setting it down. Familiar hospitality word, zero explanation needed, and it photographs well on a card face. Domain status (whois, 2026-09-04): placecard.com registered since 2002 at GoDaddy with NO nameservers, and its registry expiry is 2026-09-16, twelve days from now; put it on a drop-catch/backorder watch. placecard.co and placecardreviews.com show no nameservers (likely available, confirm).",
+   "tagline": "Set the table for five stars.",
+   "domains_to_check": [
+    "placecard.com",
+    "placecard.co",
+    "placecardreviews.com"
+   ],
+   "available_domains": [
+    "placecardreviews.com"
+   ],
+   "taken_domains": [
+    "placecard.com (registered 2002, GoDaddy; site unreachable)",
+    "placecard.co (registered Nov 2025, status 'inactive'; no site)"
+   ],
+   "conflicts": "No company named 'Placecard' found, but the term is a generic descriptive word crowded by place-card makers: Place Card Me (https://placecard.me), Canva, Adobe Express, CapCut place-card tools, and 'The Punctilious Mr. P's Place Card Company'. Weak trademark distinctiveness and poor SEO prospects; placecard.co was registered by someone else in Nov 2025.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Chef's Kiss",
+   "rationale": "The universal gesture for 'perfect', and the phrase already lives in guests' vocabulary and on social media. Playful, memorable, and it primes the diner toward praise before they even tap. Servers will enjoy saying 'drop the Chef's Kiss'. Caveat: the phrase is extremely popular, so expect crowded trademark and social handles; clearance is essential (web search was unavailable this session, so none was run). Domain status (whois, 2026-09-04): chefskiss.com registered 2022, expires 2033, on Afternic nameservers (resale listing, price not found); getchefskiss.com and chefskisscards.com show no nameservers (likely available, confirm).",
+   "tagline": "Give the kitchen the kiss it earned.",
+   "domains_to_check": [
+    "chefskiss.com",
+    "getchefskiss.com",
+    "chefskisscards.com"
+   ],
+   "available_domains": [
+    "getchefskiss.com",
+    "chefskisscards.com"
+   ],
+   "taken_domains": [
+    "chefskiss.com (registered 2022, GoDaddy; parked and listed for sale on forsale.godaddy.com)"
+   ],
+   "conflicts": "Multiple existing 'Chef's Kiss' apps and businesses: iOS sticker app by Jen Lewis (App Store), 'Chef's Kiss' AI recipe assistant on Google Play (package app.chefskiss.android: https://play.google.com/store/apps/details?id=app.chefskiss.android), 'Chef's Kiss: Recipe Manager' by Arbor Apps (iOS), a 2026 romantic-comedy film titled Chef's Kiss, a Facebook business 'Chef's Kiss' (@chefskiss101) promoting local restaurants/chefs, a restaurant in Topeka KS, and hotels/restaurants abroad. Very common slang phrase; crowded in the food/app space though no NFC/review product found.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Curtain Call",
+   "rationale": "Dinner service is theater: the kitchen performs, the dining room is the audience, and the curtain call is the moment for applause. Frames a review as the natural end of a good show, and the AI report as the critics' notes. Two crisp words, easy for staff. Domain status (dig, 2026-09-04): curtaincall.com is registered and actively resolving; getcurtaincall.com is registered (Porkbun); curtaincallcards.com shows no nameservers (likely available, confirm). Also check curtaincall.co.",
+   "tagline": "Take a bow. Then tap.",
+   "domains_to_check": [
+    "curtaincallcards.com",
+    "curtaincall.co",
+    "getcurtaincall.com"
+   ],
+   "available_domains": [
+    "curtaincallcards.com"
+   ],
+   "taken_domains": [
+    "curtaincall.co (registered Jul 2024, GoDaddy; returns 404)",
+    "getcurtaincall.com (registered 15 May 2026, Porkbun; placeholder page \u2014 someone recently claimed the 'get' domain, possibly for a product of this name)"
+   ],
+   "conflicts": "Crowded name in entertainment: 'Curtain Call' freelancer marketplace for entertainment/events (Facebook @CurtainCall, 8.5k likes; announced closure), 'Curtain Call: Moments' theatre companion iOS app, 'Curtain Call Creative' Google Play app (https://play.google.com/store/apps/details?id=com.icrtouch.tta.curtaincallcreative), a waitlist startup 'Curtain Call \u2014 The Future of Performance', Curtain Call Inc. theatre (Stamford CT), Curtain Call Inc. NYC (curtain-call.biz), and a Steam visual novel. No restaurant/review/NFC conflict found, but the recent getcurtaincall.com registration is a warning sign.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Nightcap",
+   "rationale": "The one-more-thing at the end of a great night. Warm, adult, slightly indulgent, and it hints that the review is a pleasant final sip rather than a form. Single word, single breath for a busy server. Domain status (whois/dig, 2026-09-04): nightcap.com registered and resolving; getnightcap.com registered (Namecheap); nightcapcards.com returned 'No match' at the Verisign registry, i.e. available right now. Check nightcap.co as well.",
+   "tagline": "One last thing before you go.",
+   "domains_to_check": [
+    "nightcapcards.com",
+    "nightcap.co",
+    "getnightcap.com"
+   ],
+   "available_domains": [
+    "nightcapcards.com"
+   ],
+   "taken_domains": [
+    "nightcap.co (registered 2016, Key-Systems; returns 404)",
+    "getnightcap.com (registered Jan 2026, Namecheap; parked)"
+   ],
+   "conflicts": "NightCap\u00ae \u2014 registered-trademark drink-spiking-prevention product sold to bars/venues in 70+ countries (https://nightcapit.com/ 'About NightCap'), i.e. the same hospitality channel. Also NightCap Camera (popular iPhone low-light photography app, nightcapcamera.com), 'Nightcap' restaurant/bar in Austin TX, and a company 'Nightcap' with Glassdoor/Indeed employer reviews. The getnightcap.com registration in Jan 2026 suggests another product launch under this name.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "hospitality",
+   "name": "High Praise",
+   "rationale": "Says the outcome plainly: the card exists to capture high praise, and the monthly report ranks which dishes and servers earned it. Feels like something a maitre d' would say, not a SaaS product. Two words, reads well at small sizes. Domain status (dig, 2026-09-04): highpraise.com registered (Hover); highpraise.co registered (Namecheap); gethighpraise.com shows no nameservers (likely available, confirm). Also check highpraisecards.com.",
+   "tagline": "Praise, delivered to the table.",
+   "domains_to_check": [
+    "gethighpraise.com",
+    "highpraisecards.com",
+    "highpraise.com"
+   ],
+   "available_domains": [
+    "gethighpraise.com",
+    "highpraisecards.com"
+   ],
+   "taken_domains": [
+    "highpraise.com (registered 2000, Tucows/Hover; placeholder 'still being worked on' page)"
+   ],
+   "conflicts": "Only unrelated uses: High Praise Radio (Christian radio app, Google Play com.highpraise.radio), High Praise Ministries app (App Store), High Praise music label (London). The phrase is generic and appears constantly in review/PR copy ('earns high praise on G2'), which will hurt search visibility. No restaurant-tech, NFC, review-software, or payments company found.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Table Bravo",
+   "rationale": "'Bravo' is the shout from the crowd after a great performance, and 'Table' anchors it firmly in the dining room. Easy in English, Spanish and Italian, which matters for kitchen and floor staff. 'Drop the Table Bravo' rolls off the tongue, and it doubles as a report name ('your Table Bravo report'). Domain status (dig, 2026-09-04): tablebravo.com registered (Namecheap nameservers, could be parked/for sale, price not found); bravotable.com registered; tablebravo.co shows no nameservers (likely available, confirm).",
+   "tagline": "Every table deserves a bravo.",
+   "domains_to_check": [
+    "tablebravo.com",
+    "tablebravo.co",
+    "tablebravocards.com"
+   ],
+   "available_domains": [
+    "tablebravo.co",
+    "tablebravocards.com"
+   ],
+   "taken_domains": [
+    "tablebravo.com (registered 17 Aug 2026 \u2014 under 3 weeks ago \u2014 via Namecheap; parked page)"
+   ],
+   "conflicts": "None found. Google results are only furniture ('dining table Bravo'), a what3words address, and incidental 'table. Bravo!' phrases in restaurant reviews. Caveat: the .com was registered by someone else in mid-August 2026, which may indicate another party is about to use this name.",
+   "conflict_severity": "none"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Rave Card",
+   "rationale": "A 'rave review' is what every restaurant wants, and Rave Card literally names the product: the card that collects raves. Instantly clear to owners on a sales call, punchy on a card face, and 'drop the Rave Card' is natural staff shorthand. Domain status (dig, 2026-09-04): ravecard.com registered (NameBright nameservers, no A record, possibly for sale, price not found); ravecards.com registered and hosted in Germany; ravecard.co shows no nameservers (likely available, confirm). Also check getravecard.com.",
+   "tagline": "Turn happy tables into rave reviews.",
+   "domains_to_check": [
+    "ravecard.com",
+    "ravecard.co",
+    "getravecard.com"
+   ],
+   "available_domains": [
+    "ravecard.co",
+    "getravecard.com"
+   ],
+   "taken_domains": [
+    "ravecard.com (registered 2017, GoDaddy; site unreachable)"
+   ],
+   "conflicts": "'Rave Cards' \u2014 a greeting/collectible card company site; 'Rave Card' is an established term in Human Design (several apps: 'Human Design: My Rave Card HD', 'Human Design: HD Birth Chart' on App Store); 'rave cards' are also collectible 1990s rave flyers. In payments, Flutterwave's 'Rave' API exposes rave.Card (https://dev.to article on rave.Card.validate) and Rave Mobile Safety (getrave.com) is a large brand. Confusingly similar in the card/payments space.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Guestbook",
+   "rationale": "Restaurants used to keep a guestbook by the door for diners to leave a kind word; this is that tradition, moved to the table and posted to Google. Nostalgic, trustworthy, and it makes the monthly AI report feel like 'reading the guestbook'. One familiar word, easy for any server. Domain status (dig, 2026-09-04): guestbook.co is parked (GoDaddy parking); guestbookcards.com shows no nameservers (likely available, confirm); getguestbook.com lookup timed out, recheck. guestbook.com is almost certainly taken and was not checked.",
+   "tagline": "Your guestbook, now on Google.",
+   "domains_to_check": [
+    "guestbookcards.com",
+    "getguestbook.com",
+    "guestbook.co"
+   ],
+   "available_domains": [
+    "guestbookcards.com"
+   ],
+   "taken_domains": [
+    "getguestbook.com (registered 2006, Network Solutions; site unreachable)",
+    "guestbook.co (registered 2010, Wild West Domains; site unreachable)"
+   ],
+   "conflicts": "Direct restaurant-tech conflicts: Toast (major restaurant POS) has a guest-data/CRM feature literally named 'Guestbook' (Toast Support: 'Access Your Guest Data With Guestbook'); Loyalist launched 'Guestbook Studio' for restaurant guest profiles (Instagram @helloloyalist, Apr 2026); OpenTable for Restaurants has an 'Export your Guestbook' guest-database feature; 'The Guestbook' is a hotel direct-booking loyalty platform (https://www.thegue stbook.com \u2014 listed on G2/HotelTechReport); DigitalGuest markets a 'digital guestbook for hospitality'. Same industry, same customers, generic word.",
+   "conflict_severity": "high"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Compliments",
+   "rationale": "'Compliments to the chef' is the oldest line in dining, and this is the card that finally carries those compliments somewhere useful. Warm, generous, and it positions reviews as gratitude rather than judgment. Reads beautifully on a card: 'Compliments. Tap to review.' Domain status (dig, 2026-09-04): compliments.com registered (WordPress-hosted); getcompliments.com registered and resolving; complimentscards.com shows no nameservers (likely available, confirm). Also check compliments.co.",
+   "tagline": "Compliments to the chef, straight to Google.",
+   "domains_to_check": [
+    "complimentscards.com",
+    "compliments.co",
+    "getcompliments.com"
+   ],
+   "available_domains": [
+    "complimentscards.com"
+   ],
+   "taken_domains": [
+    "compliments.co (registered 2013, Dynadot; listed for sale)",
+    "getcompliments.com (registered 2016; BuyDomains for-sale lander)"
+   ],
+   "conflicts": "Only 'Pay Compliment' / 'Compliment', an employee-feedback SaaS (Capterra/GetApp listings), plus generic dictionary results. No restaurant, NFC, review, or payments company found. Generic word with weak distinctiveness.",
+   "conflict_severity": "low"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Tablenote",
+   "rationale": "A short note left at the table, the way a guest might scribble thanks on the check. Quiet, tasteful, and the compound word feels like a brand rather than a phrase. It also names the report naturally ('this month's Tablenote'). Easy for servers ('drop the Tablenote'). Domain status (dig, 2026-09-04): tablenote.com is on Afternic nameservers (resale listing, price not found); tablenote.co registered (AWS-hosted, in use); gettablenote.com shows no nameservers (likely available, confirm).",
+   "tagline": "A little note that says a lot.",
+   "domains_to_check": [
+    "tablenote.com",
+    "gettablenote.com",
+    "tablenotecards.com"
+   ],
+   "available_domains": [
+    "gettablenote.com",
+    "tablenotecards.com"
+   ],
+   "taken_domains": [
+    "tablenote.com (registered 2019, GoDaddy; parked and listed for sale on forsale.godaddy.com)"
+   ],
+   "conflicts": "'Table Notes' / 'TableNotes' \u2014 established mobile spreadsheet/database apps by Vivek Agarwal on iOS and Android (https://play.google.com/store/apps/details?id=vivekagarwal.playwithdb ; App Store 'Table Notes Spreadsheet Excel'), plus 'Simple Table - Note as table' on Google Play. Near-identical app names, though in productivity rather than restaurant tech.",
+   "conflict_severity": "medium"
+  },
+  {
+   "angle": "hospitality",
+   "name": "Sweet Ending",
+   "rationale": "Dessert language for the final moment of service: the meal ends on something sweet, and so does the guest's memory of it. Optimistic, gentle, and it makes the ask feel like part of hospitality rather than marketing. Two soft words that sit well next to 'Tap to review'. Domain status (dig, 2026-09-04): sweetending.com registered and resolving; sweetending.co shows no nameservers (likely available, confirm). Also check getsweetending.com and sweetendingcards.com.",
+   "tagline": "End every meal on a sweet note.",
+   "domains_to_check": [
+    "sweetending.com",
+    "sweetending.co",
+    "getsweetending.com"
+   ],
+   "available_domains": [
+    "sweetending.co",
+    "getsweetending.com"
+   ],
+   "taken_domains": [
+    "sweetending.com (registered Sep 2024, Isimtescil (Turkey); site is a broken PHP/MySQL error page)"
+   ],
+   "conflicts": "Only small unrelated businesses: 'Sweet Ending' frozen-yogurt shop (Yelp, closed), 'Sweet Ending Desserts' wedding cakes in Delhi NY (WeddingWire), a novel and a song titled Sweet Ending. Common phrase in restaurant reviews ('a sweet ending to the meal'). No software, NFC, review, or payments company found.",
+   "conflict_severity": "low"
+  }
+ ],
+ "judges": [
+  {
+   "ranked": [
+    {
+     "name": "Last Course",
+     "score": 7.5,
+     "reasoning": "Owner lens: reads like a menu heading, not a gadget. 'Last Course' on a card at every table tells guests exactly where this fits in the meal and makes the review feel like hospitality, not a marketing ask. On a $50/month invoice it looks like a premium service line. Two plain words any server can say. Conflicts are trivial (a UK takeaway app, a Steam game, Cuphead DLC per the brief), nothing in restaurant tech or reviews. Only deduction: the .com is parked for resale (price unknown) so the brand launches on .co, and the name does not say 'reviews' by itself, so the card face must carry 'Tap to review'.",
+     "best_domain": "lastcourse.co"
+    },
+    {
+     "name": "Aftermint",
+     "score": 7,
+     "reasoning": "Every owner and every server instantly gets it: the mint that comes with the check. That makes it easy to train staff ('drop the Aftermint') and charming rather than embarrassing in front of guests. One made-up-but-obvious word feels ownable and looks clean on a card. The only same-name company is a Web3 startup (theaftermint.xyz / after-mint.io per the brief), which a restaurant owner will never encounter, but the .com is parked at Sedo with no known price and no trademark clearance has been run, so score is held below Last Course.",
+     "best_domain": "aftermint.co"
+    },
+    {
+     "name": "Digestif",
+     "score": 7,
+     "reasoning": "The most premium-sounding name on the list: it signals the founder understands service and belongs on a bistro or fine-dining table. Low conflict (dictionary word, two obscure foreign apps per the brief) and digestif.co plus digestifcards.com appear open. Deductions from the owner lens: a taco shop or diner owner may find it pretentious, some guests will not know the word (mitigated by 'Tap to review' on the card), and the dictionary meaning will dominate search results, making the brand hard to find online.",
+     "best_domain": "digestif.co"
+    },
+    {
+     "name": "Bravi",
+     "score": 6.5,
+     "reasoning": "Elegant, five letters, universally pronounceable, and an owner of an Italian or upscale place would be proud to see it on the table; the idea of applauding the whole team resonates with owners who worry about staff morale. Both bravicards.com and getbravi.com are reported open. Held back because bravi.app is a YC-backed SMB AI startup (per the brief) that will grow and could defend the name, and bravi.com itself is unavailable, so the owner would see a compound domain on the invoice.",
+     "best_domain": "bravicards.com"
+    },
+    {
+     "name": "Tablenote",
+     "score": 6.5,
+     "reasoning": "Quiet and tasteful; 'Tablenote' on a small card looks like something a good restaurant would design itself, and naming the monthly report 'this month's Tablenote' makes the $50 subscription feel like a deliverable, not a fee. Conflicts are productivity spreadsheet apps (Table Notes by Vivek Agarwal per the brief), which no restaurant owner will confuse with a review service. Deductions: the .com is a resale listing (price unknown) and tablenote.co is in use by someone else, so the brand would live on a 'get' domain.",
+     "best_domain": "gettablenote.com"
+    },
+    {
+     "name": "GuestTap",
+     "score": 6.5,
+     "reasoning": "'Guest' is the industry's own word, which reads as insider credibility to an owner, and 'tap' says what the card does. Nothing on the card would embarrass anyone. Low conflict: no company found, only the craft-brewery meaning of 'guest tap' (per the brief), which will muddy search but not confuse a restaurant owner. Deductions: it is the most generic-sounding of the strong candidates, so it feels more like a utility than a premium brand, and the .com is parked on HugeDomains.",
+     "best_domain": "guesttap.co"
+    },
+    {
+     "name": "Compliments",
+     "score": 6.5,
+     "reasoning": "'Compliments to the chef' is the warmest possible framing; owners will like that the card asks for gratitude rather than judgment, and 'Compliments. Tap to review.' looks refined on a table. Conflicts are minimal (an HR feedback tool per the brief). Penalized because it is a plain dictionary word with weak trademark distinctiveness, the .co and getcompliments.com are for sale at unknown prices, and the only open domain is the longer complimentscards.com, which looks less premium on an invoice.",
+     "best_domain": "complimentscards.com"
+    },
+    {
+     "name": "TableStars",
+     "score": 6.5,
+     "reasoning": "Instantly clear to an owner (tables plus star ratings) and easy to explain in a sales pitch; no tech or review-software conflicts found (only a small FL listing and a Dutch table-tennis program per the brief). It would not embarrass anyone at the table, though it leans a little bit 'Yelp-era' and slightly cheesy compared with the hospitality names, which caps its premium feel on an invoice. tablestars.co is open; the .com is registered but dormant.",
+     "best_domain": "tablestars.co"
+    },
+    {
+     "name": "Encor",
+     "score": 6,
+     "reasoning": "Strong owner-facing metaphor ('bring them back') and the only candidate where every checked domain (getencor.com, encor.io, encorcards.com) is reported open. The dropped E may look like a typo to some owners and guests, and NCR Voyix ENCOR is a POS platform (per the brief), which is exactly the kind of vendor a restaurant owner already deals with, so there is a real chance of invoice confusion. Trademark search is required before committing.",
+     "best_domain": "encor.io"
+    },
+    {
+     "name": "Table Bravo",
+     "score": 6,
+     "reasoning": "Warm, works in English, Spanish and Italian for floor and kitchen staff, and the brief found no conflicts at all, which is rare on this list. On a card it is friendly rather than premium, and there is a faint furniture-catalog feel ('dining table Bravo') that slightly dilutes it. The .com was registered by someone else on 17 Aug 2026 (per the brief), a warning sign that another party may be moving on the name, so the owner would see tablebravo.co on the invoice.",
+     "best_domain": "tablebravo.co"
+    },
+    {
+     "name": "Plaudo",
+     "score": 6,
+     "reasoning": "Cleanest domain and trademark position among the coined names (getplaudo.com and plaudocards.com open, no company using the name per the brief), and it sounds like a legitimate software vendor on an invoice. From the owner lens it is neutral rather than charming: guests will not know what it means, so the card must rely entirely on 'Tap to review', and search results will be dominated by Plaud.ai, which also sells AI summaries, so an owner Googling the name may land on the wrong company.",
+     "best_domain": "getplaudo.com"
+    },
+    {
+     "name": "TapTable",
+     "score": 6,
+     "reasoning": "The most self-explanatory name: an owner hears it once and knows what it does, and staff can say it without thinking. Nothing embarrassing on the card. Penalized because it is generic, a UK NFC/QR order-and-pay app already uses the exact name (per the brief) so a trademark fight or confusion with an ordering product is plausible, and the .com is held, leaving taptable.co. It feels like a utility rather than a premium hospitality brand, which matters at $50/month.",
+     "best_domain": "taptable.co"
+    }
+   ]
+  },
+  {
+   "ranked": [
+    {
+     "name": "Plaudo",
+     "score": 7.5,
+     "reasoning": "Coined from applaud/plaudit, so it means praise without being a dictionary word anyone else can claim. Six letters, two syllables, no ambiguity once heard; 'drop the Plaudo card' is smooth and it sets cleanly as a wordmark on a 3.4-inch card. Best expandability on the list: praise is not restaurant-specific or Google-specific, so it stretches to salons, dentists, retail and to Yelp/TripAdvisor. Two clean domains available. Main brand risk is living in Plaud.ai's search shadow; keep the O visually heavy in the logo and always say 'plow-doh'.",
+     "best_domain": "getplaudo.com"
+    },
+    {
+     "name": "Encor",
+     "score": 7,
+     "reasoning": "Encore is what a crowd asks for after a great performance and what a five-star review earns: repeat guests. Five letters, universally pronounceable, distinctive-looking without the E, and it doubles as the product name for the monthly report ('your Encor report'). Fully expandable beyond restaurants and beyond Google. The only candidate where all three checked domains, including the .io, are open. Penalized for NCR Voyix ENCOR POS, a big hospitality-adjacent mark that must be cleared, and for Bing autocorrecting to 'encore'.",
+     "best_domain": "encor.io"
+    },
+    {
+     "name": "Aftermint",
+     "score": 7,
+     "reasoning": "The most original hospitality-native name in the set: the mint that comes with the check is exactly the moment the card is dropped, and every server understands it instantly. One word, two syllables, 'drop the Aftermint' is the best-sounding staff phrase on the list, and the wordmark reads well small with an obvious mint-green colour story. Loses points on expandability (the metaphor is dine-in only) and on the Web3 startup using the same name, though in an unrelated category.",
+     "best_domain": "aftermint.co"
+    },
+    {
+     "name": "Hoorah",
+     "score": 6.5,
+     "reasoning": "A cheer that works as a verb ('hoorah your guests'), six letters, impossible to mispronounce, warm rather than corporate. Not tied to restaurants or Google, so it expands cleanly. Two usable domains open. Held back by weak trademark distinctiveness as common slang, a small same-category 'Hoorah - Rating For All' app, and a slightly military/frat flavour that upscale independents may not love.",
+     "best_domain": "gethoorah.com"
+    },
+    {
+     "name": "Praisd",
+     "score": 6.5,
+     "reasoning": "Says the outcome for the owner ('we got Praisd this month'), one syllable, ownable spelling, and category-agnostic: praise works for any local business and any review platform. Wordmark is compact and modern. Penalized because praisd.com is now a live jewelry brand that will own the name in search, and dropped-vowel spellings read a little 2012 to some buyers.",
+     "best_domain": "getpraisd.com"
+    },
+    {
+     "name": "Huzzah",
+     "score": 6,
+     "reasoning": "Distinctive, celebratory, six letters, and memorable for staff; the wordmark has real personality. Expands beyond restaurants. Slightly theatrical/Renaissance-fair tone limits fine-dining appeal, huzzah.com is held by a MarkMonitor client (a brand-protection signal), and Huzzah Media's small-business loyalty platform is uncomfortably adjacent. Only one card-specific domain open.",
+     "best_domain": "huzzahcards.com"
+    },
+    {
+     "name": "Starrd",
+     "score": 6,
+     "reasoning": "Points straight at the five-star outcome without naming Google, so it survives a move to Yelp or other verticals. One syllable, verb-ready badge ('we got Starrd'). Penalized for spelling ambiguity (Starred/Stard), several active Starrd businesses including an AI video app that already owns getstarrd.app, and Bing autocorrect. Strong logo opportunity if the double R is made obvious.",
+     "best_domain": "getstarrd.com"
+    },
+    {
+     "name": "Clink",
+     "score": 6,
+     "reasoning": "On pure brand craft this is the best name here: the sound of glasses and the sound of a tap in one five-letter real word, verb-ready, instantly hospitality-native, and a beautiful wordmark. It is penalized hard for having no available domain in the list, a crowded name across apps and restaurants, and the warning sign that clinkreviews.com and clinktap.com were both registered by third parties in 2025. Worth pursuing only if a domain can be acquired.",
+     "best_domain": "no domain"
+    },
+    {
+     "name": "TableStars",
+     "score": 6,
+     "reasoning": "The strongest of the descriptive set: 'stars' is universal rating shorthand, 'table' anchors dine-in, and there is no review-tech conflict. Reads naturally on a card, easy for servers. Loses distinctiveness points for being a generic compound and expandability points because 'table' boxes it into restaurants, though 'stars' keeps it platform-agnostic.",
+     "best_domain": "tablestars.co"
+    },
+    {
+     "name": "Tabbl",
+     "score": 5.5,
+     "reasoning": "Clever double meaning (table + tab) that names the exact moment of the drop, five letters, ownable spelling with a good .io. Penalized for confusion risk with TABL mobile POS in restaurant payments, an unfinished Tabbl.me hospitality tool, people typing 'table', and zero expansion beyond restaurants.",
+     "best_domain": "tabbl.io"
+    },
+    {
+     "name": "Table Bravo",
+     "score": 5.5,
+     "reasoning": "The only candidate with no conflicts found, and it works in English, Spanish and Italian for floor and kitchen staff; doubles nicely as a report name. Held back because two words set less cleanly on a small card, it sounds a little like a furniture SKU, it is restaurant-bound, and tablebravo.com was registered by someone else three weeks ago.",
+     "best_domain": "tablebravo.co"
+    },
+    {
+     "name": "StarDrop",
+     "score": 5.5,
+     "reasoning": "Energetic and friendly; 'drop the StarDrop' is fun for servers, and 'star' keeps it platform- and vertical-agnostic. Penalized because the only available domain is the long stardropcards.com, search is owned by the Stardew Valley mod, and the name pair is heavily used in gaming and fashion so trademark clearance will be noisy.",
+     "best_domain": "stardropcards.com"
+    }
+   ]
+  },
+  {
+   "ranked": [
+    {
+     "name": "Table Bravo",
+     "score": 8,
+     "reasoning": "Lowest conflict profile on the entire list: the panel's search found nothing but furniture listings and incidental phrases, and no NFC, review, POS or payments company uses the name. Two plain English words with no spelling ambiguity when spoken, no negative connotation, and 'bravo' is understood in English, Spanish and Italian (relevant for floor staff). I confirmed via Verisign WHOIS on 2026-09-04 that tablebravocards.com is unregistered; tablebravo.co shows no nameservers (the .co registry could not be queried from this environment, so confirm at a registrar). Main risk: RDAP (rdap.verisign.com) shows tablebravo.com was registered 2026-08-17, under three weeks ago, which may mean another party is moving on this name; it is currently a Namecheap parked page. Run a USPTO search and consider a quick outreach to the .com holder before committing. Also note near-neighbor 'Bravi' (bravi.app, YC-backed) exists in a different category.",
+     "best_domain": "tablebravo.co (or tablebravocards.com)"
+    },
+    {
+     "name": "TableStars",
+     "score": 7.5,
+     "reasoning": "Only trivial hits (a Palm Harbor FL business listing and a Dutch youth table-tennis program, tafeltennis.nl); no review-software or NFC conflicts. Both words are spelled exactly as they sound, so phone and word-of-mouth referrals will land. Descriptive enough that trademark protection will be moderate rather than strong, but that is a fair trade for a clean field. Verisign WHOIS on 2026-09-04 confirmed tablestarscards.com is unregistered; tablestars.co has no nameservers (confirm at registrar). tablestars.com (registered 2015, GoDaddy) does not resolve, so a purchase inquiry is worth a try. One caution: 'stars' leans on Google's rating iconography; avoid using Google's actual star glyph or colors on the card to keep clear of Google brand guidelines.",
+     "best_domain": "tablestars.co (or tablestarscards.com)"
+    },
+    {
+     "name": "Last Course",
+     "score": 7,
+     "reasoning": "Conflicts are all unrelated and small: a UK takeaway's ordering app (apps.apple.com/us/app/last-course-moreton/id1600411690), a Steam game (store.steampowered.com/app/3636740/Last_Course) and the Cuphead DLC. No review, NFC or payments company found. Two common words, no spelling ambiguity, no negative reading (arguably 'last' could hint at finality, but in a dining context it reads as dessert). Verisign WHOIS on 2026-09-04 confirmed getlastcourse.com is unregistered; lastcourse.co has no nameservers (confirm at registrar). lastcourse.com (2006) is on Afternic for resale with no price found, so do not assume it is affordable. A two-word name is slightly weaker as a single-word brand handle on social platforms; check @lastcourse handles.",
+     "best_domain": "lastcourse.co (or getlastcourse.com)"
+    },
+    {
+     "name": "Digestif",
+     "score": 7,
+     "reasoning": "A dictionary word with no restaurant-tech, NFC, review or payments company attached to it; the only same-name apps are a Russian restaurant delivery app and a French digestion diary. Risk is practical rather than legal: some US diners and servers will not know the word, may pronounce it several ways, and may spell it 'digestive' when typing the URL, which hurts phone referrals. As a generic word it will be hard to rank for in search and trademark protection will be weak for the drink meaning but reasonable for software (arbitrary use). Verisign WHOIS on 2026-09-04 confirmed digestifcards.com is unregistered; digestif.co has no nameservers (confirm at registrar). digestif.com is held (GoDaddy, expires 2029) with no site, so an acquisition inquiry is possible but price unknown.",
+     "best_domain": "digestif.co (or digestifcards.com)"
+    },
+    {
+     "name": "High Praise",
+     "score": 6.5,
+     "reasoning": "Clean legally: only a Christian radio app, a ministries app and a London music label share the phrase, none in the category. Two ordinary words, no spelling ambiguity, no negative reading. The weaknesses are commercial: the phrase appears constantly in ordinary review and PR copy, so search visibility and social handles will be poor, and a purely descriptive phrase gets weak trademark protection. Verisign WHOIS on 2026-09-04 confirmed gethighpraise.com and highpraisecards.com are both unregistered. highpraise.com (2000, Tucows/Hover) is a placeholder page, so an acquisition inquiry is worth a try; highpraise.co is taken.",
+     "best_domain": "gethighpraise.com (or highpraisecards.com)"
+    },
+    {
+     "name": "Plaudo",
+     "score": 6.5,
+     "reasoning": "Coined word, so it is distinctive and registrable; no company called Plaudo was found in tech (only a dormant 2005 Massachusetts LLC per bizapedia.com and a Spotify artist). Verisign WHOIS on 2026-09-04 confirmed getplaudo.com and plaudocards.com are unregistered and plaudo.io returned 'Domain not found'. The one real risk is Plaud (plaud.ai), a large AI note-summarizing brand one letter away; because Product 2 is literally an AI summary report, a likelihood-of-confusion argument is plausible and Plaud will dominate search results for 'Plaudo'. Spoken, 'Plaudo' is unambiguous, but some people will hear 'Plato' or 'Plaudio'. Have a trademark attorney assess the Plaud proximity before committing.",
+     "best_domain": "getplaudo.com (or plaudocards.com)"
+    },
+    {
+     "name": "Praisd",
+     "score": 6.5,
+     "reasoning": "No review-software or restaurant-tech conflict found; the only active user of the name is a 2026 Canadian jewelry/apparel Shopify brand at praisd.com (unrelated goods class), plus an abandoned GitHub SDK. Verisign WHOIS on 2026-09-04 confirmed getpraisd.com is unregistered and praisd.io returned 'Domain not found'. Deductions are for practicality: the dropped-vowel spelling means anyone who hears the name will type 'praised' first, and the .com being newly held by an active retail brand means you will always be one letter from someone else's storefront. Also check that the jewelry brand has not filed a US or Canadian mark that could later expand into software classes.",
+     "best_domain": "praisd.io (or getpraisd.com)"
+    },
+    {
+     "name": "Sweet Ending",
+     "score": 6,
+     "reasoning": "Conflict-free in the category: only a closed frozen-yogurt shop, a wedding-cake baker, a novel and a song share the name. No spelling ambiguity, no negative reading. Verisign WHOIS on 2026-09-04 confirmed getsweetending.com is unregistered; sweetending.co has no nameservers (confirm at registrar). sweetending.com (Sep 2024, Turkish registrar) is a broken PHP error page, so it may be recoverable or may drop. Scored below the others because the phrase is common in restaurant reviews (search noise), is descriptive and therefore weak as a mark, and reads more like a dessert brand than a B2B review tool, which could make owner-facing sales calls slightly harder to open.",
+     "best_domain": "sweetending.co (or getsweetending.com)"
+    },
+    {
+     "name": "GuestTap",
+     "score": 6,
+     "reasoning": "No company found under the name; the only collision is 'guest tap' as a common craft-brewery term (a tap pouring another brewery's beer), which is not a trademark conflict but will muddy search results, especially since bars and breweries are plausible customers. Verisign WHOIS on 2026-09-04 confirmed getguesttap.com is unregistered; guesttap.co has no nameservers (confirm at registrar). guesttap.com is a HugeDomains for-sale listing (price not found). Spelling is straightforward when spoken. Deductions: 'GuestTap'-style constructions are crowded in hospitality tech generally (guest Wi-Fi, guest messaging), so a USPTO search in classes 9, 35 and 42 is essential, and the name is descriptive enough that protection will be modest.",
+     "best_domain": "guesttap.co (or getguesttap.com)"
+    },
+    {
+     "name": "Encor",
+     "score": 5.5,
+     "reasoning": "Best raw domain position on the list: Verisign WHOIS on 2026-09-04 confirmed getencor.com and encorcards.com are unregistered and my check of whois.nic.io returned 'Domain not found' for encor.io. But the risk lens cuts against it: NCR Voyix's ENCOR is a point-of-sale platform sold into grocery and hospitality (rdspos.com, truno.com/solutions/ncr-software), meaning a very large company with an identical mark in an adjacent channel; there is also Encor Solar with a poor reputation (solarreviews.com/installers/encor-solar) and encor.com is Encor International. Spoken, everyone will type 'encore' and search engines auto-correct to it. Usable only after a trademark attorney clears it against NCR's registrations.",
+     "best_domain": "encor.io (or getencor.com)"
+    },
+    {
+     "name": "CheckTap",
+     "score": 5.5,
+     "reasoning": "Low direct conflicts (a defunct Korean power-strip maker per tracxn.com and a dormant UK shell company), and Verisign WHOIS on 2026-09-04 confirmed getchecktap.com is unregistered; checktap.co has no nameservers (confirm at registrar). checktap.com is a GoDaddy for-sale page, price not found. The serious problem is Tapcheck (tapcheck.com), a well-funded earned-wage-access company with a registered trademark that is integrated with ADP and heavily used by restaurant and hospitality employers, i.e. it is sold to the exact same restaurant owners. A reversed two-syllable compound of a registered mark aimed at the same buyers is a textbook likelihood-of-confusion scenario, and owners may mishear 'CheckTap' as 'Tapcheck' on a sales call. Do not use without attorney clearance.",
+     "best_domain": "checktap.co (or getchecktap.com)"
+    },
+    {
+     "name": "Hoorah",
+     "score": 5.5,
+     "reasoning": "Good domain position: Verisign WHOIS on 2026-09-04 confirmed gethoorah.com and hoorahcards.com are both unregistered; hoorah.com (2003, Dynadot) is a blank page and could be approached. But the name has an existing app in the same space, 'Hoorah - Rating For All' (apps.apple.com/us/app/hoorah-rating-for-all), a consumer rating platform, plus Hoorah Tickets, a Hoorah prop-trading firm and hoorah.games. The word is common slang (and carries military hooah/oorah associations for some hearers), so trademark strength is weak and spelling is ambiguous when spoken: hoorah, hurrah, hooray, hurray are all plausible typed spellings, which is a real cost for a business that will be referred by word of mouth between restaurant owners.",
+     "best_domain": "gethoorah.com (or hoorahcards.com)"
+    }
+   ]
+  }
+ ]
+}

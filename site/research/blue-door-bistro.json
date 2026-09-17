@@ -1,0 +1,28 @@
+{
+  "name": "Blue Door Bistro",
+  "city": "Riverside",
+  "owner": "Dana",
+  "address": "412 Main St, Riverside",
+  "website": "https://example.com",
+  "cuisine": "American bistro",
+  "rating": "4.2",
+  "reviewCount": "63",
+  "lastReview": "2 months ago",
+  "query": "bistro riverside",
+  "hook": "Your last Google review was two months ago, and 47% of diners skip a place with under 20 recent reviews. You have the food; the map just does not know it yet.",
+  "competitors": [
+    { "name": "Riverside Grill", "rating": 4.5, "count": 412, "note": "9 reviews last month" },
+    { "name": "The Corner Table", "rating": 4.4, "count": 188, "note": "Last review 3 weeks ago" },
+    { "name": "Harbor Kitchen", "rating": 4.3, "count": 121, "note": "Last review 5 weeks ago" }
+  ],
+  "praise": ["Warm, attentive servers", "Brunch, especially the shrimp and grits", "The patio in summer"],
+  "complaints": ["Weekend wait times", "Music too loud after 8 pm"],
+  "dishes": ["Shrimp and grits", "Short rib", "Lemon tart", "House burger"],
+  "talkingPoints": [
+    "Riverside Grill has six times your review count with a lower-rated kitchen. Volume, not quality, is the gap.",
+    "Three of your last ten reviews name a server. The report would tell you who, every month.",
+    "Weekend waits come up twice. A card on the table costs nothing and turns that wait into a review while they are still happy about the food."
+  ],
+  "likelyObjection": "\"We already have a QR code on the receipt.\" Answer: receipts get folded into wallets; the card asks at the table, while the meal is still a feeling.",
+  "logo": "/tmp/blue-door-logo.jpg"
+}
