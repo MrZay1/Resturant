@@ -68,7 +68,8 @@ export async function sendEmail(msg: EmailMessage): Promise<{ ok: boolean; detai
       signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return { ok: false, detail: `resend ${res.status}: ${(await res.text()).slice(0, 200)}` };
-    return { ok: true, detail: "sent" };
+    const body = (await res.json().catch(() => null)) as { id?: string } | null;
+    return { ok: true, detail: body?.id ? `sent, resend id ${body.id}` : "sent" };
   } catch (e) {
     return { ok: false, detail: (e as Error).message };
   }

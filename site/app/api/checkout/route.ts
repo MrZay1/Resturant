@@ -172,7 +172,7 @@ export async function POST(req: Request) {
             ? [{ filename, content: logo.base64, contentType: logo.contentType, contentId: "logo" }]
             : undefined,
       });
-      if (!sent.ok) console.error("[artwork] email failed:", sent.detail);
+      console[sent.ok ? "log" : "error"]("[artwork]", record.restaurant, "-", sent.detail);
     });
   }
 
