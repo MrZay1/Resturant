@@ -63,7 +63,7 @@ const SAMPLE = {
   headline: "Tap to review us on Google",
   subline: "Hold your phone here",
   color: "#1f4d3a",
-  url: "tblnt.co/r/lucias",
+  url: "tblnt.com/r/lucias",
   stars: 0,
 };
 
@@ -76,7 +76,7 @@ const DEFAULT_DESIGNS = [
     headline: "Tap to review us on Google",
     subline: "Hold your phone here",
     color: "#1f4d3a",
-    url: "tblnt.co/r/demo",
+    url: "tblnt.com/r/demo",
     stars: 0,
   },
 ];

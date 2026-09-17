@@ -8,7 +8,7 @@ export const SAMPLE_DASHBOARD = {
   owner: "Lucia Romano",
   recipients: ["lucia@luciastrattoria.com", "gm@luciastrattoria.com"],
   googleLink: "https://search.google.com/local/writereview?placeid=ChIJ...Ew",
-  shortLink: "tblnt.co/r/lucias",
+  shortLink: "tblnt.com/r/lucias",
   cards: { inService: 12, replacedThisMonth: 2, freeReplacementsLeft: 8, lost: 1 },
   tapsByWeek: [
     { label: "Aug 3", value: 41 },

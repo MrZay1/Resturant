@@ -129,7 +129,7 @@ const profile = {
 fs.writeFileSync(path.join(outDir, "profile.json"), JSON.stringify(profile, null, 2));
 
 // 4. card artwork with the logo (all four templates)
-const designs = [{ slug: `pitch-${slug}`, name: R.name, headline: profile.headline, subline: profile.subline, color: brandColor, url: `${R.shortLinkHost || "tblnt.co"}/r/${slug.slice(0, 18)}`, stars: false, ...(logoPath ? { logo: logoPath } : {}) }];
+const designs = [{ slug: `pitch-${slug}`, name: R.name, headline: profile.headline, subline: profile.subline, color: brandColor, url: `${R.shortLinkHost || "tblnt.com"}/r/${slug.slice(0, 18)}`, stars: false, ...(logoPath ? { logo: logoPath } : {}) }];
 const designFile = path.join(outDir, "designs.json");
 fs.writeFileSync(designFile, JSON.stringify(designs, null, 2));
 execFileSync("node", ["scripts/export-cards.mjs", designFile], { stdio: "inherit", env: { ...process.env, BASE_URL: base } });

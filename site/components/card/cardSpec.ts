@@ -23,7 +23,7 @@ export type CardDesign = {
   textOnBrand: "light" | "dark";
   showStars: boolean;
   backNote: string; // small print on the back
-  shortUrl: string; // printed on the back, e.g. tblnt.co/r/lucias
+  shortUrl: string; // printed on the back, e.g. tblnt.com/r/lucias
   qrDataUrl?: string; // optional QR (back side)
 };
 
@@ -36,7 +36,7 @@ export const DEFAULT_DESIGN: CardDesign = {
   textOnBrand: "light",
   showStars: false, // star graphics on the card read as soliciting a rating under Google policy; keep them off
   backNote: "Thank you for dining with us. Your review helps our small team more than you know.",
-  shortUrl: "tblnt.co/r/lucias",
+  shortUrl: "tblnt.com/r/lucias",
 };
 
 export const TEMPLATE_META: Record<CardTemplate, { name: string; blurb: string }> = {
