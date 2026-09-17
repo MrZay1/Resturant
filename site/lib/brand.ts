@@ -5,7 +5,7 @@ export const BRAND = {
   domain: "tblnt.com",
   shortLinkHost: "tblnt.com",
   tagline: "Every table, every review.",
-  email: "hello@tblnt.com",
+  email: "isiah@tblnt.com",
   phone: "",
   city: "",
   state: "", // State of formation for Tablenote LLC, used in Terms section 16 (governing law and venue). Must be filled before launch.

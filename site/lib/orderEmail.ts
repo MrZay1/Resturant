@@ -17,6 +17,7 @@ export type OrderRecord = {
   subline: string;
   brand_color: string;
   has_logo: boolean;
+  logo_file: string;
   link_mode: string;
   google_review_link: string;
   notes: string;
@@ -58,7 +59,12 @@ export function renderOrderEmail(o: OrderRecord) {
     ["Headline", o.headline || "default"],
     ["Small line", o.subline || "none"],
     ["Brand colour", o.brand_color || "default"],
-    ["Logo", o.has_logo ? "Yes, they uploaded one" : "No, design a type-only card"],
+    [
+      "Logo",
+      o.has_logo
+        ? `Yes — ${o.logo_file || "the file"} is attached to the "Artwork" email for this restaurant`
+        : "No, design a type-only card",
+    ],
     ["Where cards point", where],
     ["Ship to", ship.join(", ")],
     ["Notes", o.notes || "none"],

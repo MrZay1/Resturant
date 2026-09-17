@@ -7,13 +7,34 @@
  *   ORDER_EMAIL_TO    where order notifications land (your inbox)
  *   ORDER_EMAIL_FROM  the From address on a domain verified in Resend
  */
+export type EmailAttachment = {
+  filename: string;
+  /** Raw base64, no data: prefix. */
+  content: string;
+  contentType?: string;
+  /** Set to embed the file in the HTML with <img src="cid:thisValue">. */
+  contentId?: string;
+};
+
 export type EmailMessage = {
   to: string;
   subject: string;
   html: string;
   text: string;
   replyTo?: string;
+  attachments?: EmailAttachment[];
 };
+
+/** Splits a data: URL into the base64 payload and MIME type Resend needs. */
+export function parseDataUrl(dataUrl: string): { base64: string; contentType: string } | null {
+  const m = /^data:([a-zA-Z0-9.+/-]+);base64,([A-Za-z0-9+/=\s]+)$/.exec(dataUrl.trim());
+  if (!m) return null;
+  return { contentType: m[1], base64: m[2].replace(/\s+/g, "") };
+}
+
+export function extensionFor(contentType: string) {
+  return { "image/png": "png", "image/jpeg": "jpg", "image/svg+xml": "svg", "image/webp": "webp" }[contentType] ?? "png";
+}
 
 export async function sendEmail(msg: EmailMessage): Promise<{ ok: boolean; detail: string }> {
   const key = process.env.RESEND_API_KEY;
@@ -32,8 +53,19 @@ export async function sendEmail(msg: EmailMessage): Promise<{ ok: boolean; detai
         html: msg.html,
         text: msg.text,
         ...(msg.replyTo ? { reply_to: msg.replyTo } : {}),
+        ...(msg.attachments?.length
+          ? {
+              attachments: msg.attachments.map((a) => ({
+                filename: a.filename,
+                content: a.content,
+                ...(a.contentType ? { content_type: a.contentType } : {}),
+                ...(a.contentId ? { content_id: a.contentId } : {}),
+              })),
+            }
+          : {}),
       }),
-      signal: AbortSignal.timeout(8000),
+      // Attachments make the request bigger; give it room.
+      signal: AbortSignal.timeout(15000),
     });
     if (!res.ok) return { ok: false, detail: `resend ${res.status}: ${(await res.text()).slice(0, 200)}` };
     return { ok: true, detail: "sent" };

@@ -23,7 +23,7 @@ Primary supplier: My Plastic Business Card, La Habra CA. CR80 PVC, full colour b
 | 1,000 | $1.16 | $0.01 | **$1.17** | $1,170.00 | GoToTags $1.05 (two-sided print is listed as an add-on; confirm whether it is per card); Seritag $0.78, about $0.97 landed |
 
 Notes.
-- MPBC's chip is described as "NFC 215" with "roughly 200 characters" capacity; the page never says NXP. The card spec in this project is NTAG213, and the encoded URL `https://tblnt.co/r/<slug>?s=card` is about 35 characters, so either chip works. Ask MPBC for the IC part number before the first paid order.
+- MPBC's chip is described as "NFC 215" with "roughly 200 characters" capacity; the page never says NXP. The card spec in this project is NTAG213, and the encoded URL `https://tblnt.com/r/<slug>?s=card` is about 35 characters, so either chip works. Ask MPBC for the IC part number before the first paid order.
 - MPBC ships cards unlocked (their FAQ says the URL can be changed later with the NFC Tools app). Locking is done in-house with an Android phone; iOS apps only soft-lock (https://seritag.com/news/can-iphones-lock-nfc-tags).
 - Tagstand's small-batch card prints one or two sides and offers "Encode and Lock" at no extra charge. Tiers from the live order form (`research/suppliers.md` gap-fill section 8, https://www.tagstand.com/products/custom-small-batch-pvc-card-white-ntag215/):
 
@@ -310,7 +310,7 @@ Recommendation: launch on `price_data` as built. Switch to Dashboard prices when
 ### 8.5 Invoice and receipt text
 
 - [ ] Statement descriptor: TABLENOTE (or TABLENOTE.CO). Set on the account, not per charge, so it must be the Tablenote account, not the shared one.
-- [ ] Invoice footer (Settings, Billing, Invoice template): "Includes the monthly AI review report and up to 10 replacement cards per month for cards in service, subject to fair use. Cancel any time at tablenote.co or by emailing hello@tablenote.co. Printed cards are not refundable after proof approval."
+- [ ] Invoice footer (Settings, Billing, Invoice template): "Includes the monthly AI review report and up to 10 replacement cards per month for cards in service, subject to fair use. Cancel any time at tblnt.com or by emailing isiah@tblnt.com. Printed cards are not refundable after proof approval."
 - [ ] Line item names come from `product_data.name` in the checkout route: "Tablenote tap-to-review card" and "Tablenote monthly review report", with the design template and restaurant name in the description. Keep the restaurant name there; owners reconcile invoices by it.
 - [ ] Turn on email receipts for successful payments and failed-payment emails (Smart Retries under Billing, Subscriptions and emails) so involuntary churn from expired cards is caught without hand work.
 

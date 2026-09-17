@@ -1,6 +1,6 @@
 # Google review links, Business Profile access, and the monthly report pipeline
 
-Working brand: Tablenote. Short-link host: tblnt.co. Site: tablenote.co. Founder: Zay. City: [CITY].
+Working brand: Tablenote. Short-link host: tblnt.com. Site: tblnt.com. Founder: Zay. City: [CITY].
 
 This document covers the Google side of the product: the link the card opens, how Tablenote gets read access to a restaurant's reviews, where the review data comes from while Google approval is pending, and how the monthly report is produced. Everything here is drawn from the research reports in `research/` (google_review_mechanics.md, unit_economics.md, policy_legal.md). Where the fact-check marked a claim as partially correct, the corrected version is used. Items marked "unverified" have not been confirmed on a real device or from a primary source.
 
@@ -58,12 +58,12 @@ Test on real phones before any card order: iPhone Safari (signed in and out), iP
 
 ### 1.5 What goes in links.json
 
-`site/data/links.json` maps a slug to a destination. The route lowercases the slug and strips anything outside `a-z0-9-_`, returns 302 with `cache-control: no-store`, and forwards a tap event (slug, timestamp, user agent, referer, `s=` source, optional NTAG counter) to `TAP_WEBHOOK_URL`. Cards are encoded with `https://tblnt.co/r/<slug>?s=card`; the QR on the back uses the same URL (see `site/scripts/README.md`). Changing the file requires a redeploy.
+`site/data/links.json` maps a slug to a destination. The route lowercases the slug and strips anything outside `a-z0-9-_`, returns 302 with `cache-control: no-store`, and forwards a tap event (slug, timestamp, user agent, referer, `s=` source, optional NTAG counter) to `TAP_WEBHOOK_URL`. Cards are encoded with `https://tblnt.com/r/<slug>?s=card`; the QR on the back uses the same URL (see `site/scripts/README.md`). Changing the file requires a redeploy.
 
 Rules for entries:
 
 - `to` is the bare Place-ID URL: `https://search.google.com/local/writereview?placeid=<PLACE_ID>`. Nothing appended.
-- One slug per restaurant location, not per card. Every card for that location carries the same URL, so replacement cards are interchangeable and the printed short link and QR on the back match the chip. This matches the artwork: `scripts/export-cards.mjs` takes one `url` per design, and the Configurator on `/order` derives one slug from the restaurant name (for example `tblnt.co/r/blue-door-bistro`). Taps are reported by weekday and time of day only, never by table or by server. Per-table slugs would need variable-data artwork and encoding that no script produces today (see section 7 if wanted later). Per-server tracking is a policy problem (section 6).
+- One slug per restaurant location, not per card. Every card for that location carries the same URL, so replacement cards are interchangeable and the printed short link and QR on the back match the chip. This matches the artwork: `scripts/export-cards.mjs` takes one `url` per design, and the Configurator on `/order` derives one slug from the restaurant name (for example `tblnt.com/r/blue-door-bistro`). Taps are reported by weekday and time of day only, never by table or by server. Per-table slugs would need variable-data artwork and encoding that no script produces today (see section 7 if wanted later). Per-server tracking is a policy problem (section 6).
 - The slug shown on the customer's proof preview must be the slug that goes into `links.json`. Today the Configurator slug is not saved anywhere at checkout (it is not in the Stripe `metadata` set in `site/app/api/checkout/route.ts` and not written to `links.json`), so the onboarding checklist in section 2 records it by hand and it is added to `links.json` before proof approval. Section 7 lists the code fix.
 - Use `note` to record the g.page link, the Place ID source, and the date the link was last tested.
 - Demo cards point at Tablenote's own verified Business Profile Place ID once it exists, never at a real restaurant. Until then they point at `/sample-report` as they do now.
@@ -100,11 +100,11 @@ Cards
 - [ ] Logo files: vector (SVG, PDF or EPS) preferred, otherwise PNG at least 1,000 px wide with transparent background.
 - [ ] Brand colors as hex values.
 - [ ] Table count, for sizing the order only. All cards share the location's single slug; do not map cards to tables or to servers.
-- [ ] The slug: the one shown on the proof preview (Configurator auto-slug from the restaurant name, or the slug agreed in the pilot). Add it to `site/data/links.json` with the Place-ID URL and deploy before proof approval, then test `https://tblnt.co/r/<slug>?s=card` on an iPhone and an Android.
+- [ ] The slug: the one shown on the proof preview (Configurator auto-slug from the restaurant name, or the slug agreed in the pilot). Add it to `site/data/links.json` with the Place-ID URL and deploy before proof approval, then test `https://tblnt.com/r/<slug>?s=card` on an iPhone and an Android.
 - [ ] Who receives replacement cards and the shipping address.
 
 Access for the report
-- [ ] Access choice: (B) owner adds Tablenote's Google Workspace email as **Manager** (Business Profile settings > People and access > Add > enter email > role Manager > Invite; Tablenote accepts the emailed invite), or (A) owner clicks "Connect Google" on tablenote.co once OAuth verification is done (section 3.6). The site FAQ currently describes option B, which is the pilot default.
+- [ ] Access choice: (B) owner adds Tablenote's Google Workspace email as **Manager** (Business Profile settings > People and access > Add > enter email > role Manager > Invite; Tablenote accepts the emailed invite), or (A) owner clicks "Connect Google" on tblnt.com once OAuth verification is done (section 3.6). The site FAQ currently describes option B, which is the pilot default.
 - [ ] Record `accountId` and `locationId` after the first API call.
 - [ ] Signed authorization in the subscription agreement covering reading and analyzing the restaurant's public Google reviews, use of a third-party data provider as a fallback, and the AI provider as a subprocessor.
 
@@ -143,7 +143,7 @@ URL: https://support.google.com/business/contact/api_default. Choose "Applicatio
 
 Paste this as the use case, filling the brackets:
 
-> Tablenote provides independent restaurants with a monthly written analysis of their own public Google reviews. Each restaurant authorizes us either by granting OAuth consent to our application or by adding our business account as a Manager on its Business Profile. We need read access to reviews (Google My Business API, accounts.locations.reviews.list), account and location listing (My Business Account Management API and My Business Business Information API), and NEW_REVIEW notifications (My Business Notifications API) for [N] verified client locations. We do not post replies without the client's written approval, we do not store API content for more than 30 days, and we do not aggregate content across clients. Project Number: [PROJECT NUMBER]. Website: https://tablenote.co. Privacy policy: https://tablenote.co/legal/privacy.
+> Tablenote provides independent restaurants with a monthly written analysis of their own public Google reviews. Each restaurant authorizes us either by granting OAuth consent to our application or by adding our business account as a Manager on its Business Profile. We need read access to reviews (Google My Business API, accounts.locations.reviews.list), account and location listing (My Business Account Management API and My Business Business Information API), and NEW_REVIEW notifications (My Business Notifications API) for [N] verified client locations. We do not post replies without the client's written approval, we do not store API content for more than 30 days, and we do not aggregate content across clients. Project Number: [PROJECT NUMBER]. Website: https://tblnt.com. Privacy policy: https://tblnt.com/legal/privacy.
 
 After approval, enable the seven APIs on the basic-setup page: Google My Business API, My Business Account Management, My Business Business Information, My Business Notifications, My Business Verifications, My Business Place Actions, My Business Lodging (https://developers.google.com/my-business/content/basic-setup). There is no sandbox.
 
@@ -156,7 +156,7 @@ Tablenote has no verified Business Profile, so it has no 60-day-old profile to a
 | A. Create Tablenote's own profile now | Create and verify a Business Profile for Tablenote at the [CITY] address. The 60-day clock starts after verification, and verification itself can take days to weeks. Also gives demo cards a safe Place ID to open. | 60 or more days after verification |
 | B. Apply through a pilot restaurant | The first pilot restaurant adds Tablenote's Workspace email as **Manager** on its already-verified profile. If that profile is 60 or more days old and its website is live, it qualifies immediately. Google's prerequisite says owner or manager, and that the profile can "belong to one of the clients they manage" (https://developers.google.com/my-business/content/prereqs). Unofficial reports say applications from a manager-level account sometimes get bounced (unverified). Apply as Manager first; only if Google rejects the application on that ground, consider asking for Owner under the conditions below. | As soon as a pilot restaurant signs |
 
-Do both. Email: buy Google Workspace Business Starter on tablenote.co. One seat. The pricing page (https://workspace.google.com/pricing, fetched 2026-09-05; this figure is not in the research files, re-check before paying) showed $7.00 per user per month on the annual plan, with a promotion of 30 percent off for three months ($4.90 per user per month) for new customers between Sep 19 and Dec 19, 2026. The same address must be the Cloud project owner, the Manager on every client profile, the contact on the API form, and a Search Console owner of tablenote.co.
+Do both. Email: buy Google Workspace Business Starter on tblnt.com. One seat. The pricing page (https://workspace.google.com/pricing, fetched 2026-09-05; this figure is not in the research files, re-check before paying) showed $7.00 per user per month on the annual plan, with a promotion of 30 percent off for three months ($4.90 per user per month) for new customers between Sep 19 and Dec 19, 2026. The same address must be the Cloud project owner, the Manager on every client profile, the contact on the API form, and a Search Console owner of tblnt.com.
 
 **If Owner access is ever requested.** Default is Manager. An Owner (or Primary owner) can delete the profile, add and remove other owners and managers, and transfer primary ownership; a Manager cannot (https://support.google.com/business/answer/3403100). A pilot restaurant on a free trial is being asked to hand that power to a vendor on the strength of unofficial reports, so do not ask for it unless Google actually bounces a Manager-level application. If it comes to that, the request goes in writing and the pilot authorization (doc 05, pilot agreement) gets this paragraph: Tablenote will hold Owner access only to satisfy Google's API application requirement; it will use the access only to read reviews and account or location identifiers; it will not edit the profile, reply to reviews, add or remove users, or transfer ownership; and the restaurant removes Tablenote, or downgrades it to Manager, on the day the pilot ends or the API is approved, whichever is first. The owner keeps Primary owner at all times.
 
@@ -172,7 +172,7 @@ Do both. Email: buy Google Workspace Business Starter on tablenote.co. One seat.
 
 | Pattern | Who signs in | Restaurant does | Trade-offs |
 |---|---|---|---|
-| A. Owner OAuth | The owner, on tablenote.co | Clicks Connect Google, grants `business.manage` | Cleanest consent, revocable. Needs a verified consent screen. Token dies if the owner changes password or leaves. |
+| A. Owner OAuth | The owner, on tblnt.com | Clicks Connect Google, grants `business.manage` | Cleanest consent, revocable. Needs a verified consent screen. Token dies if the owner changes password or leaves. |
 | B. Manager access (pilot default) | Tablenote's Workspace account | Adds Tablenote as Manager | One token for all clients. Managers "have mostly the same access to the profile as owners" except adding or removing users or deleting the profile. New managers wait 7 days only for deleting the profile, removing other managers, or transferring primary ownership; Google documents no hold on reading reviews (https://support.google.com/business/answer/3403100). Exposes Tablenote's account to policy trouble on any client profile. |
 
 Sequence: run the pilot on B with the founder's token, submit sensitive-scope verification in parallel, and offer A on the website only after the app is In production and verified.
@@ -230,7 +230,7 @@ Recommendation:
 ### 5.1 Architecture
 
 ```
-[Card tap] tblnt.co/r/<slug>?s=card --302--> search.google.com/local/writereview?placeid=...
+[Card tap] tblnt.com/r/<slug>?s=card --302--> search.google.com/local/writereview?placeid=...
      |
      +--> tap event (slug, ts, ua, source) --> TAP_WEBHOOK_URL --> taps table
 

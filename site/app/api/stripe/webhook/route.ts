@@ -46,6 +46,7 @@ export async function POST(req: Request) {
       subline: m.subline ?? "",
       brand_color: m.brand_color ?? "",
       has_logo: m.has_logo === "true",
+      logo_file: m.logo_file ?? "",
       link_mode: m.link_mode ?? "",
       google_review_link: m.google_review_link ?? "",
       notes: m.notes ?? "",

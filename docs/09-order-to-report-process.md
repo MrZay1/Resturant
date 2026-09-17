@@ -26,8 +26,19 @@ One page on how a restaurant moves from a pitch to receiving monthly reports, wh
 
 Two ways an order arrives:
 
-- **Online.** The owner uses `/order`. Stripe charges cards today and starts the subscription. Stripe calls `/api/stripe/webhook`, which posts the order (restaurant, address or review link, design choices, quantity, contact, shipping address) to `ORDER_WEBHOOK_URL`. Set that to an Airtable form-style webhook, Zapier, or Make so every order becomes a row.
+- **Online.** The owner uses `/order`. Stripe charges cards today and starts the subscription. Stripe calls `/api/stripe/webhook`, which emails the order to `ORDER_EMAIL_TO` and, if `ORDER_WEBHOOK_URL` is set, also posts it as JSON to an Airtable webhook, Zapier, or Make so every order becomes a row.
 - **By email.** If checkout is not configured, the order form sends an order request to `LEAD_WEBHOOK_URL`. You reply with a Stripe payment link (Dashboard > Payment links: one link for cards, one for cards plus subscription).
+
+### The two emails one online order sends
+
+| | Sent when | Subject starts | What is in it |
+|---|---|---|---|
+| **Artwork** | They reach the Stripe payment page | `Artwork:` | A picture of the card front as they built it, the logo shown on white, **the logo file attached at full size**, and every design setting. |
+| **New order** | Their payment clears | `New order:` | What they paid, quantity, shipping address, where the cards should point, notes, and the next steps. |
+
+Why two: the logo lives only in their browser until they submit, and Stripe metadata caps at 500 characters per value, far too small for an image. `/api/checkout` therefore sends the artwork while it is still holding the file, using Next's `after()` so the payment page is never delayed. An artwork email with no matching order means someone designed a card and did not pay — worth a phone call.
+
+Preview both at `/print/order-email` on the dev server.
 
 Same day: send a one-line confirmation. "Got your order. Your design preview arrives within 2 business days. Reply with your logo if you did not upload one."
 

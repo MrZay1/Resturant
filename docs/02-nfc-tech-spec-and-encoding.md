@@ -1,6 +1,6 @@
 # NFC card technical spec, redirect layer, and the encode-tonight procedure
 
-Working brand: Tablenote (placeholder). Short-link host: tblnt.co (placeholder, not yet registered). Date: 2026-09-04.
+Working brand: Tablenote (placeholder). Short-link host: tblnt.com (placeholder, not yet registered). Date: 2026-09-04.
 
 This document is the build sheet for the physical card and the code that sits behind it. Read section 1 before ordering, section 2 before deploying, section 3 before touching a blank card. Everything with a number or a rule carries a source; anything unverified says so.
 
@@ -15,14 +15,14 @@ This document is the build sheet for the physical card and the code that sits be
 | Chip | Genuine NXP NTAG213, NFC Forum Type 2, ISO/IEC 14443-A, 13.56 MHz | 144 bytes user memory, 7-byte UID, 24-bit read counter, UID/counter ASCII mirror, 32-bit password, 100,000 write cycles, 10-year retention ([NXP datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf)) |
 | Memory map (NTAG213) | User pages 04h to 27h; dynamic lock bytes page 28h; config pages 29h to 2Ch; static lock bytes in page 02h | [NXP datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf) |
 | URL capacity | About 130 characters after `https://` | Vendor figure ([wakdev](https://www.wakdev.com/en/knowledge-base/nfc-chips/nxp-ntag213.html)); the chip URL is 26 characters plus the slug (30 for `d001`), see section 2.1 |
-| Payload | Exactly one NDEF URI record, prefix byte 0x04 (`https://`), value `https://tblnt.co/r/<slug>?s=card`. No second record | iPhone only processes the first URI record ([Apple](https://developer.apple.com/documentation/corenfc/adding-support-for-background-tag-reading)) |
+| Payload | Exactly one NDEF URI record, prefix byte 0x04 (`https://`), value `https://tblnt.com/r/<slug>?s=card`. No second record | iPhone only processes the first URI record ([Apple](https://developer.apple.com/documentation/corenfc/adding-support-for-background-tag-reading)) |
 | Lock (production) | After testing: NFC Tools on an Android phone, "Lock tag" (static + dynamic lock bits), then CFGLCK on the config pages. Irreversible. The iOS app only soft-locks, so an Android phone is required; if you have none, have the vendor lock (Tagstand, GoToTags, Seritag) or use an ACR1252U reader with the GoToTags Desktop App | Section 3 step 9 and section 4; [NXP datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf); [Seritag on iPhone locking](https://seritag.com/news/can-iphones-lock-nfc-tags) |
 | Lock (demo cards) | Password-protect writes instead of locking, so the card can be re-encoded | Section 3 step 9 |
 | Antenna | Copper coil around the full card perimeter, chip at one corner. GoToTags quotes a 70 x 40 mm antenna | Largest passive HF loop that fits a CR80; best read range of any tag form factor ([Shop NFC](https://shopnfc.com/en/nfc-cards/11-nfc-cards-in-pvc-ntag213.html), [GoToTags](https://store.gototags.com/nfc-pvc-card-ntag215/)) |
 | Chip dip | A roughly 5 x 5 mm dip near one corner where print can be uneven. Keep the QR and logos at least 5 mm from it; ask the supplier for the chip/antenna map | [Seritag](https://seritag.com/nfc-tags/cards) |
 | Read range | Reliable at 2 to 3 cm, maximum 7 to 8 cm; NXP quotes up to 100 mm depending on field and antenna | [Seritag](https://seritag.com/qa/what-is-the-maximum-distance-for-nfc-communication), [NXP datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf) |
 | Print | Full colour both sides, retransfer or offset (UV inkjet acceptable for small batches), matte laminate. Vector PDF, 3 mm bleed, 300 dpi | Matte hides sanitizer haze; retransfer or a polyester overlaminate resists abrasion ([Seritag](https://seritag.com/nfc-tags/cp-cards-ntag213), [AlphaCard](https://www.alphacard.com/learning-center/understanding-smart-cards/can-i-print-on-smart-cards/)) |
-| QR on back | 21 x 21 mm, error correction M, `https://tblnt.co/r/<slug>?s=qr` (same path as the chip, source tag `qr`) | Section 8 |
+| QR on back | 21 x 21 mm, error correction M, `https://tblnt.com/r/<slug>?s=qr` (same path as the chip, source tag `qr`) | Section 8 |
 | Front text | "Tap to review us on Google" in plain text. No star graphics, no Google logo | Google allows its name in plain text; the logo and colour palette need permission ([Google brand guidance](https://about.google/brand-resource-center/guidance/)) |
 
 ### What to avoid
@@ -55,9 +55,9 @@ Three strings, one path:
 
 | Where | String | Length |
 |---|---|---|
-| Encoded on the chip | `https://tblnt.co/r/<slug>?s=card` | 26 characters plus the slug (`d001` gives 30, `bluedoor` gives 34) |
-| Encoded in the QR on the back | `https://tblnt.co/r/<slug>?s=qr` | 24 characters plus the slug (`d001` gives 28, `bluedoor` gives 32) |
-| Printed as text on the back | `tblnt.co/r/<slug>` | 11 plus the slug. No source tag, so a typed visit logs as `unknown`. Accepted; typing is rare |
+| Encoded on the chip | `https://tblnt.com/r/<slug>?s=card` | 26 characters plus the slug (`d001` gives 30, `bluedoor` gives 34) |
+| Encoded in the QR on the back | `https://tblnt.com/r/<slug>?s=qr` | 24 characters plus the slug (`d001` gives 28, `bluedoor` gives 32) |
+| Printed as text on the back | `tblnt.com/r/<slug>` | 11 plus the slug. No source tag, so a typed visit logs as `unknown`. Accepted; typing is rare |
 
 The code already does this: `site/app/(print)/print/card/page.tsx` and `site/components/order/Configurator.tsx` both call `` QRCode.toDataURL(`https://${shortUrl}?s=qr`, ...) ``, and the exports in `cards/exports/` were regenerated after that change (2026-09-05). Any doc or spreadsheet that gives another length or says the QR carries no `?s=` is stale.
 
@@ -156,7 +156,7 @@ Time: about 45 minutes. You need: 10 or more blank NTAG213 PVC cards, an iPhone 
 
 No Android available: encode and password-protect the demo cards from the iPhone (steps 3 to 9, demo branch) and do not lock anything. For production cards, either (a) order them locked by the vendor: Tagstand Custom Small Batch "Encode and Lock" at no extra charge (`research/suppliers.md` gap-fill section 8, [Tagstand](https://www.tagstand.com/products/custom-small-batch-pvc-card-white-ntag215/)), GoToTags encoding service with "permanently read-only" at $0.23 per tag at 50 and $0.19 at 100, MOQ 30, only for tags bought from GoToTags ([GoToTags](https://store.gototags.com/nfc-tag-encoding-service/)), or Seritag "Single Encoding (Locked)" ([Seritag](https://seritag.com/nfc-tags/cp-cards-ntag213)); or (b) buy the ACS ACR1252U USB reader, $44.32 at GoToTags ([GoToTags](https://store.gototags.com/acs-acr1252u-nfc-usb-reader/)), and lock with the GoToTags Desktop App, which encodes, locks and checks originality (`research/nfc_tech.md` gap-fill section 11; the app comes with a free 100-credit pack and then costs about $0.05 per encode, [GoToTags credits](https://gototags.com/software/credits), per `docs/01-ordering-guide.md` section 3). NFC Tools for Desktop is not a fallback: its release notes list password protection but no lock feature ([wakdev](https://www.wakdev.com/en/apps/nfc-tools-pc-mac/release-notes.html)). Vendor-locked cards still need the CFGLCK step; ask the vendor whether their lock covers the config pages, and if they cannot say, treat it as not covered (unverified).
 
-The domain matters. Whatever host you encode is burned into the plastic. `tblnt.co` is a placeholder and is not registered yet. If you have no real short domain tonight, encode the deployed site's real hostname instead (for example `https://<your-vercel-domain>/r/d001?s=card`), password-protect the cards, and do not lock them. Lock only cards whose encoded host you will own for years.
+The domain matters. Whatever host you encode is burned into the plastic. `tblnt.com` is a placeholder and is not registered yet. If you have no real short domain tonight, encode the deployed site's real hostname instead (for example `https://<your-vercel-domain>/r/d001?s=card`), password-protect the cards, and do not lock them. Lock only cards whose encoded host you will own for years.
 
 ### Step 0: prepare slugs (laptop, 10 minutes)
 
@@ -244,11 +244,11 @@ Warning: a wrong write to the config pages can brick a card. Practise on spares.
 
 NFC Tools writes a short URI record as page 04h = `03 LL D1 01`, page 05h = `PL 55 04 <first char>`. So the first character after `https://` sits at absolute byte 23, and character index i sits at byte 23 + i. It lands on byte 0 of a page when i mod 4 = 1.
 
-With `https://tblnt.co/r/d001?s=card&c=000000` the prefix `tblnt.co/r/d001?s=card&c=` is 25 characters. 25 mod 4 = 1, so the first `0` is at byte 48 = page 0Ch, byte 0. That is why the demo slugs are four characters. For a different host or slug, count again: if the length mod 4 is not 1, add filler in the query string (`&v=1&c=`) until it is.
+With `https://tblnt.com/r/d001?s=card&c=000000` the prefix `tblnt.com/r/d001?s=card&c=` is 25 characters. 25 mod 4 = 1, so the first `0` is at byte 48 = page 0Ch, byte 0. That is why the demo slugs are four characters. For a different host or slug, count again: if the length mod 4 is not 1, add filler in the query string (`&v=1&c=`) until it is.
 
 ### Commands (NFC Tools > Other > Advanced NFC commands, comma-separated)
 
-1. Write the URL `https://tblnt.co/r/d001?s=card&c=000000` as a normal URI record.
+1. Write the URL `https://tblnt.com/r/d001?s=card&c=000000` as a normal URI record.
 2. Read the memory dump. Find the page whose byte 0 is the first `0` of the placeholder. Expect 0Ch; if it is not, use what the dump shows.
 3. Send: `A2:29:84:00:0C:FF, A2:2A:10:00:00:00`
    - `A2:29:84:00:0C:FF`: page 29h. MIRROR byte 0x84 = counter-only mirror (MIRROR_CONF 10b), MIRROR_BYTE 0, strong modulation on. Byte 2 = MIRROR_PAGE 0Ch. Byte 3 = AUTH0 FFh (no password).
@@ -371,7 +371,7 @@ date, card slug, device model, OS version, browser, case (none/thin/rugged/walle
 
 | Item | Value | Source |
 |---|---|---|
-| Content | `https://tblnt.co/r/<slug>?s=qr` (24 characters plus the slug) | `site/app/(print)/print/card/page.tsx`, `site/components/order/Configurator.tsx` |
+| Content | `https://tblnt.com/r/<slug>?s=qr` (24 characters plus the slug) | `site/app/(print)/print/card/page.tsx`, `site/components/order/Configurator.tsx` |
 | Size | 21 x 21 mm printed, placed 4 mm from the right trim edge and 13 mm from the top | `site/components/card/CardFace.tsx` |
 | Symbol | 28 characters (`demo` or `d001`) gives a Version 3 symbol (29 x 29 modules), so each module is about 0.72 mm at 21 mm. Slugs up to 18 characters stay in Version 3; 19 to 38 characters give Version 4 (33 modules, 0.64 mm) | Computed with the `qrcode` package at ECC M on 2026-09-05; guidance is 0.5 mm or larger modules for medium range ([qrcodefyi](https://qrcodefyi.com/guide/size-calculator-guide/)) |
 | Error correction | M | Set in code; M is the default recommendation without a logo overlay ([Uniqode](https://www.uniqode.com/blog/qr-code-best-practices/how-to-perfectly-size-your-qr-codes)) |
@@ -384,7 +384,7 @@ Do not use Google's own QR from the Get more reviews dialog. It encodes the long
 
 ### How the site generates it
 
-The print page (`site/app/(print)/print/card/page.tsx`) and the order configurator (`site/components/order/Configurator.tsx`) call the `qrcode` npm package: `` QRCode.toDataURL(`https://${shortUrl}?s=qr`, { margin: 0, errorCorrectionLevel: "M", color: qrColorsFor(design) }) ``, where `shortUrl` is the printed text `tblnt.co/r/<slug>`. The result is embedded as an image in the SVG card face at 21 x 21 mm. `margin: 0` means the library adds no quiet zone; the card background provides it. `node scripts/export-cards.mjs` drives headless Chromium against `/print/card` and writes `cards/exports/<design>/<template>-back.pdf` and `.png`.
+The print page (`site/app/(print)/print/card/page.tsx`) and the order configurator (`site/components/order/Configurator.tsx`) call the `qrcode` npm package: `` QRCode.toDataURL(`https://${shortUrl}?s=qr`, { margin: 0, errorCorrectionLevel: "M", color: qrColorsFor(design) }) ``, where `shortUrl` is the printed text `tblnt.com/r/<slug>`. The result is embedded as an image in the SVG card face at 21 x 21 mm. `margin: 0` means the library adds no quiet zone; the card background provides it. `node scripts/export-cards.mjs` drives headless Chromium against `/print/card` and writes `cards/exports/<design>/<template>-back.pdf` and `.png`.
 
 Export commands, from the `site` folder with the dev server running:
 
@@ -399,7 +399,7 @@ Decision: QR scans are counted. They are the fallback for iPhone 7/8/X, phones w
 
 Done in code and in the current exports (`cards/exports/*` regenerated 2026-09-05, after the code change):
 
-- `?s=qr` is in the QR string in both `page.tsx` and `Configurator.tsx`. The printed text stays `tblnt.co/r/<slug>`; typed visits log as `unknown` (accepted).
+- `?s=qr` is in the QR string in both `page.tsx` and `Configurator.tsx`. The printed text stays `tblnt.com/r/<slug>`; typed visits log as `unknown` (accepted).
 - The "Scan to review" caption baseline is at 39.8 mm, about 4 mm below the code's bottom edge at 34 mm, so the caption clears the 2.9 mm quiet zone on every template.
 - Inverted codes are gone: the QR is always dark modules, and the noir and dark brand templates draw a 25 x 25 mm paper plate behind it.
 

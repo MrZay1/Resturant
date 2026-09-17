@@ -2,13 +2,13 @@
 
 One ordered list, grouped by week. Each item names the document or file that has the detail. Do the items in order inside each week; the cross-week dependencies that matter are called out. Prices and lead times are from the research folder as of 2026-09-04 and carry their source. Anything the research could not verify is marked.
 
-Working assumptions: brand name Tablenote (placeholder), domain tablenote.co, short link host tblnt.co, founder Zay, city [CITY], home state [STATE]. Change `site/lib/brand.ts` if any of these change; everything on the site reads from it (`README.md`).
+Working assumptions: brand name Tablenote (placeholder), domain tblnt.com, short link host tblnt.com, founder Zay, city [CITY], home state [STATE]. Change `site/lib/brand.ts` if any of these change; everything on the site reads from it (`README.md`).
 
 ## Critical path
 
 Three things gate everything else. Do them first.
 
-1. The name and the short domain must be final, registered and resolving before you re-export the artwork and before you place the printed-card order. The chip URL, the printed URL and the QR all hardcode `tblnt.co` (`site/scripts/export-cards.mjs` DEFAULT_DESIGNS; `docs/01-ordering-guide.md` section 8.5). The supplier burns `https://tblnt.co/r/<slug>?s=card` into the chip at production time and the QR is part of the artwork, and there is no refund on printed cards after proof approval. A name change after the order scraps every card (`docs/01-ordering-guide.md` section 1; `docs/02-nfc-tech-spec-and-encoding.md` section 2.1). Note for `docs/01-ordering-guide.md` section 1: its three preconditions do not yet list the name decision; treat it as the fourth.
+1. The name and the short domain must be final, registered and resolving before you re-export the artwork and before you place the printed-card order. The chip URL, the printed URL and the QR all hardcode `tblnt.com` (`site/scripts/export-cards.mjs` DEFAULT_DESIGNS; `docs/01-ordering-guide.md` section 8.5). The supplier burns `https://tblnt.com/r/<slug>?s=card` into the chip at production time and the QR is part of the artwork, and there is no refund on printed cards after proof approval. A name change after the order scraps every card (`docs/01-ordering-guide.md` section 1; `docs/02-nfc-tech-spec-and-encoding.md` section 2.1). Note for `docs/01-ordering-guide.md` section 1: its three preconditions do not yet list the name decision; treat it as the fourth.
 2. The founder's own Google Business Profile must be created and verified this week. Google's API access application requires a profile "verified and active for 60+ days" plus a website, so every day of delay pushes the review-pull pipeline out a day (https://developers.google.com/my-business/content/prereqs).
 3. `LEAD_WEBHOOK_URL` and `TAP_WEBHOOK_URL` must point at something that stores rows before cards go out. Without them the lead form returns 503 in production and taps are lost on Vercel (`site/.env.example`; `docs/02-nfc-tech-spec-and-encoding.md` section 2.4).
 
@@ -19,7 +19,7 @@ Order of operations inside the week: name (day 1 to 2), domains registered the s
 ### Name and domains (days 1 to 2)
 
 - [ ] Decide the name. Tablenote is a placeholder. Before committing: the name and domain must not contain "Google" or a G lookalike (https://about.google/brand-resource-center/guidance/); check the state entity register and the domain for availability; keep "review card" and "Google" out of the product name (`docs/04-compliance-and-policy.md` section 4.2). Update `BRAND.name`, `legalName`, `domain`, `shortLinkHost`, `email` in `site/lib/brand.ts` the same day. This decision gates the printed-card order below; do not order cards on a placeholder name.
-- [ ] Buy the main domain and the short domain the same day the name is decided. Porkbun prices: .co $31.20 per year; .com $11.08 per year; .link $7.72 per year (https://porkbun.com/tld/co ; https://porkbun.com/products/domains ; https://porkbun.com/tld/link). A first-year discount on .co may exist but is not in the research; check https://porkbun.com/tld/co at purchase. Cloudflare Registrar sells at registry cost with no markup (https://www.cloudflare.com/products/registrar/). A short premium .com costs far more and was not priced. If tblnt.co is taken, a .link is the cheapest fallback. Register now so the domain ages before cards ship (`research/google_review_mechanics.md` gap-fill section 5).
+- [ ] Buy the main domain and the short domain the same day the name is decided. Porkbun prices: .co $31.20 per year; .com $11.08 per year; .link $7.72 per year (https://porkbun.com/tld/co ; https://porkbun.com/products/domains ; https://porkbun.com/tld/link). A first-year discount on .co may exist but is not in the research; check https://porkbun.com/tld/co at purchase. Cloudflare Registrar sells at registry cost with no markup (https://www.cloudflare.com/products/registrar/). A short premium .com costs far more and was not priced. If tblnt.com is taken, a .link is the cheapest fallback. Register now so the domain ages before cards ship (`research/google_review_mechanics.md` gap-fill section 5).
 - [ ] Set up business email on the domain. Google Workspace Business Starter is $7.00 per user per month list (https://workspace.google.com/pricing). Any new-customer promotional price is unverified; re-check on the pricing page before buying. One seat. This address must be the Cloud project owner, the Manager on every client profile, the contact on Google's API form, and a Search Console owner of the domain (`docs/03-google-reviews-and-report-pipeline.md` section 3.4).
 
 ### Business basics
@@ -43,13 +43,13 @@ Order of operations inside the week: name (day 1 to 2), domains registered the s
 | Variable | Set it to | Why |
 | --- | --- | --- |
 | `STRIPE_SECRET_KEY` | Live key from the new Stripe account (test key until the $1 test passes) | Without it checkout returns 503 and the order form falls back to an email request (`site/app/api/checkout/route.ts`) |
-| `SITE_URL` | `https://tablenote.co` | Stripe success and cancel redirects; never derived from the request |
+| `SITE_URL` | `https://tblnt.com` | Stripe success and cancel redirects; never derived from the request |
 | `STRIPE_AUTOMATIC_TAX` | `1` only after Stripe Tax is activated in the Dashboard | Sends `automatic_tax: { enabled: true }` on Checkout |
 | `LEAD_WEBHOOK_URL` and `LEAD_WEBHOOK_SECRET` | Airtable or form-tool webhook (next section) | Required in production; the lead endpoint returns 503 without it (`site/app/api/lead/route.ts`) |
 | `TAP_WEBHOOK_URL` and `TAP_WEBHOOK_SECRET` | Airtable or form-tool webhook | Taps are only logged otherwise, and Vercel does not keep them (`site/lib/taps.ts`) |
 
 - [ ] Point both domains at the Vercel project. The short domain must serve the same app so `/r/<slug>` resolves on it.
-- [ ] Test the redirect with a real GET and a mobile user agent: `https://tblnt.co/r/demo?s=card` must return 302 with `Cache-Control: no-store`. HEAD requests return 200 regardless, so do not use them (`docs/02-nfc-tech-spec-and-encoding.md` section 2.5).
+- [ ] Test the redirect with a real GET and a mobile user agent: `https://tblnt.com/r/demo?s=card` must return 302 with `Cache-Control: no-store`. HEAD requests return 200 regardless, so do not use them (`docs/02-nfc-tech-spec-and-encoding.md` section 2.5).
 - [ ] Publish the privacy policy and terms at `/legal` with the founder-only facts from `docs/04-compliance-and-policy.md` section 5.4: entity name, state, address, tax registration number, AI provider, hosting provider, log retention, support email. The privacy policy must live on the same domain and be linked from the OAuth consent screen later (https://developers.google.com/identity/protocols/oauth2/production-readiness/sensitive-scope-verification).
 - [ ] Keep "more 5-star reviews" and "boost your rating" off the site. Stripe's underwriters read the site when activating, and the FTC treats those as unsubstantiated performance claims (https://stripe.com/legal/restricted-businesses ; https://www.ftc.gov/business-guidance/resources/advertising-faqs-guide-small-business).
 
@@ -62,7 +62,7 @@ Order of operations inside the week: name (day 1 to 2), domains registered the s
 
 - [ ] Create a second Stripe account under the existing login so statements, tax, and risk profile stay separate from the photo and water business (`site/.env.example`; `docs/04-compliance-and-policy.md` section 7.3). Describe the business as "Printed NFC cards and monthly guest-feedback analytics software for restaurants."
 - [ ] Activate Stripe Tax and add the [STATE] registration; assign product tax codes (physical goods for cards; the report's code after the CPA decision). Then set `STRIPE_AUTOMATIC_TAX=1` (`docs/04-compliance-and-policy.md` section 6.2).
-- [ ] Add `consent_collection.terms_of_service = "required"` and `custom_text.terms_of_service_acceptance` to `site/app/api/checkout/route.ts` so the renewal terms sit next to the checkbox: "$50/month per location, renews monthly until you cancel. Cancel anytime from your account or by emailing hello@tablenote.co." ROSCA requires the material terms before billing details and a simple way to stop charges (https://www.law.cornell.edu/uscode/text/15/8403 ; https://docs.stripe.com/payments/checkout/custom-components.md?platform=web&payment-ui=stripe-hosted).
+- [ ] Add `consent_collection.terms_of_service = "required"` and `custom_text.terms_of_service_acceptance` to `site/app/api/checkout/route.ts` so the renewal terms sit next to the checkbox: "$50/month per location, renews monthly until you cancel. Cancel anytime from your account or by emailing isiah@tblnt.com." ROSCA requires the material terms before billing details and a simple way to stop charges (https://www.law.cornell.edu/uscode/text/15/8403 ; https://docs.stripe.com/payments/checkout/custom-components.md?platform=web&payment-ui=stripe-hosted).
 - [ ] Enable the Stripe Customer Portal and put a "Manage subscription" link on the order-success page and in receipts. A contact form is not a compliant cancellation path (https://docs.stripe.com/customer-management).
 - [ ] Run the $1 test. First, in test mode, place a full starter-kit order on the live site with Stripe's test card and confirm the first invoice shows two lines: $150 of cards and $50 recurring, never one $200 line (`docs/04-compliance-and-policy.md` section 6.1). Second, in live mode, charge $1 through a Dashboard payment link to your own card, confirm the payout lands in the right bank account, then refund it. Expected fees on real orders: 2.9% plus 30 cents per card transaction and 0.7% of Billing volume, about $2.10 on a $50 invoice (https://stripe.com/pricing ; `research/unit_economics.md` section 1.3). Never type a customer's card details yourself; open the order page and hand over the phone, or send the link (`docs/05-sales-playbook.md` section 5).
 
@@ -78,7 +78,7 @@ Full detail in `docs/01-ordering-guide.md` sections 1, 6 and 8. Gate: every box 
 - [ ] Name decided and `site/lib/brand.ts` updated (Name and domains, above).
 - [ ] Both domains registered and resolving to the Vercel project; `https://<short domain>/r/demo?s=card` returns the 302 (Deploy the website, above).
 - [ ] The `demo` slug in `site/data/links.json` points somewhere useful (`/sample-report` is safe until the Tablenote profile is verified).
-- [ ] Artwork re-exported with the final short URL: `cd site && node scripts/export-cards.mjs` (`site/scripts/README.md`). The default designs in `site/scripts/export-cards.mjs` hardcode `tblnt.co`; change them if the short domain changed, then open the exported PDFs and read the printed URL and the QR with a phone before attaching them.
+- [ ] Artwork re-exported with the final short URL: `cd site && node scripts/export-cards.mjs` (`site/scripts/README.md`). The default designs in `site/scripts/export-cards.mjs` hardcode `tblnt.com`; change them if the short domain changed, then open the exported PDFs and read the printed URL and the QR with a phone before attaching them.
 - [ ] Order 25 custom-printed cards from My Plastic Business Card: 25 x $4.95 = $123.75 plus $10 flat FedEx Ground, proof within 24 hours Monday to Friday, 5 business days production (https://myplasticbusinesscard.com/product/quick-plastic-nfc-business-cards/ ; https://myplasticbusinesscard.com/faq/). Attach the PDFs from `cards/exports/demo-your-restaurant/` and the email in `docs/01-ordering-guide.md` section 8.5. Take 50 at $3.96 each if you expect more than 20 pitches before the production run.
 - [ ] If you must pitch inside a week and the name is final: Tap Tag, 10 custom cards for $195, ships next business day if ordered by 1 PM Eastern, free 3-day US shipping on 10 or more (https://taptag.shop/products/custom-printed-plastic-nfc-cards). Paste your URL in the cart note or the cards arrive on Tap Tag's dynamic redirect. Same gate applies.
 - [ ] Approve the proof the day it arrives. Check trim, 3 mm safe zone, QR readability on screen from 20 cm, chip position versus the QR, the URL matches the live short domain character for character, no stars, no Google logo (`docs/01-ordering-guide.md` section 9; `docs/04-compliance-and-policy.md` section 4.2).
@@ -88,7 +88,7 @@ Full detail in `docs/01-ordering-guide.md` sections 1, 6 and 8. Gate: every box 
 
 ### Encode and lock
 
-- [ ] Encode 10 blanks in one evening following `docs/02-nfc-tech-spec-and-encoding.md` section 3. One NDEF URI record, `https://tblnt.co/r/<slug>?s=card`, slugs from `site/data/links.json`.
+- [ ] Encode 10 blanks in one evening following `docs/02-nfc-tech-spec-and-encoding.md` section 3. One NDEF URI record, `https://tblnt.com/r/<slug>?s=card`, slugs from `site/data/links.json`.
 - [ ] Lock with an Android phone. NFC Tools on iOS uses the system lock command, which only soft-locks; Seritag recommends "using an Android phone or asking Seritag to encode and lock the tags" for tags in public places (https://seritag.com/news/can-iphones-lock-nfc-tags). Locking is irreversible. Demo cards get password protection instead so they can be re-pointed (`docs/02-nfc-tech-spec-and-encoding.md` section 1).
 - [ ] When the MPBC cards arrive (about day 15 to 19 if ordered on day 7: proof next business day, 5 business days production, then FedEx Ground; `docs/01-ordering-guide.md` section 9): tap-test every card on two phones, lock the production cards with the Android phone, apply the config lock, label the box. Until they arrive, pitch with encoded blanks in a holder.
 
@@ -223,7 +223,7 @@ Four numbers (BrightLocal Local Consumer Review Survey 2026, https://www.brightl
 - 83 percent of people who were asked to leave a review did.
 - People write about good experiences twice as often as bad ones: 60 percent versus 29 percent.
 
-Zay, [PHONE], hello@tablenote.co. See a sample report: tablenote.co/demo [QR]
+Zay, [PHONE], isiah@tblnt.com. See a sample report: tblnt.com/demo [QR]
 
 Google is a trademark of Google LLC. Tablenote is not affiliated with, sponsored by, or endorsed by Google.
 
@@ -255,7 +255,7 @@ Restaurant: ______________________ Date: ________ Tablenote: ___________________
 
 [RESTAURANT LEGAL NAME], [ADDRESS] ("the Restaurant"), authorizes [TABLENOTE LEGAL NAME] ("Tablenote") as follows.
 
-1. Access. Tablenote may read the Restaurant's public Google reviews for the location(s) listed below through Manager access on the Restaurant's Google Business Profile, or through Google's Business Profile API with the Restaurant's consent given on tablenote.co.
+1. Access. Tablenote may read the Restaurant's public Google reviews for the location(s) listed below through Manager access on the Restaurant's Google Business Profile, or through Google's Business Profile API with the Restaurant's consent given on tblnt.com.
 2. Fallback. Until that access is in place, Tablenote may obtain the same public reviews through a third-party data provider. Tablenote will not use a scraper for a location that has not signed this authorization.
 3. Processing. Tablenote uses an AI provider (currently Anthropic, under its commercial terms, https://www.anthropic.com/legal/commercial-terms) as a subprocessor to produce the monthly report. Reviewer display names and photos are removed before processing and are not printed in reports.
 4. Replies. Tablenote will not post a reply to any review on the Restaurant's behalf without the Restaurant's written approval of that reply (Google: "If you respond to reviews on behalf of your end-client, you must receive their authorization first," https://developers.google.com/my-business/content/policies).

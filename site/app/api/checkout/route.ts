@@ -1,8 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { z } from "zod";
 import { getStripe } from "@/lib/stripe";
 import { BRAND, PRICING } from "@/lib/brand";
 import { guard } from "@/lib/apiGuard";
+import { sendEmail, parseDataUrl, extensionFor } from "@/lib/email";
+import { renderDesignEmail, type DesignRecord } from "@/lib/designEmail";
+
+/** 2 MB of file, base64-encoded, plus the data: prefix. Matches the cap in the configurator. */
+const MAX_LOGO_CHARS = 2 * 1024 * 1024 * 1.4;
 
 const Body = z.object({
   cards: z.number().int().min(PRICING.minCards).max(PRICING.maxCards),
@@ -16,6 +21,9 @@ const Body = z.object({
     showStars: z.boolean(),
     hasLogo: z.boolean(),
   }),
+  /** The uploaded logo itself. Too big for Stripe metadata, so it is emailed from here. */
+  logoDataUrl: z.string().max(MAX_LOGO_CHARS).optional().default(""),
+  logoName: z.string().max(120).optional().default(""),
   googleReviewLink: z.string().max(500).optional().default(""),
   address: z.string().max(200).optional().default(""),
   linkMode: z.enum(["find", "have"]).optional().default("find"),
@@ -47,7 +55,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid order", issues: parsed.error.issues }, { status: 400 });
   }
-  const { cards, report, design, googleReviewLink, address, linkMode, contact, notes } = parsed.data;
+  const { cards, report, design, googleReviewLink, address, linkMode, contact, notes, logoDataUrl, logoName } = parsed.data;
   const origin = siteBase();
 
   const line_items: Array<Record<string, unknown>> = [
@@ -86,6 +94,7 @@ export async function POST(req: Request) {
     brand_color: design.brandColor,
     show_stars: String(design.showStars),
     has_logo: String(design.hasLogo),
+    logo_file: logoName.slice(0, 120),
     google_review_link: googleReviewLink.slice(0, 480),
     restaurant_address: address.slice(0, 200),
     link_mode: linkMode,
@@ -121,5 +130,51 @@ export async function POST(req: Request) {
   if (!session.url) {
     return NextResponse.json({ error: failMsg }, { status: 502 });
   }
+
+  // The logo only exists in the customer's browser and cannot fit in Stripe metadata,
+  // so send it now, while we are holding the bytes. after() runs once the redirect is
+  // already on its way, so a slow mailbox never delays the payment page.
+  const artworkTo = process.env.ORDER_EMAIL_TO;
+  if (artworkTo) {
+    const logo = logoDataUrl ? parseDataUrl(logoDataUrl) : null;
+    const filename = logo
+      ? (logoName.replace(/[^\w.\- ]/g, "").slice(0, 80) || `logo.${extensionFor(logo.contentType)}`)
+      : null;
+    const record: DesignRecord = {
+      restaurant: design.restaurantName,
+      template: design.template,
+      headline: design.headline,
+      subline: design.subline,
+      brandColor: design.brandColor,
+      showStars: design.showStars,
+      logoFilename: filename,
+      cards,
+      report,
+      contactName: contact.name,
+      contactEmail: contact.email,
+      contactPhone: contact.phone,
+      address,
+      linkMode,
+      googleReviewLink,
+      notes,
+      sessionId: session.id,
+    };
+    const mail = renderDesignEmail(record);
+    after(async () => {
+      const sent = await sendEmail({
+        to: artworkTo,
+        subject: mail.subject,
+        html: mail.html,
+        text: mail.text,
+        replyTo: contact.email,
+        attachments:
+          logo && filename
+            ? [{ filename, content: logo.base64, contentType: logo.contentType, contentId: "logo" }]
+            : undefined,
+      });
+      if (!sent.ok) console.error("[artwork] email failed:", sent.detail);
+    });
+  }
+
   return NextResponse.json({ url: session.url });
 }

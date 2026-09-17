@@ -24,13 +24,13 @@ Cheaper and faster option for order 1: Tagstand Custom Small Batch, 25 cards pri
 
 Why this combination:
 
-- My Plastic Business Card (MPBC) publishes prices from 1 card to 1,000, prints offset in full color on both sides, and proofs every order. Its order form has a "Permanent URL" encoding option, so the card points at `tblnt.co/r/demo?s=card` with no vendor dependency (https://myplasticbusinesscard.com/product/quick-plastic-nfc-business-cards/).
+- My Plastic Business Card (MPBC) publishes prices from 1 card to 1,000, prints offset in full color on both sides, and proofs every order. Its order form has a "Permanent URL" encoding option, so the card points at `tblnt.com/r/demo?s=card` with no vendor dependency (https://myplasticbusinesscard.com/product/quick-plastic-nfc-business-cards/).
 - The blanks let you practise writing, password protection, locking and the CFGLCK config lock before you touch a printed card. At $0.30 each a mistake costs nothing.
 - The $0.95 holder turns a loose card into a counter display for the pitch. Skip the branded $27 to $81 NFC stands until a customer asks.
 
 Before you order, three things must be true. Details are in section 8.
 
-- [ ] The redirect host is live at the domain you will encode. Today `tblnt.co` is a placeholder in `site/lib/brand.ts`. Register it (or whatever the real short domain is) and deploy the site before you approve the proof, because MPBC burns the URL into the chip at production time and the printed QR is part of the artwork.
+- [ ] The redirect host is live at the domain you will encode. Today `tblnt.com` is a placeholder in `site/lib/brand.ts`. Register it (or whatever the real short domain is) and deploy the site before you approve the proof, because MPBC burns the URL into the chip at production time and the printed QR is part of the artwork.
 - [ ] The `demo` slug in `site/data/links.json` points somewhere useful for a pitch (today it points at `/sample-report`).
 - [ ] You have re-exported the artwork with the final short URL if the domain changes: `cd site && node scripts/export-cards.mjs` (see `site/scripts/README.md`).
 
@@ -54,7 +54,7 @@ Not shortlisted: Vistaprint (NFC card locks to VistaConnect, 100 scans per month
 
 Two things the table cannot tell you and the founder must ask:
 
-- Whether MPBC's "NFC 215" is a genuine NXP NTAG215. The page quotes "roughly 200 characters" of capacity, which is far below the NTAG215's 504 bytes, so the figure may be a UI limit or a non-NXP part (https://myplasticbusinesscard.com/product/quick-plastic-nfc-business-cards/). A `tblnt.co/r/<slug>?s=card` URL is under 40 characters, so it fits either way, but clones may lack the originality signature. Ask for the IC part number in the order notes, and check the IC name in NFC Tools > Read when the cards arrive.
+- Whether MPBC's "NFC 215" is a genuine NXP NTAG215. The page quotes "roughly 200 characters" of capacity, which is far below the NTAG215's 504 bytes, so the figure may be a UI limit or a non-NXP part (https://myplasticbusinesscard.com/product/quick-plastic-nfc-business-cards/). A `tblnt.com/r/<slug>?s=card` URL is under 40 characters, so it fits either way, but clones may lack the originality signature. Ask for the IC part number in the order notes, and check the IC name in NFC Tools > Read when the cards arrive.
 - Whether MPBC can encode a different URL on each card. Not needed for a restaurant batch (all of a restaurant's cards share one slug), but needed if you ever want per-card slugs from MPBC rather than GoToTags or Seritag. Ask; the FAQ suggests no (section 0).
 
 The chip position for the site copy, doc 02 and this guide is "NXP NTAG213 or NTAG215" (section 0).
@@ -209,7 +209,7 @@ Print-ready artwork already exists. Regenerate it after any change to the short 
 
 | Design | Use | Files |
 |---|---|---|
-| Generic Tablenote demo card ("Your Restaurant", classic template, URL `tblnt.co/r/demo`) | Demo kit order | `/Users/zaycameron/resturant idea /cards/exports/demo-your-restaurant/classic-front.pdf` and `classic-back.pdf` (plus `.png` of each) |
+| Generic Tablenote demo card ("Your Restaurant", classic template, URL `tblnt.com/r/demo`) | Demo kit order | `/Users/zaycameron/resturant idea /cards/exports/demo-your-restaurant/classic-front.pdf` and `classic-back.pdf` (plus `.png` of each) |
 | Lucia's Trattoria samples (fictional restaurant, four templates) | Show prospects the four looks; do not print for a real restaurant | `/Users/zaycameron/resturant idea /cards/exports/lucias-classic/`, `lucias-noir/`, `lucias-logo/`, `lucias-brand/` |
 | Staff guide and sample-report one-pager (letter size) | Include in the onboarding pack; produced by `node scripts/export-print.mjs` | `/Users/zaycameron/resturant idea /cards/exports/print/staff-guide.pdf` and `sample-report-onepager.pdf` |
 
@@ -236,7 +236,7 @@ NFC PVC cards carry a copper coil around the whole perimeter with the chip at on
 
 ### 8.4 Encoding and locking language for the purchase order
 
-- Encode one NDEF URI record, `https://` prefix, with exactly the URL you supply. For the demo kit that is `https://tblnt.co/r/demo?s=card`. For a restaurant batch it is one URL per design, `https://tblnt.co/r/<slug>?s=card`, because every card for that restaurant shares the slug. Only when you want a different slug on each card do you need a spreadsheet with one row per card (card number, URL, QR file name); GoToTags and Seritag support that, MPBC has not confirmed it (section 7, question 4). The `?s=card` parameter is how the redirect layer (`site/app/r/[slug]/route.ts`) tells a card tap from a QR scan; QR codes in your artwork encode the same URL without the parameter change.
+- Encode one NDEF URI record, `https://` prefix, with exactly the URL you supply. For the demo kit that is `https://tblnt.com/r/demo?s=card`. For a restaurant batch it is one URL per design, `https://tblnt.com/r/<slug>?s=card`, because every card for that restaurant shares the slug. Only when you want a different slug on each card do you need a spreadsheet with one row per card (card number, URL, QR file name); GoToTags and Seritag support that, MPBC has not confirmed it (section 7, question 4). The `?s=card` parameter is how the redirect layer (`site/app/r/[slug]/route.ts`) tells a card tap from a QR scan; QR codes in your artwork encode the same URL without the parameter change.
 - Do not add the vendor's own redirect or dynamic QR. MPBC's "Editable URL" encoding and its "New QR Code" option use their hosted redirection; choose "Permanent URL" and ask them to print the QR that is in your back artwork instead.
 - State lock preference explicitly. If the vendor offers a hard lock (GoToTags "permanently read-only", Seritag "Locked", Tagstand "Encode and Lock"), take it for cards going to a paying restaurant. If not (MPBC, Tap Tag), say "deliver unlocked; we lock in-house". Demo cards are never locked: password-protect them instead (section 0).
 - In-house lock procedure, same on iPhone and Android: after a tap test on one iPhone and one Android, NFC Tools > Other > Erase, format & protect > Lock tag. Re-read, then open the memory dump and confirm page 02h bytes 2 and 3 read `FF FF` (static lock bits) and page 28h bytes 0 and 1 are non-zero (dynamic lock bits); that dump is the acceptance test, because wakdev does not document which bits "Lock tag" sets. Then send the config-lock command `A2:2A:40:00:00:00` from Other > Advanced NFC commands so the configuration pages cannot be password-protected by a prankster later, take the card off the phone (CFGLCK activates after a power cycle) and re-read page 2Ah to confirm `40` (`research/nfc_tech.md` gap-fill section 1; NXP datasheet https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf). Core NFC exposes raw NTAG commands, so the Advanced NFC commands step works from an iPhone (`research/nfc_tech.md` gap-fill section 9). Locking is irreversible, so the short domain and slug must be live and tested first. Do the same dump check and CFGLCK step on a sample of any vendor-locked batch.
@@ -246,12 +246,12 @@ NFC PVC cards carry a copper coil around the whole perimeter with the chip at on
 
 MPBC sells through a web checkout with artwork upload, not by email order. Contact channels for questions, from https://myplasticbusinesscard.com/contact-us (read 2026-09-05): sales@myplasticbusinesscard.com, phone 714.213.8155, Monday to Friday 9 am to 5 pm Pacific, 511 S. Harbor Blvd, Ste. Q, La Habra, CA 90631. The FAQ is at https://myplasticbusinesscard.com/faq/ and free generic samples are requested at https://myplasticbusinesscard.com/request-samples/.
 
-Billing note: `hello@tablenote.co` does not exist until Google Workspace is set up (doc 07, Week 1). Use your current personal address for the first order and for the questions below; switch the account email once the mailbox is live.
+Billing note: `isiah@tblnt.com` does not exist until Google Workspace is set up (doc 07, Week 1). Use your current personal address for the first order and for the questions below; switch the account email once the mailbox is live.
 
 Order steps, from the product page https://myplasticbusinesscard.com/product/quick-plastic-nfc-business-cards/ (order form read 2026-09-05):
 
 - [ ] Quantity: 25 (or 50). The dropdown runs 1, 25, 50, 100, 150, 200, 300, 400, 500, 1,000.
-- [ ] NFC Encoding: choose **Permanent URL** and enter `https://tblnt.co/r/demo?s=card`. Do not choose "Editable URL" (that is MPBC's redirect, and the FAQ line "you can update or change the information at any point after your order" refers to it) and do not choose "I Will Encode Myself" unless you want to write 25 cards by hand.
+- [ ] NFC Encoding: choose **Permanent URL** and enter `https://tblnt.com/r/demo?s=card`. Do not choose "Editable URL" (that is MPBC's redirect, and the FAQ line "you can update or change the information at any point after your order" refers to it) and do not choose "I Will Encode Myself" unless you want to write 25 cards by hand.
 - [ ] QR code: the back artwork already contains the QR. Do not add a "New QR Code"; if the form insists on a QR option, supply your own as a URL pointing at the same short URL, and repeat in Notes that the printed QR must be the one in the artwork.
 - [ ] Upload Image: `classic-front.pdf` and `classic-back.pdf` from `cards/exports/demo-your-restaurant/`. Leave the variable data upload (.xls or .xlsx) empty; every demo card carries the same URL.
 - [ ] Notes: paste the text below.
@@ -260,7 +260,7 @@ Order steps, from the product page https://myplasticbusinesscard.com/product/qui
 
 Notes text for the order form:
 
-> Artwork: two vector PDFs, page size 91.6 x 59.98 mm = 85.6 x 53.98 mm trim plus 3 mm bleed each side; text and logos at least 3 mm inside trim; fonts embedded; files are RGB, please convert to CMYK and send the digital proof before production. NFC: one Permanent URL record, `https://tblnt.co/r/demo?s=card`, on every card; no hosted or dynamic redirect on the chip. QR: print the QR already in the back artwork, not an editable QR. Lock: if you can deliver the cards permanently read-only (lock bits set) please say so; otherwise deliver unlocked and I will lock in-house. Chip: please confirm the NFC IC manufacturer and part number (for example NXP NTAG215). Please send the chip and antenna position on the card with the proof.
+> Artwork: two vector PDFs, page size 91.6 x 59.98 mm = 85.6 x 53.98 mm trim plus 3 mm bleed each side; text and logos at least 3 mm inside trim; fonts embedded; files are RGB, please convert to CMYK and send the digital proof before production. NFC: one Permanent URL record, `https://tblnt.com/r/demo?s=card`, on every card; no hosted or dynamic redirect on the chip. QR: print the QR already in the back artwork, not an editable QR. Lock: if you can deliver the cards permanently read-only (lock bits set) please say so; otherwise deliver unlocked and I will lock in-house. Chip: please confirm the NFC IC manufacturer and part number (for example NXP NTAG215). Please send the chip and antenna position on the card with the proof.
 
 Questions email, after the order is placed:
 
@@ -287,7 +287,7 @@ Assumes you place the demo-kit order on a Monday and answer the proof the same d
 
 | Day | Step | Owner |
 |---|---|---|
-| Day 0, before ordering | Register the short domain, deploy the site, set the `demo` slug destination, test `https://tblnt.co/r/demo?s=card` on a phone. Re-export artwork if anything changed. | Zay |
+| Day 0, before ordering | Register the short domain, deploy the site, set the `demo` slug destination, test `https://tblnt.com/r/demo?s=card` on a phone. Re-export artwork if anything changed. | Zay |
 | Day 0 (Mon) | Place the MPBC order on the product page (section 8.5), then the GoToTags and Marketing Holders orders. Email the four questions to sales@myplasticbusinesscard.com. | Zay |
 | Day 1 (Tue) | MPBC proof arrives. Check trim, safe zone, colour, QR readability at 20 cm from the on-screen proof, chip position versus QR. Approve or request a revision. | Zay |
 | Day 2 to 4 | GoToTags blanks arrive (economy). Run the kitchen-table encoding procedure from `research/nfc_tech.md` section 10 on 10 blanks: write, read back, native tap test on iPhone and Android, password-protect two, lock and config-lock two (blanks only), memory-dump check, re-read. | Zay |

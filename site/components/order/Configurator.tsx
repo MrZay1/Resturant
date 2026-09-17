@@ -146,6 +146,9 @@ export function Configurator({
         showStars: design.showStars,
         hasLogo: Boolean(design.logoDataUrl),
       },
+      // Sent so the artwork reaches us; Stripe metadata is far too small to carry a file.
+      logoDataUrl: design.logoDataUrl ?? "",
+      logoName,
       googleReviewLink: linkMode === "have" ? googleLink.trim().slice(0, 500) : "",
       address: address.trim().slice(0, 200),
       linkMode,
