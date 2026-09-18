@@ -7,8 +7,8 @@ export const BRAND = {
   tagline: "Every table, every review.",
   email: "isiah@tblnt.com",
   phone: "",
-  city: "",
-  state: "", // State of formation for Tablenote LLC, used in Terms section 16 (governing law and venue). Must be filled before launch.
+  city: "Stonecrest",
+  state: "Georgia", // Governing law and venue, Terms section 16. Change if the LLC is formed in another state.
   founderName: "Zay",
 };
 
