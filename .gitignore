@@ -34,3 +34,6 @@ Icon?
 
 # Generated logo staging for card exports (rebuilt by scripts/export-cards.mjs)
 site/public/_logos/
+
+# generated document exports
+docs/exports/
