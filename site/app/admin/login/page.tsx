@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
       setError(body?.error ?? "Something went wrong. Try again.");
       return;
     }
-    router.push(params.get("next") || "/admin/orders");
+    router.push(params.get("next") || "/admin");
     router.refresh();
   }
 

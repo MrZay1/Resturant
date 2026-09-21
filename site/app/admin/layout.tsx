@@ -12,9 +12,19 @@ export default async function AdminLayout({ children }: { children: ReactNode })
       {session && (
         <header className="border-b border-line bg-white">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-            <Link href="/admin/orders" className="font-display text-lg text-ink">
-              {BRAND.name} <span className="text-muted">/ admin</span>
-            </Link>
+            <div className="flex items-center gap-6">
+              <Link href="/admin" className="font-display text-lg text-ink">
+                {BRAND.name} <span className="text-muted">/ back office</span>
+              </Link>
+              <nav className="flex items-center gap-4 text-sm">
+                <Link href="/admin" className="text-muted hover:text-ink">
+                  Home
+                </Link>
+                <Link href="/admin/orders" className="text-muted hover:text-ink">
+                  Orders
+                </Link>
+              </nav>
+            </div>
             <div className="flex items-center gap-4 text-sm text-muted">
               <span>{session.email}</span>
               <LogoutButton />

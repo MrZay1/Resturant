@@ -143,3 +143,13 @@ export async function listNotes(orderId: number): Promise<OrderNote[]> {
 export async function addNote(orderId: number, body: string): Promise<void> {
   await sql`insert into order_notes (order_id, body) values (${orderId}, ${body})`;
 }
+
+export async function getOrderCounts(): Promise<{ total: number; needsAttention: number }> {
+  const rows = await sql<{ total: string; needs_attention: string }[]>`
+    select
+      count(*)::text as total,
+      count(*) filter (where status in ('new', 'design_sent'))::text as needs_attention
+    from orders
+  `;
+  return { total: Number(rows[0]?.total ?? 0), needsAttention: Number(rows[0]?.needs_attention ?? 0) };
+}
