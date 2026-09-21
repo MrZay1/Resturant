@@ -1,5 +1,6 @@
 import { NextResponse, after } from "next/server";
 import { z } from "zod";
+import { put } from "@vercel/blob";
 import { getStripe } from "@/lib/stripe";
 import { BRAND, PRICING } from "@/lib/brand";
 import { guard } from "@/lib/apiGuard";
@@ -43,6 +44,29 @@ function siteBase(): string {
   return `https://${BRAND.domain}`;
 }
 
+/**
+ * Persist the logo to Blob storage so the back office can show/download it
+ * later. Best-effort: if BLOB_READ_WRITE_TOKEN is not set (e.g. local dev
+ * without Blob configured), checkout still works, just without a stored
+ * logo - the "Artwork" email below still carries it as an attachment either way.
+ */
+async function storeLogo(dataUrl: string, name: string): Promise<{ url: string; filename: string } | null> {
+  if (!dataUrl || !process.env.BLOB_READ_WRITE_TOKEN) return null;
+  const logo = parseDataUrl(dataUrl);
+  if (!logo) return null;
+  const filename = name.replace(/[^\w.\- ]/g, "").slice(0, 80) || `logo.${extensionFor(logo.contentType)}`;
+  try {
+    const blob = await put(`logos/${Date.now()}-${filename}`, Buffer.from(logo.base64, "base64"), {
+      access: "public",
+      contentType: logo.contentType,
+    });
+    return { url: blob.url, filename };
+  } catch (e) {
+    console.error("[checkout] logo upload to Blob failed", (e as Error).message);
+    return null;
+  }
+}
+
 export async function POST(req: Request) {
   const blocked = guard(req, { key: "checkout", limit: 10, windowMs: 10 * 60 * 1000 });
   if (blocked) return blocked;
@@ -57,6 +81,10 @@ export async function POST(req: Request) {
   }
   const { cards, report, design, googleReviewLink, address, linkMode, contact, notes, logoDataUrl, logoName } = parsed.data;
   const origin = siteBase();
+
+  // Upload before creating the session so the Blob URL can ride along in
+  // metadata - the webhook has no access to the raw upload, only metadata.
+  const storedLogo = await storeLogo(logoDataUrl, logoName);
 
   const line_items: Array<Record<string, unknown>> = [
     {
@@ -95,6 +123,7 @@ export async function POST(req: Request) {
     show_stars: String(design.showStars),
     has_logo: String(design.hasLogo),
     logo_file: logoName.slice(0, 120),
+    logo_url: storedLogo?.url ?? "",
     google_review_link: googleReviewLink.slice(0, 480),
     restaurant_address: address.slice(0, 200),
     link_mode: linkMode,

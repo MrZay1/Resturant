@@ -2,13 +2,15 @@ import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { sendEmail } from "@/lib/email";
 import { renderOrderEmail, type OrderRecord } from "@/lib/orderEmail";
+import { upsertOrderFromStripe } from "@/lib/orders";
 
 /**
  * Stripe webhook: turns a completed Checkout into an order record.
  * Configure in Stripe Dashboard > Developers > Webhooks: event checkout.session.completed,
  * endpoint https://<your domain>/api/stripe/webhook, and put the signing secret in STRIPE_WEBHOOK_SECRET.
- * The order is emailed to ORDER_EMAIL_TO and, if set, POSTed as JSON to
- * ORDER_WEBHOOK_URL (falls back to LEAD_WEBHOOK_URL) so it also lands in a tracker.
+ * The order is emailed to ORDER_EMAIL_TO, saved to the orders table (visible in /admin/orders),
+ * and if set, POSTed as JSON to ORDER_WEBHOOK_URL (falls back to LEAD_WEBHOOK_URL) so it also
+ * lands in a tracker.
  */
 export async function POST(req: Request) {
   const stripe = getStripe();
@@ -54,7 +56,41 @@ export async function POST(req: Request) {
       subscription: typeof s.subscription === "string" ? s.subscription : s.subscription?.id ?? null,
       customer: typeof s.customer === "string" ? s.customer : s.customer?.id ?? null,
     };
-    // Email first: this is the copy you actually act on.
+
+    // Save the real record first - this is the thing /admin/orders reads from.
+    // A failure here should not silently vanish, so it's logged loudly, but it
+    // also should not block the email or Stripe retrying, so it does not throw.
+    try {
+      await upsertOrderFromStripe({
+        stripeSessionId: order.session_id,
+        stripeSubscriptionId: order.subscription,
+        stripeCustomerId: order.customer,
+        restaurantName: order.restaurant,
+        restaurantAddress: order.restaurant_address,
+        cards: order.cards,
+        hasReport: order.report,
+        amountTotal: order.amount_total,
+        template: order.template,
+        headline: order.headline,
+        subline: order.subline,
+        brandColor: order.brand_color,
+        showStars: m.show_stars === "true",
+        hasLogo: order.has_logo,
+        logoUrl: m.logo_url || null,
+        logoFilename: order.logo_file || null,
+        linkMode: order.link_mode,
+        googleReviewLink: order.google_review_link,
+        contactName: order.name,
+        contactEmail: order.email,
+        contactPhone: order.phone,
+        shipping: order.shipping,
+        notes: order.notes,
+      });
+    } catch (e) {
+      console.error("[order] failed to save order record:", (e as Error).message);
+    }
+
+    // Email next: this is the copy you actually act on.
     const to = process.env.ORDER_EMAIL_TO;
     if (to) {
       const mail = renderOrderEmail(order as OrderRecord);
