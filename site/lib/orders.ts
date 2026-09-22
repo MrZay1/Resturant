@@ -34,6 +34,7 @@ export type Order = {
   shipping_postal_code: string;
   shipping_country: string;
   notes: string;
+  customer_id: number | null;
   created_at: string;
   updated_at: string;
 };
@@ -130,6 +131,16 @@ export async function listOrders(opts: { search?: string; status?: OrderStatus }
 export async function getOrder(id: number): Promise<Order | null> {
   const rows = await sql<Order[]>`select * from orders where id = ${id} limit 1`;
   return rows[0] ?? null;
+}
+
+export async function getOrderByStripeSessionId(sessionId: string): Promise<Order | null> {
+  const rows = await sql<Order[]>`select * from orders where stripe_session_id = ${sessionId} limit 1`;
+  return rows[0] ?? null;
+}
+
+/** Every order linked to this dashboard account, newest first. */
+export async function listOrdersForCustomer(customerId: number): Promise<Order[]> {
+  return sql<Order[]>`select * from orders where customer_id = ${customerId} order by created_at desc`;
 }
 
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<void> {

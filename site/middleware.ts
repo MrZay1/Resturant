@@ -1,18 +1,24 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const COOKIE_NAME = "tn_admin_session";
+const ADMIN_COOKIE = "tn_admin_session";
+const CUSTOMER_COOKIE = "tn_customer_session";
 
 /**
- * Gate everything under /admin behind a signed session cookie. Verified here
- * (edge-safe with jose) rather than importing lib/auth.ts, which pulls in the
- * Postgres client - middleware should stay dependency-light.
+ * Gate /admin and /dashboard behind their own signed session cookies.
+ * Verified here (edge-safe with jose) rather than importing lib/auth.ts or
+ * lib/customerAuth.ts, which pull in the Postgres client - middleware should
+ * stay dependency-light.
  */
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  if (pathname === "/admin/login") return NextResponse.next();
+  if (pathname === "/admin/login" || pathname === "/login") return NextResponse.next();
 
-  const token = req.cookies.get(COOKIE_NAME)?.value;
+  const isAdminRoute = pathname.startsWith("/admin");
+  const cookieName = isAdminRoute ? ADMIN_COOKIE : CUSTOMER_COOKIE;
+  const loginPath = isAdminRoute ? "/admin/login" : "/login";
+
+  const token = req.cookies.get(cookieName)?.value;
   const secret = process.env.SESSION_SECRET;
   if (token && secret) {
     try {
@@ -22,11 +28,11 @@ export async function middleware(req: NextRequest) {
       // fall through to redirect
     }
   }
-  const loginUrl = new URL("/admin/login", req.url);
+  const loginUrl = new URL(loginPath, req.url);
   loginUrl.searchParams.set("next", pathname);
   return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/dashboard/:path*"],
 };

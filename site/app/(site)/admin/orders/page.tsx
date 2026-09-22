@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { listOrders, type OrderStatus } from "@/lib/orders";
-import { StatusBadge } from "@/components/admin/StatusBadge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import { ORDER_STATUSES } from "@/lib/orders";
 
 export const dynamic = "force-dynamic";

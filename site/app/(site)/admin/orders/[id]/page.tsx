@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrder, listNotes } from "@/lib/orders";
-import { StatusBadge } from "@/components/admin/StatusBadge";
+import { StatusBadge } from "@/components/ui/StatusBadge";
 import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
 import { NoteForm } from "@/components/admin/NoteForm";
 

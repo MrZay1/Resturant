@@ -1,15 +1,17 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
-import { CheckCircle2, FileText, Image as ImageIcon, Link2, Mail, Package, Sparkles } from "lucide-react";
+import { CheckCircle2, FileText, Image as ImageIcon, LayoutDashboard, Link2, Mail, Package, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
 import { Section, Eyebrow, Heading, Lede } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { CreateAccountForm } from "@/components/customer/CreateAccountForm";
 import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
 import { BRAND, LINKS, PRICING } from "@/lib/brand";
 import { getStripe } from "@/lib/stripe";
+import { getCustomerSession } from "@/lib/customerAuth";
 
 export const metadata = {
   title: "Order received",
@@ -97,7 +99,7 @@ export default async function Page(props: { searchParams: Promise<Record<string,
   const searchParams = await props.searchParams;
   const raw = searchParams.session_id;
   const sessionId = Array.isArray(raw) ? raw[0] : raw;
-  const order = await loadOrder(sessionId);
+  const [order, customerSession] = await Promise.all([loadOrder(sessionId), getCustomerSession()]);
 
   const rows: { label: string; value: string }[] = [];
   if (order) {
@@ -141,6 +143,43 @@ export default async function Page(props: { searchParams: Promise<Record<string,
                   </div>
                 ))}
               </dl>
+            )}
+
+            {order && sessionId && (
+              <div className="mt-10 rounded-2xl border border-line bg-white p-8 shadow-card sm:p-10">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-10 w-10 place-items-center rounded-full bg-accent-soft text-accent">
+                    <LayoutDashboard className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <Eyebrow>Your dashboard</Eyebrow>
+                </div>
+                {customerSession ? (
+                  <>
+                    <Heading size="md" className="mt-5">
+                      You&apos;re already signed in.
+                    </Heading>
+                    <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
+                      This order is on its way to your account. Track its status, your Google
+                      review link, and request replacement cards from your dashboard any time.
+                    </p>
+                    <div className="mt-6">
+                      <Button href="/dashboard">Go to my dashboard</Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Heading size="md" className="mt-5">
+                      Create your dashboard login
+                    </Heading>
+                    <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
+                      Set a password now and you can track this order&apos;s status, your Google
+                      review link, and request replacement cards any time &mdash; no need to wait
+                      for the confirmation email.
+                    </p>
+                    <CreateAccountForm sessionId={sessionId} defaultEmail={order.email ?? ""} />
+                  </>
+                )}
+              </div>
             )}
           </Container>
         </Section>
