@@ -11,8 +11,8 @@ export function CTA({
   body?: string;
 }) {
   return (
-    <section className="bg-dark py-24 text-paper">
-      <Container className="text-center">
+    <section className="relative overflow-hidden texture-lines mesh-dark py-24 text-paper">
+      <Container className="relative text-center">
         <Heading className="mx-auto max-w-3xl text-paper" size="lg">
           {title}
         </Heading>

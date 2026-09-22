@@ -81,13 +81,13 @@ export function MapPack({
 
 export function WhyReviewsMatter() {
   return (
-    <Section id="why-reviews" tone="paper">
+    <Section id="why-reviews" tone="dark" className="relative overflow-hidden texture-lines mesh-dark">
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           <div>
-            <Eyebrow>Why reviews matter</Eyebrow>
+            <Eyebrow tone="inverse">Why reviews matter</Eyebrow>
             <Heading className="mt-4">More reviews. Higher on the map. More walk-ins.</Heading>
-            <Lede className="mt-5">
+            <Lede className="mt-5 text-paper/70">
               When someone searches “dinner near me”, Google ranks the results by relevance, distance and
               prominence. In Google’s own words, “more reviews and positive ratings can help your business’s local
               ranking.” Fresh, steady reviews are how a small restaurant earns one of the three spots people actually
@@ -95,14 +95,14 @@ export function WhyReviewsMatter() {
             </Lede>
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {stats.map((s) => (
-                <div key={s.value + s.label} className="rounded-2xl border border-line bg-white p-5">
-                  <div className="font-display text-4xl leading-none text-ink">{s.value}</div>
-                  <div className="mt-2 text-[15px] leading-snug text-ink-2">{s.label}</div>
-                  <div className="mt-2 text-[11px] text-muted">{s.source}</div>
+                <div key={s.value + s.label} className="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-sm">
+                  <div className="font-display text-4xl leading-none text-gold">{s.value}</div>
+                  <div className="mt-2 text-[15px] leading-snug text-paper/85">{s.label}</div>
+                  <div className="mt-2 text-[11px] text-paper/45">{s.source}</div>
                 </div>
               ))}
             </div>
-            <p className="mt-6 text-xs leading-relaxed text-muted">
+            <p className="mt-6 text-xs leading-relaxed text-paper/45">
               Sources: Google Business Profile Help, “How to improve your local ranking on Google”; BrightLocal Local
               Consumer Review Survey 2026 (US consumer survey); Luca, “Reviews, Reputation, and Revenue,” Harvard Business
               School working paper, based on Yelp ratings for independent restaurants. The revenue study is about ratings,

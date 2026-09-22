@@ -1,12 +1,28 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Card3D } from "@/components/card/Card3D";
+import { CardFace } from "@/components/card/CardFace";
 import { DEFAULT_DESIGN, TEMPLATE_META, qrColorsFor, type CardDesign, type CardTemplate } from "@/components/card/cardSpec";
 import { Button } from "@/components/ui/Button";
 import { PRICING, LINKS, BRAND } from "@/lib/brand";
 import { cn } from "@/lib/cn";
-import { Minus, Plus, Upload, X, Check, Lock } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  Upload,
+  X,
+  Check,
+  Lock,
+  LayoutTemplate,
+  Type,
+  Palette,
+  Image as ImageIcon,
+  Link2,
+  ClipboardList,
+  RotateCcw,
+} from "lucide-react";
 import QRCode from "qrcode";
 
 const HEADLINES = [
@@ -18,6 +34,17 @@ const HEADLINES = [
 const SUBLINES = ["Hold your phone here", "Takes about a minute", "iPhone: top edge. Android: back of phone", ""];
 const COLORS = ["#1f4d3a", "#7a2e2e", "#1e3a5f", "#3b2f2f", "#b45309", "#111111", "#4c1d95", "#0f766e"];
 const TEMPLATES: CardTemplate[] = ["classic", "noir", "brand", "logo"];
+
+/** The studio rail: each tab owns one slice of the design/order form below. */
+const TABS = [
+  { key: "template", label: "Template", icon: LayoutTemplate },
+  { key: "text", label: "Text", icon: Type },
+  { key: "color", label: "Color", icon: Palette },
+  { key: "logo", label: "Logo", icon: ImageIcon },
+  { key: "link", label: "Link", icon: Link2 },
+  { key: "details", label: "Order details", icon: ClipboardList },
+] as const;
+type TabKey = (typeof TABS)[number]["key"];
 
 function money(n: number) {
   return `$${n.toLocaleString("en-US")}`;
@@ -51,6 +78,7 @@ export function Configurator({
     restaurantName: "",
   });
   const [side, setSide] = useState<"front" | "back">("front");
+  const [activeTab, setActiveTab] = useState<TabKey>("template");
   const [cards, setCards] = useState(initialCards);
   const [cardsText, setCardsText] = useState(String(initialCards));
   const [report, setReport] = useState(initialReport);
@@ -103,6 +131,19 @@ export function Configurator({
     contact.name.trim().length > 0 &&
     /\S+@\S+\.\S+/.test(contact.email) &&
     !linkTooLong;
+
+  const canReset = design.headline !== DEFAULT_DESIGN.headline || design.subline !== DEFAULT_DESIGN.subline || design.brandColor !== DEFAULT_DESIGN.brandColor || Boolean(design.logoDataUrl);
+
+  function resetDesign() {
+    setDesign((d) => ({
+      ...d,
+      headline: DEFAULT_DESIGN.headline,
+      subline: DEFAULT_DESIGN.subline,
+      brandColor: DEFAULT_DESIGN.brandColor,
+      logoDataUrl: undefined,
+    }));
+    setLogoName("");
+  }
 
   function clampCards(n: number) {
     return Math.min(PRICING.maxCards, Math.max(PRICING.minCards, Math.round(n)));
@@ -224,272 +265,359 @@ export function Configurator({
         </div>
       </div>
 
-      {/* LEFT: steps */}
-      <div className="space-y-10">
-        <Step n="1" title="Pick a design">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {TEMPLATES.map((t) => (
+      {/* LEFT: studio rail + active panel */}
+      <div className="flex gap-3 sm:gap-5">
+        {/* Rail: vertical icon strip on desktop, horizontal scroller on mobile */}
+        <nav
+          aria-label="Design sections"
+          className="flex shrink-0 gap-1 overflow-x-auto pb-1 lg:sticky lg:top-24 lg:h-fit lg:flex-col lg:gap-1.5 lg:overflow-visible lg:self-start lg:pb-0"
+        >
+          {TABS.map(({ key, label, icon: Icon }) => {
+            const active = activeTab === key;
+            return (
               <button
-                key={t}
+                key={key}
                 type="button"
-                onClick={() => setDesign((d) => ({ ...d, template: t }))}
-                aria-pressed={design.template === t}
+                onClick={() => setActiveTab(key)}
+                aria-pressed={active}
+                title={label}
                 className={cn(
-                  "rounded-xl border p-3.5 text-left transition-all",
-                  design.template === t ? "border-ink bg-white shadow-card" : "border-line bg-white/60 hover:border-line-strong"
+                  "group flex shrink-0 flex-col items-center gap-1 rounded-xl2 border px-3 py-2.5 text-center transition-all lg:w-[72px]",
+                  active ? "border-ink bg-ink text-paper shadow-card" : "border-line bg-white/70 text-ink-2 hover:border-line-strong hover:bg-white"
                 )}
               >
-                <div className="text-[15px] font-semibold">{TEMPLATE_META[t].name}</div>
-                <div className="mt-0.5 text-[13px] leading-snug text-muted">{TEMPLATE_META[t].blurb}</div>
+                <Icon className="h-[18px] w-[18px]" strokeWidth={active ? 2.25 : 1.75} />
+                <span className="whitespace-nowrap text-[10.5px] font-medium leading-none">{label === "Order details" ? "Details" : label}</span>
               </button>
-            ))}
-          </div>
-        </Step>
+            );
+          })}
+        </nav>
 
-        <Step n="2" title="Make it yours">
-          <Field label="Restaurant name" hint="As it should appear on the card">
-            <input
-              className={inputCls}
-              value={design.restaurantName}
-              onChange={(e) => setDesign((d) => ({ ...d, restaurantName: e.target.value.slice(0, 32) }))}
-              placeholder="Lucia's Trattoria"
-              maxLength={32}
-            />
-          </Field>
-          <Field label="Headline">
-            <div className="flex flex-wrap gap-2">
-              {HEADLINES.map((h) => (
-                <Chip key={h} active={design.headline === h} onClick={() => setDesign((d) => ({ ...d, headline: h }))}>
-                  {h}
-                </Chip>
-              ))}
-            </div>
-            <input
-              className={cn(inputCls, "mt-2")}
-              value={design.headline}
-              onChange={(e) => setDesign((d) => ({ ...d, headline: e.target.value.slice(0, 40) }))}
-              maxLength={40}
-              aria-label="Custom headline"
-            />
-          </Field>
-          <Field label="Small line under the headline">
-            <div className="flex flex-wrap gap-2">
-              {SUBLINES.map((s) => (
-                <Chip key={s || "none"} active={design.subline === s} onClick={() => setDesign((d) => ({ ...d, subline: s }))}>
-                  {s || "None"}
-                </Chip>
-              ))}
-            </div>
-          </Field>
-          <Field label="Brand color" hint={design.template === "brand" ? "Fills the card" : "Used for the tap mark"}>
-            <div className="flex flex-wrap items-center gap-2">
-              {COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  aria-label={`Color ${c}`}
-                  onClick={() => setDesign((d) => ({ ...d, brandColor: c }))}
-                  className={cn("h-8 w-8 rounded-full ring-offset-2 transition-transform", design.brandColor === c ? "ring-2 ring-ink scale-110" : "hover:scale-105")}
-                  style={{ background: c }}
-                />
-              ))}
-              <label className="ml-1 inline-flex items-center gap-2 text-sm text-muted">
-                <input
-                  type="color"
-                  value={design.brandColor}
-                  onChange={(e) => setDesign((d) => ({ ...d, brandColor: e.target.value }))}
-                  className="h-8 w-8 cursor-pointer rounded-full border border-line bg-transparent p-0"
-                  aria-label="Custom color"
-                />
-                Custom
-              </label>
-            </div>
-          </Field>
-          <Field label="Logo" hint="Optional. PNG or SVG, transparent background, under 2 MB. Shows on every design.">
-            <div className="flex flex-wrap items-center gap-3">
-              <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-line-strong bg-white px-4 text-sm font-medium hover:border-ink">
-                <Upload className="h-4 w-4" /> Upload logo
-                <input
-                  type="file"
-                  accept="image/png,image/svg+xml,image/jpeg"
-                  className="sr-only"
-                  onChange={(e) => {
-                    onLogo(e.target.files?.[0]);
-                    // reset so picking the same file again (after removal or a rejection) fires change
-                    e.target.value = "";
-                  }}
-                />
-              </label>
-              {design.logoDataUrl && (
-                <span className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 text-sm text-accent">
-                  <Check className="h-3.5 w-3.5" /> {logoName || "Logo added"}
-                  <button
-                    type="button"
-                    aria-label="Remove logo"
-                    onClick={() => {
-                      setDesign((d) => ({ ...d, logoDataUrl: undefined }));
-                      setLogoName("");
-                    }}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                </span>
+        {/* Panel: content for the active tab, cross-fades on switch */}
+        <div className="min-w-0 flex-1 space-y-6">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+            >
+              {activeTab === "template" && (
+                <Panel title="Pick a design">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {TEMPLATES.map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setDesign((d) => ({ ...d, template: t }))}
+                        aria-pressed={design.template === t}
+                        className={cn(
+                          "overflow-hidden rounded-xl2 border text-left transition-all",
+                          design.template === t ? "border-ink bg-white shadow-card" : "border-line bg-white/60 hover:border-line-strong"
+                        )}
+                      >
+                        <div className="border-b border-line/70 bg-paper-2 p-2.5">
+                          <div className="overflow-hidden rounded-md ring-1 ring-black/5">
+                            <CardFace design={{ ...preview, template: t }} side="front" />
+                          </div>
+                        </div>
+                        <div className="p-3.5">
+                          <div className="text-[15px] font-semibold">{TEMPLATE_META[t].name}</div>
+                          <div className="mt-0.5 text-[13px] leading-snug text-muted">{TEMPLATE_META[t].blurb}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </Panel>
               )}
-              <span className="text-xs text-muted">No logo? We design a clean type-only card for you.</span>
-            </div>
-          </Field>
-          <p className="text-xs text-muted">
-            No star graphics on the card, on purpose. Google treats stars next to a review ask as soliciting a rating. The card asks for an honest review, nothing more.
-          </p>
-        </Step>
 
-        <Step n="3" title="How many cards">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="inline-flex items-center rounded-full border border-line-strong bg-white">
-              <button type="button" aria-label="Fewer cards" className="grid h-11 w-11 place-items-center" onClick={() => commitCards(cards - 1)}>
-                <Minus className="h-4 w-4" />
-              </button>
-              <input
-                type="number"
-                inputMode="numeric"
-                min={PRICING.minCards}
-                max={PRICING.maxCards}
-                value={cardsText}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  setCardsText(v);
-                  const n = Number(v);
-                  if (v !== "" && Number.isFinite(n) && n >= PRICING.minCards && n <= PRICING.maxCards) setCards(Math.round(n));
-                }}
-                onBlur={() => commitCards(Number(cardsText) || PRICING.minCards)}
-                className="w-14 bg-transparent text-center text-lg font-semibold outline-none"
-                aria-label="Number of cards"
-              />
-              <button type="button" aria-label="More cards" className="grid h-11 w-11 place-items-center" onClick={() => commitCards(cards + 1)}>
-                <Plus className="h-4 w-4" />
-              </button>
-            </div>
-            <div className="text-sm text-muted">
-              Rule of thumb: two cards per server on the floor, so nobody waits when several tables close at once. Minimum {PRICING.minCards}.
-            </div>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {[10, 20, 30, 50].map((n) => (
-              <Chip key={n} active={cards === n} onClick={() => commitCards(n)}>
-                {n} cards
-              </Chip>
-            ))}
-          </div>
-        </Step>
+              {activeTab === "text" && (
+                <Panel title="Make it yours">
+                  <Field label="Restaurant name" hint="As it should appear on the card">
+                    <input
+                      className={inputCls}
+                      value={design.restaurantName}
+                      onChange={(e) => setDesign((d) => ({ ...d, restaurantName: e.target.value.slice(0, 32) }))}
+                      placeholder="Lucia's Trattoria"
+                      maxLength={32}
+                    />
+                  </Field>
+                  <Field label="Headline">
+                    <div className="flex flex-wrap gap-2">
+                      {HEADLINES.map((h) => (
+                        <Chip key={h} active={design.headline === h} onClick={() => setDesign((d) => ({ ...d, headline: h }))}>
+                          {h}
+                        </Chip>
+                      ))}
+                    </div>
+                    <input
+                      className={cn(inputCls, "mt-2")}
+                      value={design.headline}
+                      onChange={(e) => setDesign((d) => ({ ...d, headline: e.target.value.slice(0, 40) }))}
+                      maxLength={40}
+                      aria-label="Custom headline"
+                    />
+                  </Field>
+                  <Field label="Small line under the headline">
+                    <div className="flex flex-wrap gap-2">
+                      {SUBLINES.map((s) => (
+                        <Chip key={s || "none"} active={design.subline === s} onClick={() => setDesign((d) => ({ ...d, subline: s }))}>
+                          {s || "None"}
+                        </Chip>
+                      ))}
+                    </div>
+                  </Field>
+                </Panel>
+              )}
 
-        <Step n="4" title="Your monthly report">
-          <button
-            type="button"
-            onClick={() => setReport((r) => !r)}
-            aria-pressed={report}
-            className={cn("flex w-full items-start gap-4 rounded-2xl border p-5 text-left transition-all", report ? "border-ink bg-white shadow-card" : "border-line bg-white/60")}
-          >
-            <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", report ? "border-ink bg-ink text-paper" : "border-line-strong bg-white")}>
-              {report && <Check className="h-4 w-4" />}
-            </span>
-            <span>
-              <span className="flex flex-wrap items-baseline gap-x-2">
-                <span className="text-[15px] font-semibold">Monthly AI review report</span>
-                <span className="text-sm text-muted">
-                  {report ? "Included" : "Not included"} · {money(PRICING.monthlyReport)}/month, cancel anytime
-                </span>
-              </span>
-              <span className="mt-1 block text-sm leading-relaxed text-muted">
-                Every new Google review read and summarized on the first business day of the month: wins, issues with fixes, staff and dish mentions, priority actions,
-                drafted replies. Includes {PRICING.freeReplacementCardsPerMonth} free replacement cards every month.
-              </span>
-            </span>
-          </button>
-        </Step>
+              {activeTab === "color" && (
+                <Panel title="Brand color">
+                  <Field label="Color" hint={design.template === "brand" ? "Fills the card" : "Used for the tap mark"}>
+                    <div className="flex flex-wrap items-center gap-2">
+                      {COLORS.map((c) => (
+                        <button
+                          key={c}
+                          type="button"
+                          aria-label={`Color ${c}`}
+                          onClick={() => setDesign((d) => ({ ...d, brandColor: c }))}
+                          className={cn("h-9 w-9 rounded-full ring-offset-2 transition-transform", design.brandColor === c ? "ring-2 ring-ink scale-110" : "hover:scale-105")}
+                          style={{ background: c }}
+                        />
+                      ))}
+                      <label className="ml-1 inline-flex items-center gap-2 text-sm text-muted">
+                        <input
+                          type="color"
+                          value={design.brandColor}
+                          onChange={(e) => setDesign((d) => ({ ...d, brandColor: e.target.value }))}
+                          className="h-9 w-9 cursor-pointer rounded-full border border-line bg-transparent p-0"
+                          aria-label="Custom color"
+                        />
+                        Custom
+                      </label>
+                    </div>
+                  </Field>
+                  <p className="text-xs text-muted">
+                    No star graphics on the card, on purpose. Google treats stars next to a review ask as soliciting a rating. The card asks for an honest review, nothing more.
+                  </p>
+                </Panel>
+              )}
 
-        <Step n="5" title="Where should the card send guests?">
-          <div className="grid gap-2 sm:grid-cols-2">
-            {(
-              [
-                { key: "find", title: "Set it up for me", body: "Give us your restaurant name and address. We find your Google listing and point every card at its review page." },
-                { key: "have", title: "I have my Google review link", body: "Paste your g.page review link or Place ID and we use that." },
-              ] as const
-            ).map((o) => (
-              <button
-                key={o.key}
-                type="button"
-                onClick={() => setLinkMode(o.key)}
-                aria-pressed={linkMode === o.key}
-                className={cn(
-                  "rounded-xl border p-3.5 text-left transition-all",
-                  linkMode === o.key ? "border-ink bg-white shadow-card" : "border-line bg-white/60 hover:border-line-strong"
-                )}
-              >
-                <div className="text-[15px] font-semibold">{o.title}</div>
-                <div className="mt-0.5 text-[13px] leading-snug text-muted">{o.body}</div>
-              </button>
-            ))}
-          </div>
-          {linkMode === "find" ? (
-            <Field label="Restaurant address" hint="Street, city and state">
-              <input
-                className={inputCls}
-                value={address}
-                onChange={(e) => setAddress(e.target.value.slice(0, 200))}
-                maxLength={200}
-                placeholder="123 Main St, Springfield, IL"
-                autoComplete="street-address"
-              />
-            </Field>
-          ) : (
-            <>
-              <input
-                className={inputCls}
-                value={googleLink}
-                onChange={(e) => setGoogleLink(e.target.value.slice(0, 500))}
-                maxLength={500}
-                placeholder="https://g.page/r/.../review or a Place ID"
-              />
-              <p className="mt-2 text-xs text-muted">
-                Not sure where to find it? <a className="underline underline-offset-4" href="/guides/google-review-link">Two-minute guide</a>. Cards point to a short link we can update any time.
-              </p>
-            </>
-          )}
-        </Step>
+              {activeTab === "logo" && (
+                <Panel title="Logo">
+                  <Field label="Upload" hint="Optional. PNG or SVG, transparent background, under 2 MB. Shows on every design.">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-line-strong bg-white px-4 text-sm font-medium hover:border-ink">
+                        <Upload className="h-4 w-4" /> Upload logo
+                        <input
+                          type="file"
+                          accept="image/png,image/svg+xml,image/jpeg"
+                          className="sr-only"
+                          onChange={(e) => {
+                            onLogo(e.target.files?.[0]);
+                            // reset so picking the same file again (after removal or a rejection) fires change
+                            e.target.value = "";
+                          }}
+                        />
+                      </label>
+                      {design.logoDataUrl && (
+                        <span className="inline-flex items-center gap-2 rounded-full bg-accent-soft px-3 py-1.5 text-sm text-accent">
+                          <Check className="h-3.5 w-3.5" /> {logoName || "Logo added"}
+                          <button
+                            type="button"
+                            aria-label="Remove logo"
+                            onClick={() => {
+                              setDesign((d) => ({ ...d, logoDataUrl: undefined }));
+                              setLogoName("");
+                            }}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </span>
+                      )}
+                    </div>
+                  </Field>
+                  <p className="text-xs text-muted">No logo? We design a clean type-only card for you.</p>
+                </Panel>
+              )}
 
-        <Step n="6" title="Where to send your design preview">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Your name">
-              <input className={inputCls} value={contact.name} onChange={(e) => setContact((c) => ({ ...c, name: e.target.value.slice(0, 80) }))} maxLength={80} autoComplete="name" />
-            </Field>
-            <Field label="Email">
-              <input className={inputCls} type="email" value={contact.email} onChange={(e) => setContact((c) => ({ ...c, email: e.target.value.slice(0, 254) }))} maxLength={254} autoComplete="email" />
-            </Field>
-            <Field label="Phone" hint="Optional">
-              <input className={inputCls} type="tel" value={contact.phone} onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value.slice(0, 40) }))} maxLength={40} autoComplete="tel" />
-            </Field>
-            <Field label="Notes for the designer" hint="Optional">
-              <input className={inputCls} value={notes} onChange={(e) => setNotes(e.target.value.slice(0, 300))} placeholder="Match our menu font, use the round logo…" />
-            </Field>
-          </div>
-        </Step>
+              {activeTab === "link" && (
+                <Panel title="Where should the card send guests?">
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {(
+                      [
+                        { key: "find", title: "Set it up for me", body: "Give us your restaurant name and address. We find your Google listing and point every card at its review page." },
+                        { key: "have", title: "I have my Google review link", body: "Paste your g.page review link or Place ID and we use that." },
+                      ] as const
+                    ).map((o) => (
+                      <button
+                        key={o.key}
+                        type="button"
+                        onClick={() => setLinkMode(o.key)}
+                        aria-pressed={linkMode === o.key}
+                        className={cn(
+                          "rounded-xl border p-3.5 text-left transition-all",
+                          linkMode === o.key ? "border-ink bg-white shadow-card" : "border-line bg-white/60 hover:border-line-strong"
+                        )}
+                      >
+                        <div className="text-[15px] font-semibold">{o.title}</div>
+                        <div className="mt-0.5 text-[13px] leading-snug text-muted">{o.body}</div>
+                      </button>
+                    ))}
+                  </div>
+                  {linkMode === "find" ? (
+                    <Field label="Restaurant address" hint="Street, city and state">
+                      <input
+                        className={inputCls}
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value.slice(0, 200))}
+                        maxLength={200}
+                        placeholder="123 Main St, Springfield, IL"
+                        autoComplete="street-address"
+                      />
+                    </Field>
+                  ) : (
+                    <>
+                      <input
+                        className={inputCls}
+                        value={googleLink}
+                        onChange={(e) => setGoogleLink(e.target.value.slice(0, 500))}
+                        maxLength={500}
+                        placeholder="https://g.page/r/.../review or a Place ID"
+                      />
+                      <p className="mt-2 text-xs text-muted">
+                        Not sure where to find it? <a className="underline underline-offset-4" href="/guides/google-review-link">Two-minute guide</a>. Cards point to a short link we can update any time.
+                      </p>
+                    </>
+                  )}
+                </Panel>
+              )}
+
+              {activeTab === "details" && (
+                <div className="space-y-10">
+                  <Panel title="How many cards">
+                    <div className="flex flex-wrap items-center gap-4">
+                      <div className="inline-flex items-center rounded-full border border-line-strong bg-white">
+                        <button type="button" aria-label="Fewer cards" className="grid h-11 w-11 place-items-center" onClick={() => commitCards(cards - 1)}>
+                          <Minus className="h-4 w-4" />
+                        </button>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={PRICING.minCards}
+                          max={PRICING.maxCards}
+                          value={cardsText}
+                          onChange={(e) => {
+                            const v = e.target.value;
+                            setCardsText(v);
+                            const n = Number(v);
+                            if (v !== "" && Number.isFinite(n) && n >= PRICING.minCards && n <= PRICING.maxCards) setCards(Math.round(n));
+                          }}
+                          onBlur={() => commitCards(Number(cardsText) || PRICING.minCards)}
+                          className="w-14 bg-transparent text-center text-lg font-semibold outline-none"
+                          aria-label="Number of cards"
+                        />
+                        <button type="button" aria-label="More cards" className="grid h-11 w-11 place-items-center" onClick={() => commitCards(cards + 1)}>
+                          <Plus className="h-4 w-4" />
+                        </button>
+                      </div>
+                      <div className="text-sm text-muted">
+                        Rule of thumb: two cards per server on the floor, so nobody waits when several tables close at once. Minimum {PRICING.minCards}.
+                      </div>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {[10, 20, 30, 50].map((n) => (
+                        <Chip key={n} active={cards === n} onClick={() => commitCards(n)}>
+                          {n} cards
+                        </Chip>
+                      ))}
+                    </div>
+                  </Panel>
+
+                  <Panel title="Your monthly report">
+                    <button
+                      type="button"
+                      onClick={() => setReport((r) => !r)}
+                      aria-pressed={report}
+                      className={cn("flex w-full items-start gap-4 rounded-2xl border p-5 text-left transition-all", report ? "border-ink bg-white shadow-card" : "border-line bg-white/60")}
+                    >
+                      <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", report ? "border-ink bg-ink text-paper" : "border-line-strong bg-white")}>
+                        {report && <Check className="h-4 w-4" />}
+                      </span>
+                      <span>
+                        <span className="flex flex-wrap items-baseline gap-x-2">
+                          <span className="text-[15px] font-semibold">Monthly AI review report</span>
+                          <span className="text-sm text-muted">
+                            {report ? "Included" : "Not included"} · {money(PRICING.monthlyReport)}/month, cancel anytime
+                          </span>
+                        </span>
+                        <span className="mt-1 block text-sm leading-relaxed text-muted">
+                          Every new Google review read and summarized on the first business day of the month: wins, issues with fixes, staff and dish mentions, priority actions,
+                          drafted replies. Includes {PRICING.freeReplacementCardsPerMonth} free replacement cards every month.
+                        </span>
+                      </span>
+                    </button>
+                  </Panel>
+
+                  <Panel title="Where to send your design preview">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <Field label="Your name">
+                        <input className={inputCls} value={contact.name} onChange={(e) => setContact((c) => ({ ...c, name: e.target.value.slice(0, 80) }))} maxLength={80} autoComplete="name" />
+                      </Field>
+                      <Field label="Email">
+                        <input className={inputCls} type="email" value={contact.email} onChange={(e) => setContact((c) => ({ ...c, email: e.target.value.slice(0, 254) }))} maxLength={254} autoComplete="email" />
+                      </Field>
+                      <Field label="Phone" hint="Optional">
+                        <input className={inputCls} type="tel" value={contact.phone} onChange={(e) => setContact((c) => ({ ...c, phone: e.target.value.slice(0, 40) }))} maxLength={40} autoComplete="tel" />
+                      </Field>
+                      <Field label="Notes for the designer" hint="Optional">
+                        <input className={inputCls} value={notes} onChange={(e) => setNotes(e.target.value.slice(0, 300))} placeholder="Match our menu font, use the round logo…" />
+                      </Field>
+                    </div>
+                  </Panel>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* RIGHT: sticky preview + summary */}
       <div className="lg:sticky lg:top-24 lg:self-start">
         <div className="rounded-3xl border border-line bg-white p-5 shadow-card sm:p-7">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Live preview</div>
-            <div className="inline-flex rounded-full border border-line p-0.5 text-xs">
-              {(["front", "back"] as const).map((s) => (
-                <button key={s} type="button" onClick={() => setSide(s)} className={cn("rounded-full px-3 py-1 capitalize", side === s ? "bg-ink text-paper" : "text-muted")}>
-                  {s}
+            <div className="flex items-center gap-2">
+              {canReset && (
+                <button
+                  type="button"
+                  onClick={resetDesign}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-1 text-xs text-muted transition-colors hover:border-line-strong hover:text-ink"
+                  title="Reset text, color and logo back to defaults"
+                >
+                  <RotateCcw className="h-3 w-3" /> Reset
                 </button>
-              ))}
+              )}
+              <div className="inline-flex rounded-full border border-line p-0.5 text-xs">
+                {(["front", "back"] as const).map((s) => (
+                  <button key={s} type="button" onClick={() => setSide(s)} className={cn("rounded-full px-3 py-1 capitalize", side === s ? "bg-ink text-paper" : "text-muted")}>
+                    {s}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           <div className="mx-auto mt-5 max-w-[460px]">
-            <Card3D design={preview} side={side} />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${design.template}-${side}`}
+                initial={{ opacity: 0, scale: 0.985 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+              >
+                <Card3D design={preview} side={side} />
+              </motion.div>
+            </AnimatePresence>
           </div>
           <p className="mt-4 text-center text-xs text-muted">Preview is close, not exact. You approve a design preview before we print.</p>
 
@@ -544,15 +672,11 @@ export function Configurator({
 const inputCls =
   "h-11 w-full rounded-xl border border-line-strong bg-white px-3.5 text-[15px] outline-none transition-colors placeholder:text-muted/70 focus:border-ink";
 
-function Step({ n, title, children, optional }: { n: string; title: string; children: React.ReactNode; optional?: boolean }) {
+function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section>
-      <div className="flex items-center gap-3">
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-ink font-mono text-xs text-paper">{n}</span>
-        <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-        {optional && <span className="text-xs text-muted">optional</span>}
-      </div>
-      <div className="mt-4 space-y-4 pl-0 sm:pl-10">{children}</div>
+      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+      <div className="mt-4 space-y-4">{children}</div>
     </section>
   );
 }

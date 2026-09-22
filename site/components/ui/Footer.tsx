@@ -11,7 +11,7 @@ const cols = [
       { href: LINKS.report, label: "Sample report" },
       { href: LINKS.pricing, label: "Pricing" },
       { href: LINKS.order, label: "Order cards" },
-      { href: "/dashboard", label: "Owner dashboard" },
+      { href: LINKS.login, label: "Owner dashboard" },
     ],
   },
   {
@@ -35,23 +35,23 @@ const cols = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-line bg-paper">
+    <footer className="border-t border-white/10 bg-ink text-paper">
       <Container className="py-14">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="max-w-xs">
-            <Logo />
-            <p className="mt-4 text-sm leading-relaxed text-muted">
+            <Logo inverse />
+            <p className="mt-4 text-sm leading-relaxed text-paper/55">
               Tap-to-review cards your servers drop at every table, and a monthly AI report that
               tells you what your guests actually think.
             </p>
           </div>
           {cols.map((c) => (
             <div key={c.title}>
-              <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-muted">{c.title}</div>
+              <div className="text-[12px] font-semibold uppercase tracking-[0.18em] text-paper/45">{c.title}</div>
               <ul className="mt-4 space-y-2.5">
                 {c.links.map((l) => (
                   <li key={l.href}>
-                    <Link href={l.href} className="text-sm text-ink-2 hover:text-ink">
+                    <Link href={l.href} className="text-sm text-paper/70 hover:text-paper">
                       {l.label}
                     </Link>
                   </li>
@@ -60,7 +60,7 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col gap-3 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-paper/40 sm:flex-row sm:items-center sm:justify-between">
           <div>© {new Date().getFullYear()} {BRAND.legalName}. All rights reserved.</div>
           <div>
             Google and Google Maps are trademarks of Google LLC. {BRAND.name} is not affiliated with or endorsed by Google.

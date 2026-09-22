@@ -10,7 +10,7 @@ import { firstSentences } from "@/lib/text";
 export function ReportPreview() {
   const s = R.summary;
   return (
-    <Section id="report" tone="dark" className="relative overflow-hidden">
+    <Section id="report" tone="dark" className="relative overflow-hidden texture-lines">
       <div
         className="pointer-events-none absolute inset-0"
         style={{ background: "radial-gradient(50% 40% at 80% 0%, rgba(230,180,85,0.12), transparent 70%)" }}
@@ -46,7 +46,7 @@ export function ReportPreview() {
               <Button href={LINKS.report} variant="inverse" size="lg">
                 Read the full sample report
               </Button>
-              <a href="/dashboard" className="text-sm text-paper/80 underline-offset-4 hover:underline">
+              <a href={LINKS.login} className="text-sm text-paper/80 underline-offset-4 hover:underline">
                 Preview the owner dashboard
               </a>
             </div>

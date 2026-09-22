@@ -29,4 +29,5 @@ export const LINKS = {
   report: "/sample-report",
   howItWorks: "/how-it-works",
   faq: "/faq",
+  login: "/login",
 };

@@ -1,6 +1,9 @@
+"use client";
+
+import { Plus, Clock, Smartphone, ShieldCheck, RefreshCw } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section, Eyebrow, Heading, Lede } from "@/components/ui/Section";
-import { Clock, Smartphone, ShieldCheck, RefreshCw } from "lucide-react";
+import { cn } from "@/lib/cn";
 
 const points = [
   {
@@ -38,15 +41,31 @@ export function WhyItWorks() {
               are the ones with something to shout about.
             </Lede>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {points.map((p) => (
-              <div key={p.title} className="rounded-2xl border border-line bg-white p-6">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-accent-soft text-accent">
-                  <p.icon className="h-5 w-5" />
-                </span>
-                <h3 className="mt-4 text-lg font-semibold tracking-tight">{p.title}</h3>
-                <p className="mt-2 text-[15px] leading-relaxed text-muted">{p.body}</p>
-              </div>
+          <div className="divide-y divide-line rounded-2xl border border-line bg-white">
+            {points.map((p, i) => (
+              <details key={p.title} open={i === 0 ? true : undefined} className="group px-6">
+                <summary
+                  className={cn(
+                    "flex cursor-pointer list-none items-center gap-4 py-5 text-left",
+                    "[&::-webkit-details-marker]:hidden"
+                  )}
+                >
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-accent-soft text-accent">
+                    <p.icon className="h-5 w-5" />
+                  </span>
+                  <span className="flex-1 text-[17px] font-semibold tracking-tight text-ink">{p.title}</span>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "grid h-7 w-7 shrink-0 place-items-center rounded-full border border-line-strong bg-white",
+                      "transition-transform duration-300 ease-out group-open:rotate-45 group-open:border-accent group-open:bg-accent group-open:text-paper"
+                    )}
+                  >
+                    <Plus className="h-4 w-4" strokeWidth={2} />
+                  </span>
+                </summary>
+                <div className="pb-6 pl-14 pr-2 text-[15px] leading-relaxed text-muted">{p.body}</div>
+              </details>
             ))}
           </div>
         </div>

@@ -1,9 +1,15 @@
+"use client";
+
+import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Section, Eyebrow, Heading, Lede } from "@/components/ui/Section";
 import { PhoneMock } from "@/components/illustrations/PhoneMock";
 import { CardFace } from "@/components/card/CardFace";
 import { DEFAULT_DESIGN } from "@/components/card/cardSpec";
 import { Stars } from "@/components/ui/Stars";
+import { cn } from "@/lib/cn";
 
 function CheckPresenter() {
   return (
@@ -100,27 +106,118 @@ const steps = [
   },
 ];
 
+const slideVariants = {
+  enter: (direction: number) => ({ x: direction > 0 ? 48 : -48, opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (direction: number) => ({ x: direction > 0 ? -48 : 48, opacity: 0 }),
+};
+
 export function HowItWorks() {
+  const [[page, direction], setPage] = useState([0, 0]);
+  const index = ((page % steps.length) + steps.length) % steps.length;
+  const step = steps[index];
+
+  function go(newDirection: number) {
+    setPage([page + newDirection, newDirection]);
+  }
+  function goTo(target: number) {
+    setPage([target, target > index ? 1 : -1]);
+  }
+
   return (
     <Section id="how-it-works" tone="white">
       <Container>
-        <div className="max-w-2xl">
-          <Eyebrow>How it works</Eyebrow>
-          <Heading className="mt-4">Three steps. One new habit.</Heading>
-          <Lede className="mt-5">
-            Only the delighted and the furious leave reviews on their own. Everyone else walks out
-            with your best feedback. The card catches them at the table.
-          </Lede>
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <Eyebrow>How it works</Eyebrow>
+            <Heading className="mt-4">Three steps. One new habit.</Heading>
+            <Lede className="mt-5">
+              Only the delighted and the furious leave reviews on their own. Everyone else walks out
+              with your best feedback. The card catches them at the table.
+            </Lede>
+          </div>
+          {/* prev/next, desktop */}
+          <div className="hidden shrink-0 items-center gap-2 sm:flex">
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Previous step"
+              className="grid h-11 w-11 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-ink hover:bg-paper-2"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Next step"
+              className="grid h-11 w-11 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:border-ink hover:bg-paper-2"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
         </div>
-        <div className="mt-16 grid gap-12 lg:grid-cols-3 lg:gap-8">
-          {steps.map((s) => (
-            <div key={s.n} className="flex flex-col">
-              <div className="flex h-[300px] items-center overflow-hidden rounded-3xl bg-paper p-6">{s.visual}</div>
-              <div className="mt-6 font-mono text-xs text-accent">{s.n}</div>
-              <h3 className="mt-2 font-display text-2xl leading-tight">{s.title}</h3>
-              <p className="mt-3 text-[15px] leading-relaxed text-muted">{s.body}</p>
-            </div>
-          ))}
+
+        <div className="relative mt-14 overflow-hidden">
+          <AnimatePresence initial={false} custom={direction} mode="wait">
+            <motion.div
+              key={index}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+              className="grid items-center gap-10 lg:grid-cols-[0.85fr_1fr] lg:gap-16"
+            >
+              <div className="flex h-[300px] items-center justify-center overflow-hidden rounded-3xl bg-paper p-6">
+                {step.visual}
+              </div>
+              <div>
+                <div className="font-mono text-xs text-accent">{step.n}</div>
+                <h3 className="mt-2 font-display text-3xl leading-tight sm:text-4xl">{step.title}</h3>
+                <p className="mt-4 max-w-md text-[15px] leading-relaxed text-muted">{step.body}</p>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* step tabs + mobile prev/next */}
+        <div className="mt-10 flex items-center justify-between gap-6 border-t border-line pt-6">
+          <div className="flex items-center gap-2">
+            {steps.map((s, i) => (
+              <button
+                key={s.n}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Go to step ${s.n}`}
+                aria-current={i === index}
+                className={cn(
+                  "font-mono text-xs transition-colors",
+                  i === index ? "text-ink" : "text-muted hover:text-ink-2"
+                )}
+              >
+                {s.n}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-2 sm:hidden">
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Previous step"
+              className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Next step"
+              className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </Container>
     </Section>

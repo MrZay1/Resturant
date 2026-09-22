@@ -90,6 +90,37 @@ body {
   border-color: var(--line);
 }
 
+/* Diagonal hairline texture — breaks up flat sections with fine linework.
+   Uses currentColor so the same class reads as dark lines on light sections
+   and light lines on dark sections, no extra color tokens needed. */
+.texture-lines {
+  position: relative;
+  isolation: isolate;
+}
+.texture-lines::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    currentColor 0,
+    currentColor 1px,
+    transparent 1px,
+    transparent 15px
+  );
+  opacity: 0.05;
+}
+
+/* Soft gradient mesh for dark sections — same poster-style blend used in the
+   hero, built from the site's own dark/accent/gold tokens. */
+.mesh-dark {
+  background-image: radial-gradient(55% 55% at 88% 0%, rgba(230, 180, 85, 0.16) 0%, transparent 70%),
+    radial-gradient(50% 50% at 8% 100%, rgba(31, 77, 58, 0.28) 0%, transparent 70%);
+  background-color: var(--dark);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
