@@ -40,7 +40,7 @@ function slugify(name: string) {
  * a real QR code. Opens in a new tab; Print > Save as PDF from there is the
  * print-ready file for the supplier.
  */
-function printCardUrl(order: Order, side: "front" | "back") {
+function printCardUrl(order: Order, side: "front" | "back" | "both") {
   const params = new URLSearchParams({
     template: isTemplate(order.template) ? order.template : "classic",
     side,
@@ -164,27 +164,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
 
           <section className="rounded-xl2 border border-line bg-white p-6">
             <h2 className="mb-4 font-display text-lg text-ink">Print &amp; fulfillment</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <a
-                href={printCardUrl(order, "front")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg border border-line-strong bg-paper px-3 py-2 text-center text-sm font-medium hover:border-ink"
-              >
-                Open front for print
-              </a>
-              <a
-                href={printCardUrl(order, "back")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg border border-line-strong bg-paper px-3 py-2 text-center text-sm font-medium hover:border-ink"
-              >
-                Open back for print
-              </a>
-            </div>
+            <a
+              href={printCardUrl(order, "both")}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-lg border border-line-strong bg-paper px-3 py-2 text-center text-sm font-medium hover:border-ink"
+            >
+              Open print file (front &amp; back)
+            </a>
             <p className="mt-2 text-xs text-muted">
-              Opens at exact print size with 3mm bleed and a real QR code. Print → Save as PDF from
-              there for the file to drop into the supplier&apos;s upload form. The QR only works once
+              Opens a two-page file at exact print size with 3mm bleed and a real QR code &mdash;
+              front on page one, back on page two. Print → Save as PDF from there for the file to
+              drop into the supplier&apos;s upload form. The QR only works once
               &quot;{slugify(order.restaurant_name)}&quot; is registered to this order&apos;s review
               link in the redirect list.
             </p>
