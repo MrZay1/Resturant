@@ -78,6 +78,17 @@ create table if not exists orders (
 -- is the idempotent way to add a column to a table that might already exist.
 alter table orders add column if not exists customer_id integer references customers(id) on delete set null;
 
+-- Print and fulfillment handoff (build item #6). ship_to records which of the
+-- two shipping modes this order uses - to Isiah for hand-delivery, or direct
+-- to the restaurant. supplier_order_ref is free text: whatever the card
+-- supplier's own order/confirmation number is, filled in by hand once it's
+-- placed there - there's no supplier API to integrate with. shipped_at is set
+-- once, when the order is marked shipped, and is what the customer-facing
+-- email is triggered from.
+alter table orders add column if not exists ship_to text not null default 'to_me' check (ship_to in ('to_me', 'direct'));
+alter table orders add column if not exists supplier_order_ref text not null default '';
+alter table orders add column if not exists shipped_at timestamptz;
+
 create index if not exists orders_restaurant_name_idx on orders using gin (to_tsvector('english', restaurant_name));
 create index if not exists orders_status_idx on orders (status);
 create index if not exists orders_created_at_idx on orders (created_at desc);

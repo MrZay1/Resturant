@@ -35,9 +35,15 @@ export type Order = {
   shipping_country: string;
   notes: string;
   customer_id: number | null;
+  ship_to: ShipTo;
+  supplier_order_ref: string;
+  shipped_at: string | null;
   created_at: string;
   updated_at: string;
 };
+
+/** Where the card supplier ships a finished order: to Isiah for hand-delivery, or straight to the restaurant. */
+export type ShipTo = "to_me" | "direct";
 
 export type OrderNote = { id: number; order_id: number; body: string; created_at: string };
 
@@ -145,6 +151,29 @@ export async function listOrdersForCustomer(customerId: number): Promise<Order[]
 
 export async function updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
   await sql`update orders set status = ${status}, updated_at = now() where id = ${id}`;
+}
+
+export async function updateShipTo(id: number, shipTo: ShipTo): Promise<void> {
+  await sql`update orders set ship_to = ${shipTo}, updated_at = now() where id = ${id}`;
+}
+
+export async function updateSupplierOrderRef(id: number, ref: string): Promise<void> {
+  await sql`update orders set supplier_order_ref = ${ref}, updated_at = now() where id = ${id}`;
+}
+
+/**
+ * Marks an order shipped and stamps shipped_at (only the first time - a
+ * second click updates status but never re-stamps the date). Returns the
+ * updated order so the caller can email the customer with real order details.
+ */
+export async function markOrderShipped(id: number): Promise<Order | null> {
+  const rows = await sql<Order[]>`
+    update orders
+    set status = 'shipped', shipped_at = coalesce(shipped_at, now()), updated_at = now()
+    where id = ${id}
+    returning *
+  `;
+  return rows[0] ?? null;
 }
 
 export async function listNotes(orderId: number): Promise<OrderNote[]> {

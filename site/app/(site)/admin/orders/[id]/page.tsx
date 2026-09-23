@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getOrder, listNotes } from "@/lib/orders";
+import { getOrder, listNotes, type Order } from "@/lib/orders";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
 import { NoteForm } from "@/components/admin/NoteForm";
+import { ShipToSelect } from "@/components/admin/ShipToSelect";
+import { SupplierRefForm } from "@/components/admin/SupplierRefForm";
+import { MarkShippedButton } from "@/components/admin/MarkShippedButton";
+import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
+import { BRAND } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +19,40 @@ function Field({ label, value }: { label: string; value: React.ReactNode }) {
       <div className="mt-0.5 text-ink">{value || <span className="text-muted">—</span>}</div>
     </div>
   );
+}
+
+function isTemplate(v: string): v is CardTemplate {
+  return v in TEMPLATE_META;
+}
+
+function slugify(name: string) {
+  return (
+    name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "restaurant"
+  );
+}
+
+/**
+ * Builds the same /print/card URL scripts/export-cards.mjs uses, filled in
+ * from this order's real design and contact details - exact size, 3mm bleed,
+ * a real QR code. Opens in a new tab; Print > Save as PDF from there is the
+ * print-ready file for the supplier.
+ */
+function printCardUrl(order: Order, side: "front" | "back") {
+  const params = new URLSearchParams({
+    template: isTemplate(order.template) ? order.template : "classic",
+    side,
+    name: order.restaurant_name || "Your Restaurant",
+    headline: order.headline || "Tap to review us on Google",
+    subline: order.subline || "Hold your phone here",
+    color: order.brand_color || "#1f4d3a",
+    url: `${BRAND.shortLinkHost}/r/${slugify(order.restaurant_name)}`,
+    stars: order.show_stars ? "1" : "0",
+  });
+  if (order.logo_url) params.set("logo", order.logo_url);
+  return `/print/card?${params.toString()}`;
 }
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -121,6 +160,52 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
           <section className="rounded-xl2 border border-line bg-white p-6">
             <h2 className="mb-4 font-display text-lg text-ink">Shipping</h2>
             <Field label="Address" value={shipping} />
+          </section>
+
+          <section className="rounded-xl2 border border-line bg-white p-6">
+            <h2 className="mb-4 font-display text-lg text-ink">Print &amp; fulfillment</h2>
+            <div className="grid grid-cols-2 gap-3">
+              <a
+                href={printCardUrl(order, "front")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-line-strong bg-paper px-3 py-2 text-center text-sm font-medium hover:border-ink"
+              >
+                Open front for print
+              </a>
+              <a
+                href={printCardUrl(order, "back")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-lg border border-line-strong bg-paper px-3 py-2 text-center text-sm font-medium hover:border-ink"
+              >
+                Open back for print
+              </a>
+            </div>
+            <p className="mt-2 text-xs text-muted">
+              Opens at exact print size with 3mm bleed and a real QR code. Print → Save as PDF from
+              there for the file to drop into the supplier&apos;s upload form. The QR only works once
+              &quot;{slugify(order.restaurant_name)}&quot; is registered to this order&apos;s review
+              link in the redirect list.
+            </p>
+
+            <div className="mt-5 border-t border-line pt-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">Ship to</div>
+              <div className="mt-2">
+                <ShipToSelect orderId={order.id} current={order.ship_to} />
+              </div>
+            </div>
+
+            <div className="mt-5 border-t border-line pt-4">
+              <div className="text-xs font-semibold uppercase tracking-wide text-muted">Supplier order #</div>
+              <div className="mt-2">
+                <SupplierRefForm orderId={order.id} current={order.supplier_order_ref} />
+              </div>
+            </div>
+
+            <div className="mt-5 border-t border-line pt-4">
+              <MarkShippedButton orderId={order.id} shippedAt={order.shipped_at} />
+            </div>
           </section>
 
           <section className="rounded-xl2 border border-line bg-white p-6">
