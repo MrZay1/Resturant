@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
 import { Container } from "@/components/ui/Container";
@@ -31,7 +32,9 @@ export default function LoginPage() {
               replacement cards. Your account was created right after checkout &mdash; check the
               order confirmation email if you can&apos;t remember your login.
             </Lede>
-            <LoginForm />
+            <Suspense fallback={null}>
+              <LoginForm />
+            </Suspense>
             <p className="mt-6 text-sm text-muted">
               Trouble signing in? Email{" "}
               <a href={`mailto:${BRAND.email}`} className="font-medium text-ink underline-offset-4 hover:underline">

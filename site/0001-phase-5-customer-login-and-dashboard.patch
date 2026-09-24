@@ -1,0 +1,1335 @@
+From 6ac11b8221a23889711d9f74af8b9cb0aba3ad63 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 22 Sep 2026 17:18:40 +0000
+Subject: [PATCH] Add customer login and a real owner dashboard (Phase 5)
+
+Restaurant owners can create a dashboard account right after checkout
+completes (from /order/success, pre-filled with their checkout email) and
+sign back in at /login. There is no public sign-up page - every account
+starts from a real, completed Stripe checkout, verified server-side before
+the account is created.
+
+/dashboard is now gated by middleware the same way /admin already was
+(separate tn_customer_session cookie, same jose/bcryptjs pattern as
+lib/auth.ts, mirrored in the new lib/customerAuth.ts) and shows real data
+from the orders table: order status, cards ordered, the Google review link
+on file, and a working replacement-cards request form. The monthly AI
+report panel is an honest "coming soon" placeholder, since that generator
+and the Google review pull that would feed it don't exist yet (build item
+#4, currently on hold per Isiah's decision to build his own data pull).
+
+Schema: a new customers table (same shape as admin_users, kept separate so
+an owner account can never get admin access) and a nullable
+orders.customer_id, set at signup and backfilled by matching contact_email
+so a restaurant that ordered before creating an account still sees that
+order. No new environment variables.
+
+Moved components/admin/StatusBadge.tsx to components/ui/StatusBadge.tsx
+since the dashboard now needs it too, and removed data/sampleDashboard.ts,
+which nothing references anymore now that the dashboard reads real orders.
+
+See docs/14-phase-5-customer-dashboard.md for the full writeup, including
+what this doesn't do yet (no password reset).
+
+Co-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_017CFSBVX3BhXFKtcgo1PVjd
+---
+ docs/14-phase-5-customer-dashboard.md         |  69 ++++
+ site/app/(site)/admin/orders/[id]/page.tsx    |   2 +-
+ site/app/(site)/admin/orders/page.tsx         |   2 +-
+ site/app/(site)/dashboard/page.tsx            |  58 ++--
+ site/app/(site)/login/page.tsx                |  35 +--
+ site/app/(site)/order/success/page.tsx        |  43 ++-
+ site/app/api/customer/login/route.ts          |  20 ++
+ site/app/api/customer/logout/route.ts         |   7 +
+ site/app/api/customer/signup/route.ts         |  52 ++++
+ site/app/robots.ts                            |   2 +-
+ .../components/customer/CreateAccountForm.tsx |  74 +++++
+ site/components/customer/LoginForm.tsx        |  66 ++++
+ site/components/customer/LogoutButton.tsx     |  19 ++
+ site/components/dashboard/DashboardClient.tsx | 294 +++++++++---------
+ site/components/{admin => ui}/StatusBadge.tsx |   0
+ site/data/sampleDashboard.ts                  |  30 --
+ site/db/schema.sql                            |  20 ++
+ site/lib/customerAuth.ts                      | 115 +++++++
+ site/lib/orders.ts                            |  11 +
+ site/middleware.ts                            |  22 +-
+ 20 files changed, 708 insertions(+), 233 deletions(-)
+ create mode 100644 docs/14-phase-5-customer-dashboard.md
+ create mode 100644 site/app/api/customer/login/route.ts
+ create mode 100644 site/app/api/customer/logout/route.ts
+ create mode 100644 site/app/api/customer/signup/route.ts
+ create mode 100644 site/components/customer/CreateAccountForm.tsx
+ create mode 100644 site/components/customer/LoginForm.tsx
+ create mode 100644 site/components/customer/LogoutButton.tsx
+ rename site/components/{admin => ui}/StatusBadge.tsx (100%)
+ delete mode 100644 site/data/sampleDashboard.ts
+ create mode 100644 site/lib/customerAuth.ts
+
+diff --git a/docs/14-phase-5-customer-dashboard.md b/docs/14-phase-5-customer-dashboard.md
+new file mode 100644
+index 0000000..42d2d10
+--- /dev/null
++++ b/docs/14-phase-5-customer-dashboard.md
+@@ -0,0 +1,69 @@
++# Phase 5 — Customer login and dashboard
++
++What's new: restaurant owners can create a login right after checkout and sign back in
++at `/login` to see a real dashboard at `/dashboard` - their orders, status, Google review
++link, and a working "request replacement cards" form. No new environment variables and
++no new infrastructure - it reuses the same database, the same session-cookie pattern as
++`/admin`, and the same `postgres`/`bcryptjs`/`jose` stack as Phase 1.
++
++## How the account gets created
++
++There is no public "sign up" page anywhere on the site, on purpose. An account always
++starts from a real, completed order:
++
++1. A customer finishes checkout and lands on `/order/success`.
++2. If Stripe is configured, that page verifies the checkout session is real and complete,
++   then shows a "Create your dashboard login" form pre-filled with the email from
++   checkout - they just pick a password.
++3. Submitting it creates a row in a new `customers` table and links that specific order
++   to it immediately. It also links any other past orders that share the same contact
++   email, in case the same restaurant had ordered before without an account.
++4. They're signed in right away and redirected to `/dashboard`.
++
++If someone skips that step, they can come back later, go to `/login`, and... there's
++intentionally no self-serve recovery path yet - see "What this does not do yet" below.
++
++## What the dashboard actually shows
++
++Everything on `/dashboard` is real data pulled from the `orders` table for that signed-in
++account - order status, cards ordered, which design, and the Google review link on file.
++The "request replacement cards" form is the same working form Phase 1 already had
++elsewhere on the site; it emails/webhooks a real lead, it is not a placeholder.
++
++**The monthly AI report panel is intentionally a "coming soon" placeholder.** The report
++generator and the Google review pull that would feed it don't exist yet (that was
++build-item #4, and it's on hold - see the note below). The dashboard says exactly that
++rather than showing fake numbers. Once the report pipeline is built, that panel is the
++only piece that needs replacing.
++
++## Database changes
++
++Two additions to `db/schema.sql`, applied the same idempotent way as Phase 1:
++
++```bash
++cd site
++node --env-file=.env.local scripts/init-db.mjs
++```
++
++- A `customers` table (id, email, password_hash) - the same shape as `admin_users`, just
++  a second role instead of a second column on the same table, so an owner account can
++  never accidentally get admin access.
++- An `orders.customer_id` column (nullable, set once an account claims that order).
++
++No new environment variables. Customer sessions reuse `SESSION_SECRET`, just in a
++separate cookie (`tn_customer_session`) so an owner session and an admin session never
++collide, and `middleware.ts` now gates `/dashboard/*` the same edge-safe way it already
++gated `/admin/*`.
++
++## What this does not do yet
++
++- **No password reset.** If an owner forgets their password, the only path right now is
++  emailing you. A "forgot password" email flow is a reasonable next addition once this is
++  live and someone actually hits it.
++- **No self-serve signup outside the post-checkout flow.** That's deliberate - it keeps
++  every account tied to a real order - but it does mean a manually-created order (phone
++  order, etc.) needs its owner to either go through a checkout session or be created by
++  hand.
++- **The report panel is a placeholder**, as above - that's build-item #4, currently on
++  hold per your call to have your own bot pull the public Google data instead of using
++  this site's Google Places integration.
+diff --git a/site/app/(site)/admin/orders/[id]/page.tsx b/site/app/(site)/admin/orders/[id]/page.tsx
+index 75a9826..58fb9a6 100644
+--- a/site/app/(site)/admin/orders/[id]/page.tsx
++++ b/site/app/(site)/admin/orders/[id]/page.tsx
+@@ -1,7 +1,7 @@
+ import Link from "next/link";
+ import { notFound } from "next/navigation";
+ import { getOrder, listNotes } from "@/lib/orders";
+-import { StatusBadge } from "@/components/admin/StatusBadge";
++import { StatusBadge } from "@/components/ui/StatusBadge";
+ import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
+ import { NoteForm } from "@/components/admin/NoteForm";
+ 
+diff --git a/site/app/(site)/admin/orders/page.tsx b/site/app/(site)/admin/orders/page.tsx
+index bc95e79..c634288 100644
+--- a/site/app/(site)/admin/orders/page.tsx
++++ b/site/app/(site)/admin/orders/page.tsx
+@@ -1,6 +1,6 @@
+ import Link from "next/link";
+ import { listOrders, type OrderStatus } from "@/lib/orders";
+-import { StatusBadge } from "@/components/admin/StatusBadge";
++import { StatusBadge } from "@/components/ui/StatusBadge";
+ import { ORDER_STATUSES } from "@/lib/orders";
+ 
+ export const dynamic = "force-dynamic";
+diff --git a/site/app/(site)/dashboard/page.tsx b/site/app/(site)/dashboard/page.tsx
+index 206b77c..962e17a 100644
+--- a/site/app/(site)/dashboard/page.tsx
++++ b/site/app/(site)/dashboard/page.tsx
+@@ -1,46 +1,64 @@
+ import type { Metadata } from "next";
++import { redirect } from "next/navigation";
+ import { Nav } from "@/components/ui/Nav";
+ import { Footer } from "@/components/ui/Footer";
+ import { Container } from "@/components/ui/Container";
+ import { Eyebrow } from "@/components/ui/Section";
+ import { Button } from "@/components/ui/Button";
+ import { DashboardClient } from "@/components/dashboard/DashboardClient";
+-import { SAMPLE_DASHBOARD as D } from "@/data/sampleDashboard";
+-import { LINKS } from "@/lib/brand";
++import { getCustomerSession } from "@/lib/customerAuth";
++import { listOrdersForCustomer } from "@/lib/orders";
++import { BRAND } from "@/lib/brand";
++
++export const dynamic = "force-dynamic";
+ 
+ export const metadata: Metadata = {
+-  title: "Owner dashboard preview",
+-  description: "A preview of the owner dashboard: monthly reports, card taps, replacement cards, and reviews awaiting a reply.",
++  title: "Owner dashboard",
++  description: "Your card order status, your Google review link, and replacement card requests.",
+   robots: { index: false, follow: false },
+ };
+ 
+-export default function DashboardPage() {
++export default async function DashboardPage() {
++  // Middleware already redirects a signed-out visitor to /login before this
++  // renders; this check is the defensive fallback if it ever does not.
++  const session = await getCustomerSession();
++  if (!session) redirect("/login");
++
++  const orders = await listOrdersForCustomer(session.customerId);
++  const restaurantName = orders[0]?.restaurant_name;
++
+   return (
+     <>
+       <Nav />
+       <main className="flex-1 bg-paper pb-20">
+-        <div className="border-b border-line bg-paper-2">
+-          <Container className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+-            <div className="text-ink-2">
+-              Preview of the owner dashboard, filled with sample data for a fictional restaurant. Yours activates when your cards ship.
+-            </div>
+-            <Button href={`${LINKS.order}`} size="sm">
+-              Order cards and report
+-            </Button>
+-          </Container>
+-        </div>
+         <Container className="pt-10">
+           <div className="flex flex-wrap items-end justify-between gap-4">
+             <div>
+               <Eyebrow>Owner dashboard</Eyebrow>
+-              <h1 className="font-display mt-3 text-4xl leading-none sm:text-5xl">{D.restaurant}</h1>
+-              <div className="mt-2 text-sm text-muted">
+-                {D.plan} · Next report {D.nextReport} · Signed in as {D.owner}
+-              </div>
++              <h1 className="font-display mt-3 text-4xl leading-none sm:text-5xl">
++                {restaurantName || "Welcome back"}
++              </h1>
++              <div className="mt-2 text-sm text-muted">Signed in as {session.email}</div>
+             </div>
+           </div>
++
+           <div className="mt-8">
+-            <DashboardClient />
++            {orders.length === 0 ? (
++              <div className="rounded-2xl border border-dashed border-line-strong bg-white p-10 text-center">
++                <p className="text-[15px] text-ink-2">
++                  We don&apos;t have an order linked to this account yet. If you just checked out,
++                  this can take a minute to sync &mdash; refresh in a moment. Otherwise, email us
++                  and we&apos;ll connect it by hand.
++                </p>
++                <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
++                  <Button href={`mailto:${BRAND.email}`} variant="secondary">
++                    Email {BRAND.email}
++                  </Button>
++                </div>
++              </div>
++            ) : (
++              <DashboardClient orders={orders} email={session.email} />
++            )}
+           </div>
+         </Container>
+       </main>
+diff --git a/site/app/(site)/login/page.tsx b/site/app/(site)/login/page.tsx
+index 104d58e..703b242 100644
+--- a/site/app/(site)/login/page.tsx
++++ b/site/app/(site)/login/page.tsx
+@@ -1,22 +1,17 @@
+ import { Nav } from "@/components/ui/Nav";
+ import { Footer } from "@/components/ui/Footer";
+-import { Button } from "@/components/ui/Button";
+ import { Container } from "@/components/ui/Container";
+ import { Eyebrow, Heading, Lede, Section } from "@/components/ui/Section";
+-import { BRAND, LINKS } from "@/lib/brand";
++import { LoginForm } from "@/components/customer/LoginForm";
++import { BRAND } from "@/lib/brand";
+ import { Lock } from "lucide-react";
+ 
+ export const metadata = {
+   title: "Restaurant login",
+   description: `Sign in to your ${BRAND.name} dashboard to see your monthly AI review report.`,
++  robots: { index: false, follow: false },
+ };
+ 
+-/**
+- * Placeholder for the restaurant-owner dashboard (reports, review history).
+- * That product isn't built yet, so this page is honest about it rather than
+- * a dead link or a login form with nothing behind it. Swap this out once the
+- * dashboard ships.
+- */
+ export default function LoginPage() {
+   return (
+     <>
+@@ -29,21 +24,21 @@ export default function LoginPage() {
+             </div>
+             <Eyebrow className="mt-6">Restaurant login</Eyebrow>
+             <Heading as="h1" size="xl" className="mt-5">
+-              Your dashboard is on the way.
++              Welcome back.
+             </Heading>
+             <Lede className="mx-auto mt-6 max-w-lg">
+-              We&apos;re building an online dashboard where you&apos;ll be able to sign in and see your
+-              monthly AI review report, past reports, and your card order history. It isn&apos;t live
+-              yet &mdash; for now, your report is emailed directly to you every month.
++              Sign in to see your card order status, your Google review link, and request
++              replacement cards. Your account was created right after checkout &mdash; check the
++              order confirmation email if you can&apos;t remember your login.
+             </Lede>
+-            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+-              <Button href={`mailto:${BRAND.email}`} size="lg">
+-                Email us for your report
+-              </Button>
+-              <Button href={LINKS.order} variant="secondary" size="lg">
+-                Order cards
+-              </Button>
+-            </div>
++            <LoginForm />
++            <p className="mt-6 text-sm text-muted">
++              Trouble signing in? Email{" "}
++              <a href={`mailto:${BRAND.email}`} className="font-medium text-ink underline-offset-4 hover:underline">
++                {BRAND.email}
++              </a>
++              .
++            </p>
+           </Container>
+         </Section>
+       </main>
+diff --git a/site/app/(site)/order/success/page.tsx b/site/app/(site)/order/success/page.tsx
+index 058e931..d104767 100644
+--- a/site/app/(site)/order/success/page.tsx
++++ b/site/app/(site)/order/success/page.tsx
+@@ -1,15 +1,17 @@
+ import type { ReactNode } from "react";
+ import type { LucideIcon } from "lucide-react";
+-import { CheckCircle2, FileText, Image as ImageIcon, Link2, Mail, Package, Sparkles } from "lucide-react";
++import { CheckCircle2, FileText, Image as ImageIcon, LayoutDashboard, Link2, Mail, Package, Sparkles } from "lucide-react";
+ import Link from "next/link";
+ import { Nav } from "@/components/ui/Nav";
+ import { Footer } from "@/components/ui/Footer";
+ import { Section, Eyebrow, Heading, Lede } from "@/components/ui/Section";
+ import { Container } from "@/components/ui/Container";
+ import { Button } from "@/components/ui/Button";
++import { CreateAccountForm } from "@/components/customer/CreateAccountForm";
+ import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
+ import { BRAND, LINKS, PRICING } from "@/lib/brand";
+ import { getStripe } from "@/lib/stripe";
++import { getCustomerSession } from "@/lib/customerAuth";
+ 
+ export const metadata = {
+   title: "Order received",
+@@ -97,7 +99,7 @@ export default async function Page(props: { searchParams: Promise<Record<string,
+   const searchParams = await props.searchParams;
+   const raw = searchParams.session_id;
+   const sessionId = Array.isArray(raw) ? raw[0] : raw;
+-  const order = await loadOrder(sessionId);
++  const [order, customerSession] = await Promise.all([loadOrder(sessionId), getCustomerSession()]);
+ 
+   const rows: { label: string; value: string }[] = [];
+   if (order) {
+@@ -142,6 +144,43 @@ export default async function Page(props: { searchParams: Promise<Record<string,
+                 ))}
+               </dl>
+             )}
++
++            {order && sessionId && (
++              <div className="mt-10 rounded-2xl border border-line bg-white p-8 shadow-card sm:p-10">
++                <div className="flex items-center gap-3">
++                  <div className="grid h-10 w-10 place-items-center rounded-full bg-accent-soft text-accent">
++                    <LayoutDashboard className="h-5 w-5" aria-hidden="true" />
++                  </div>
++                  <Eyebrow>Your dashboard</Eyebrow>
++                </div>
++                {customerSession ? (
++                  <>
++                    <Heading size="md" className="mt-5">
++                      You&apos;re already signed in.
++                    </Heading>
++                    <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
++                      This order is on its way to your account. Track its status, your Google
++                      review link, and request replacement cards from your dashboard any time.
++                    </p>
++                    <div className="mt-6">
++                      <Button href="/dashboard">Go to my dashboard</Button>
++                    </div>
++                  </>
++                ) : (
++                  <>
++                    <Heading size="md" className="mt-5">
++                      Create your dashboard login
++                    </Heading>
++                    <p className="mt-4 text-[15px] leading-relaxed text-ink-2">
++                      Set a password now and you can track this order&apos;s status, your Google
++                      review link, and request replacement cards any time &mdash; no need to wait
++                      for the confirmation email.
++                    </p>
++                    <CreateAccountForm sessionId={sessionId} defaultEmail={order.email ?? ""} />
++                  </>
++                )}
++              </div>
++            )}
+           </Container>
+         </Section>
+ 
+diff --git a/site/app/api/customer/login/route.ts b/site/app/api/customer/login/route.ts
+new file mode 100644
+index 0000000..2490adc
+--- /dev/null
++++ b/site/app/api/customer/login/route.ts
+@@ -0,0 +1,20 @@
++import { NextResponse } from "next/server";
++import { z } from "zod";
++import { guard } from "@/lib/apiGuard";
++import { verifyCustomerPassword, createCustomerSessionCookie } from "@/lib/customerAuth";
++
++const Body = z.object({ email: z.string().email(), password: z.string().min(1) });
++
++export async function POST(req: Request) {
++  const blocked = guard(req, { key: "customer-login", limit: 10, windowMs: 10 * 60 * 1000 });
++  if (blocked) return blocked;
++
++  const parsed = Body.safeParse(await req.json().catch(() => null));
++  if (!parsed.success) return NextResponse.json({ error: "Invalid request" }, { status: 400 });
++
++  const session = await verifyCustomerPassword(parsed.data.email, parsed.data.password);
++  if (!session) return NextResponse.json({ error: "Incorrect email or password" }, { status: 401 });
++
++  await createCustomerSessionCookie(session);
++  return NextResponse.json({ ok: true });
++}
+diff --git a/site/app/api/customer/logout/route.ts b/site/app/api/customer/logout/route.ts
+new file mode 100644
+index 0000000..079453f
+--- /dev/null
++++ b/site/app/api/customer/logout/route.ts
+@@ -0,0 +1,7 @@
++import { NextResponse } from "next/server";
++import { clearCustomerSessionCookie } from "@/lib/customerAuth";
++
++export async function POST() {
++  await clearCustomerSessionCookie();
++  return NextResponse.json({ ok: true });
++}
+diff --git a/site/app/api/customer/signup/route.ts b/site/app/api/customer/signup/route.ts
+new file mode 100644
+index 0000000..96b1ef7
+--- /dev/null
++++ b/site/app/api/customer/signup/route.ts
+@@ -0,0 +1,52 @@
++import { NextResponse } from "next/server";
++import { z } from "zod";
++import { guard } from "@/lib/apiGuard";
++import { getStripe } from "@/lib/stripe";
++import { getCustomerByEmail, createCustomer, linkOrdersToCustomer, createCustomerSessionCookie } from "@/lib/customerAuth";
++
++const Body = z.object({
++  sessionId: z.string().min(1).max(200),
++  email: z.string().email(),
++  password: z.string().min(8).max(200),
++});
++
++/**
++ * Creates a dashboard login. Only reachable from the order-success page,
++ * right after a checkout completes - there is no public "sign up" form.
++ * When Stripe is configured, the session id is verified as a real, completed
++ * checkout before an account is allowed; that order is then linked to the
++ * new account, along with any other past orders sharing the same email.
++ */
++export async function POST(req: Request) {
++  const blocked = guard(req, { key: "customer-signup", limit: 10, windowMs: 10 * 60 * 1000 });
++  if (blocked) return blocked;
++
++  const parsed = Body.safeParse(await req.json().catch(() => null));
++  if (!parsed.success) return NextResponse.json({ error: "Please check the form and try again." }, { status: 400 });
++  const { sessionId, email, password } = parsed.data;
++
++  const stripe = getStripe();
++  if (stripe) {
++    if (!/^cs_(live|test)_[A-Za-z0-9]+$/.test(sessionId)) {
++      return NextResponse.json({ error: "That order could not be verified." }, { status: 400 });
++    }
++    try {
++      const session = await stripe.checkout.sessions.retrieve(sessionId);
++      if (session.status !== "complete") {
++        return NextResponse.json({ error: "That order has not finished checkout yet." }, { status: 400 });
++      }
++    } catch {
++      return NextResponse.json({ error: "That order could not be verified." }, { status: 400 });
++    }
++  }
++
++  const existing = await getCustomerByEmail(email);
++  if (existing) {
++    return NextResponse.json({ error: "An account with that email already exists. Sign in instead." }, { status: 409 });
++  }
++
++  const session = await createCustomer(email, password);
++  await linkOrdersToCustomer(session.customerId, email, sessionId);
++  await createCustomerSessionCookie(session);
++  return NextResponse.json({ ok: true });
++}
+diff --git a/site/app/robots.ts b/site/app/robots.ts
+index e19346c..a2223d6 100644
+--- a/site/app/robots.ts
++++ b/site/app/robots.ts
+@@ -3,7 +3,7 @@ import { BRAND } from "@/lib/brand";
+ 
+ export default function robots(): MetadataRoute.Robots {
+   return {
+-    rules: [{ userAgent: "*", allow: "/", disallow: ["/print/", "/api/", "/r/", "/order/success"] }],
++    rules: [{ userAgent: "*", allow: "/", disallow: ["/print/", "/api/", "/r/", "/order/success", "/dashboard", "/login"] }],
+     sitemap: `https://${BRAND.domain}/sitemap.xml`,
+   };
+ }
+diff --git a/site/components/customer/CreateAccountForm.tsx b/site/components/customer/CreateAccountForm.tsx
+new file mode 100644
+index 0000000..8feb6a3
+--- /dev/null
++++ b/site/components/customer/CreateAccountForm.tsx
+@@ -0,0 +1,74 @@
++"use client";
++
++import { useState, type FormEvent } from "react";
++import { useRouter } from "next/navigation";
++import { Button } from "@/components/ui/Button";
++
++const inputCls =
++  "w-full rounded-lg border border-line-strong bg-white px-3 py-2.5 text-ink outline-none focus:border-accent";
++
++export function CreateAccountForm({ sessionId, defaultEmail }: { sessionId: string; defaultEmail: string }) {
++  const router = useRouter();
++  const [email, setEmail] = useState(defaultEmail);
++  const [password, setPassword] = useState("");
++  const [error, setError] = useState<string | null>(null);
++  const [loading, setLoading] = useState(false);
++  const [done, setDone] = useState(false);
++
++  async function onSubmit(e: FormEvent) {
++    e.preventDefault();
++    setLoading(true);
++    setError(null);
++    const res = await fetch("/api/customer/signup", {
++      method: "POST",
++      headers: { "content-type": "application/json" },
++      body: JSON.stringify({ sessionId, email, password }),
++    });
++    setLoading(false);
++    if (!res.ok) {
++      const body = await res.json().catch(() => null);
++      setError(body?.error ?? "Something went wrong. Try again.");
++      return;
++    }
++    setDone(true);
++    router.refresh();
++    router.push("/dashboard");
++  }
++
++  if (done) {
++    return <p className="mt-6 text-sm text-accent">Account created. Taking you to your dashboard…</p>;
++  }
++
++  return (
++    <form onSubmit={onSubmit} className="mt-6 space-y-4">
++      <div>
++        <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Email</label>
++        <input
++          type="email"
++          required
++          value={email}
++          onChange={(e) => setEmail(e.target.value)}
++          className={inputCls}
++        />
++      </div>
++      <div>
++        <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">
++          Choose a password
++        </label>
++        <input
++          type="password"
++          required
++          minLength={8}
++          value={password}
++          onChange={(e) => setPassword(e.target.value)}
++          placeholder="At least 8 characters"
++          className={inputCls}
++        />
++      </div>
++      {error && <p className="text-sm text-[#9a3a12]">{error}</p>}
++      <Button type="submit" disabled={loading} className="w-full">
++        {loading ? "Creating your account…" : "Create my dashboard login"}
++      </Button>
++    </form>
++  );
++}
+diff --git a/site/components/customer/LoginForm.tsx b/site/components/customer/LoginForm.tsx
+new file mode 100644
+index 0000000..cecd40c
+--- /dev/null
++++ b/site/components/customer/LoginForm.tsx
+@@ -0,0 +1,66 @@
++"use client";
++
++import { useState, type FormEvent } from "react";
++import { useRouter, useSearchParams } from "next/navigation";
++import { Button } from "@/components/ui/Button";
++
++const inputCls =
++  "w-full rounded-lg border border-line-strong bg-white px-3 py-2.5 text-ink outline-none focus:border-accent";
++
++export function LoginForm() {
++  const router = useRouter();
++  const params = useSearchParams();
++  const [email, setEmail] = useState("");
++  const [password, setPassword] = useState("");
++  const [error, setError] = useState<string | null>(null);
++  const [loading, setLoading] = useState(false);
++
++  async function onSubmit(e: FormEvent) {
++    e.preventDefault();
++    setLoading(true);
++    setError(null);
++    const res = await fetch("/api/customer/login", {
++      method: "POST",
++      headers: { "content-type": "application/json" },
++      body: JSON.stringify({ email, password }),
++    });
++    setLoading(false);
++    if (!res.ok) {
++      const body = await res.json().catch(() => null);
++      setError(body?.error ?? "Something went wrong. Try again.");
++      return;
++    }
++    router.push(params.get("next") || "/dashboard");
++    router.refresh();
++  }
++
++  return (
++    <form onSubmit={onSubmit} className="mx-auto mt-8 max-w-sm space-y-4 text-left">
++      <div>
++        <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Email</label>
++        <input
++          type="email"
++          required
++          autoFocus
++          value={email}
++          onChange={(e) => setEmail(e.target.value)}
++          className={inputCls}
++        />
++      </div>
++      <div>
++        <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted">Password</label>
++        <input
++          type="password"
++          required
++          value={password}
++          onChange={(e) => setPassword(e.target.value)}
++          className={inputCls}
++        />
++      </div>
++      {error && <p className="text-sm text-[#9a3a12]">{error}</p>}
++      <Button type="submit" disabled={loading} className="w-full justify-center">
++        {loading ? "Signing in…" : "Sign in"}
++      </Button>
++    </form>
++  );
++}
+diff --git a/site/components/customer/LogoutButton.tsx b/site/components/customer/LogoutButton.tsx
+new file mode 100644
+index 0000000..faced24
+--- /dev/null
++++ b/site/components/customer/LogoutButton.tsx
+@@ -0,0 +1,19 @@
++"use client";
++
++import { useRouter } from "next/navigation";
++
++export function LogoutButton() {
++  const router = useRouter();
++  return (
++    <button
++      onClick={async () => {
++        await fetch("/api/customer/logout", { method: "POST" });
++        router.push("/login");
++        router.refresh();
++      }}
++      className="text-muted underline-offset-2 hover:text-ink hover:underline"
++    >
++      Sign out
++    </button>
++  );
++}
+diff --git a/site/components/dashboard/DashboardClient.tsx b/site/components/dashboard/DashboardClient.tsx
+index e3671b1..8712d48 100644
+--- a/site/components/dashboard/DashboardClient.tsx
++++ b/site/components/dashboard/DashboardClient.tsx
+@@ -1,19 +1,39 @@
+ "use client";
+ 
+ import { useState } from "react";
+-import { Columns } from "@/components/report/charts";
+ import { Button } from "@/components/ui/Button";
+-import { Stars } from "@/components/ui/Stars";
+-import { SAMPLE_DASHBOARD as D } from "@/data/sampleDashboard";
+-import { SAMPLE_REPORT as R } from "@/data/sampleReport";
+-import { BRAND, PRICING } from "@/lib/brand";
++import { StatusBadge } from "@/components/ui/StatusBadge";
++import { LogoutButton } from "@/components/customer/LogoutButton";
++import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
++import type { Order } from "@/lib/orders";
++import { BRAND, LINKS, PRICING } from "@/lib/brand";
+ import { cn } from "@/lib/cn";
+-import { FileText, CreditCard, Link2, Users, RefreshCw, Download, MessageSquare, Check, Copy } from "lucide-react";
++import { FileText, Link2, Mail, RefreshCw, Package, Clock } from "lucide-react";
+ 
+ const inputCls =
+   "h-10 w-full rounded-xl border border-line-strong bg-white px-3 text-[14px] outline-none transition-colors placeholder:text-muted/70 focus:border-ink";
+ 
+-function Panel({ title, icon: Icon, children, className, action }: { title: string; icon: typeof FileText; children: React.ReactNode; className?: string; action?: React.ReactNode }) {
++function isTemplate(v: string): v is CardTemplate {
++  return v in TEMPLATE_META;
++}
++
++function templateName(v: string): string {
++  return isTemplate(v) ? TEMPLATE_META[v].name : v || "Custom";
++}
++
++function Panel({
++  title,
++  icon: Icon,
++  children,
++  className,
++  action,
++}: {
++  title: string;
++  icon: typeof FileText;
++  children: React.ReactNode;
++  className?: string;
++  action?: React.ReactNode;
++}) {
+   return (
+     <section className={cn("rounded-2xl border border-line bg-white p-5 sm:p-6", className)}>
+       <div className="flex items-center justify-between gap-3">
+@@ -27,13 +47,15 @@ function Panel({ title, icon: Icon, children, className, action }: { title: stri
+   );
+ }
+ 
+-export function DashboardClient() {
+-  const s = R.summary;
+-  const [staffNames, setStaffNames] = useState(true);
+-  const [replQty, setReplQty] = useState(2);
++export function DashboardClient({ orders, email }: { orders: Order[]; email: string }) {
++  const latest = orders[0];
++  const totalCards = orders.reduce((sum, o) => sum + o.cards, 0);
++  const hasReport = orders.some((o) => o.has_report);
++  const linkedOrder = orders.find((o) => o.google_review_link);
++
++  const [replQty, setReplQty] = useState(Math.min(4, PRICING.freeReplacementCardsPerMonth));
+   const [replNote, setReplNote] = useState("");
+   const [replState, setReplState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+-  const [copied, setCopied] = useState<number | null>(null);
+ 
+   async function requestReplacements() {
+     setReplState("sending");
+@@ -41,7 +63,13 @@ export function DashboardClient() {
+       const res = await fetch("/api/lead", {
+         method: "POST",
+         headers: { "content-type": "application/json" },
+-        body: JSON.stringify({ kind: "replacement", name: D.owner, restaurant: D.restaurant, email: D.recipients[0], message: `Replacement request: ${replQty} cards. ${replNote}` }),
++        body: JSON.stringify({
++          kind: "replacement",
++          name: latest.contact_name || email,
++          restaurant: latest.restaurant_name,
++          email,
++          message: `Replacement request: ${replQty} cards. ${replNote}`,
++        }),
+       });
+       setReplState(res.ok ? "sent" : "error");
+     } catch {
+@@ -49,142 +77,87 @@ export function DashboardClient() {
+     }
+   }
+ 
+-  function copyDraft(i: number, text: string) {
+-    navigator.clipboard?.writeText(text).then(() => {
+-      setCopied(i);
+-      setTimeout(() => setCopied(null), 1500);
+-    });
+-  }
+-
+   return (
+     <div className="grid gap-4 lg:grid-cols-3">
+       {/* stat tiles */}
+       <div className="grid gap-3 sm:grid-cols-4 lg:col-span-3">
+         {[
+-          { l: "Card taps this month", v: String(s.cardTaps), d: "up 38% vs July" },
+-          { l: "New reviews", v: String(s.reviews), d: `+${s.reviews - s.reviewsPrev} vs July` },
+-          { l: "Average rating", v: s.avgRating.toFixed(1), d: `+${(s.avgRating - s.avgRatingPrev).toFixed(1)} vs July` },
+-          { l: "Reviews awaiting reply", v: String(D.awaitingReply.length), d: "drafts ready below" },
++          { l: "Cards ordered", v: String(totalCards) },
++          { l: "Current status", v: <StatusBadge status={latest.status} /> },
++          { l: "Monthly report", v: hasReport ? "Included" : "Not included" },
++          { l: "Free replacements", v: hasReport ? `${PRICING.freeReplacementCardsPerMonth}/month` : "—" },
+         ].map((t) => (
+           <div key={t.l} className="rounded-2xl border border-line bg-white p-4">
+             <div className="text-xs text-muted">{t.l}</div>
+-            <div className="mt-1 text-3xl font-semibold tracking-tight">{t.v}</div>
+-            <div className="mt-1 text-xs font-medium text-accent">{t.d}</div>
++            <div className="mt-1.5 text-2xl font-semibold tracking-tight">{t.v}</div>
+           </div>
+         ))}
+       </div>
+ 
+-      {/* this month's report */}
+-      <Panel title="This month's report" icon={FileText} className="lg:col-span-2" action={<span className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent">Ready</span>}>
+-        <div className="flex flex-wrap items-start justify-between gap-4">
+-          <div className="max-w-xl">
+-            <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">{R.period}</div>
+-            <p className="mt-2 text-[15px] leading-relaxed text-ink-2">{R.headline}</p>
+-          </div>
+-          <div className="flex flex-col gap-2">
+-            <Button href="/sample-report" size="sm">
+-              Read the report
+-            </Button>
+-            <Button href="/print/report-onepager" variant="secondary" size="sm">
+-              <Download className="h-4 w-4" /> One-page PDF
+-            </Button>
+-          </div>
+-        </div>
+-        <div className="mt-5 border-t border-line pt-4">
+-          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Past reports</div>
+-          <ul className="mt-2 divide-y divide-line">
+-            {D.reports.slice(1).map((r) => (
+-              <li key={r.period} className="flex items-center justify-between py-2.5 text-sm">
+-                <a href={r.href} className="font-medium underline-offset-4 hover:underline">
+-                  {r.period}
+-                </a>
+-                <span className="flex items-center gap-3 text-muted">
+-                  <span>{r.reviews} reviews</span>
+-                  <span className="flex items-center gap-1">
+-                    <Stars value={r.rating} size="h-3 w-3" /> {r.rating.toFixed(1)}
+-                  </span>
+-                </span>
+-              </li>
+-            ))}
+-          </ul>
+-        </div>
+-      </Panel>
+-
+-      {/* taps */}
+-      <Panel title="Card taps by week" icon={RefreshCw}>
+-        <Columns data={D.tapsByWeek} highlightIndex={D.tapsByWeek.length - 1} ariaLabel="Card taps per week in August" />
+-        <p className="mt-2 text-xs text-muted">
+-          {Math.round((s.reviews / s.cardTaps) * 100)}% of taps became a posted review. Taps count on your short link {D.shortLink}.
+-        </p>
+-      </Panel>
+-
+-      {/* awaiting reply */}
+-      <Panel title="Reviews awaiting your reply" icon={MessageSquare} className="lg:col-span-2">
+-        <ul className="space-y-3">
+-          {D.awaitingReply.map((r, i) => (
+-            <li key={r.excerpt} className="rounded-xl border border-line bg-paper p-4">
+-              <div className="flex items-center justify-between text-xs text-muted">
+-                <span className="flex items-center gap-2">
+-                  <Stars value={r.stars} size="h-3 w-3" /> {r.stars}-star · {r.when}
+-                </span>
+-              </div>
+-              <p className="mt-2 text-sm italic text-ink-2">“{r.excerpt}”</p>
+-              <div className="mt-3 rounded-lg bg-white p-3 text-sm leading-relaxed">{r.draft}</div>
+-              <div className="mt-2 flex gap-2">
+-                <button type="button" onClick={() => copyDraft(i, r.draft)} className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white px-3 py-1.5 text-xs font-medium hover:border-ink">
+-                  {copied === i ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />} {copied === i ? "Copied" : "Copy draft"}
+-                </button>
+-                <a href={D.googleLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium text-muted hover:text-ink">
+-                  Open in Google
+-                </a>
++      {/* orders */}
++      <Panel title="Your orders" icon={Package} className="lg:col-span-2">
++        <ul className="divide-y divide-line">
++          {orders.map((o) => (
++            <li key={o.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
++              <div>
++                <div className="font-medium text-ink">
++                  {o.restaurant_name} <span className="font-normal text-muted">· {templateName(o.template)}</span>
++                </div>
++                <div className="mt-0.5 text-xs text-muted">
++                  {o.cards} cards · placed {new Date(o.created_at).toLocaleDateString()}
++                </div>
+               </div>
++              <StatusBadge status={o.status} />
+             </li>
+           ))}
+         </ul>
+       </Panel>
+ 
+-      {/* cards + replacements */}
+-      <Panel title="Your cards" icon={CreditCard}>
+-        <dl className="grid grid-cols-2 gap-3 text-sm">
+-          {[
+-            ["In service", D.cards.inService],
+-            ["Replaced this month", D.cards.replacedThisMonth],
+-            ["Free replacements left", D.cards.freeReplacementsLeft],
+-            ["Reported lost", D.cards.lost],
+-          ].map(([k, v]) => (
+-            <div key={String(k)} className="rounded-xl bg-paper p-3">
+-              <dt className="text-xs text-muted">{k}</dt>
+-              <dd className="mt-0.5 text-xl font-semibold">{v}</dd>
+-            </div>
+-          ))}
+-        </dl>
+-        <div className="mt-4 border-t border-line pt-4">
+-          <div className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Request replacement cards</div>
+-          {replState === "sent" ? (
+-            <p className="mt-2 text-sm text-accent">Request received. Replacements ship with the same design within a few days.</p>
+-          ) : (
+-            <div className="mt-2 flex flex-col gap-2">
+-              <div className="flex items-center gap-2">
+-                <input type="number" min={1} max={PRICING.freeReplacementCardsPerMonth} value={replQty} onChange={(e) => setReplQty(Math.max(1, Math.min(PRICING.freeReplacementCardsPerMonth, Number(e.target.value) || 1)))} className={cn(inputCls, "w-20")} aria-label="Number of replacement cards" />
+-                <span className="text-xs text-muted">of {PRICING.freeReplacementCardsPerMonth} free this month</span>
+-              </div>
+-              <input className={inputCls} value={replNote} onChange={(e) => setReplNote(e.target.value.slice(0, 200))} placeholder="Lost, damaged, new server…" aria-label="Reason" />
+-              <Button size="sm" onClick={requestReplacements} disabled={replState === "sending"}>
+-                {replState === "sending" ? "Sending" : "Send request"}
+-              </Button>
+-              {replState === "error" && <p className="text-xs text-[#9a3a12]">Could not send. Email {BRAND.email} instead.</p>}
+-            </div>
+-          )}
++      {/* report - honest placeholder, the generator does not exist yet */}
++      <Panel
++        title="Your monthly report"
++        icon={FileText}
++        action={
++          <span className="rounded-full bg-paper-2 px-2.5 py-1 text-[11px] font-semibold text-muted">
++            Coming soon
++          </span>
++        }
++      >
++        <p className="text-sm leading-relaxed text-ink-2">
++          We&apos;re building the piece that reads your Google reviews each month and puts a report
++          together automatically. Once it launches, it will show up here and you&apos;ll get an
++          email &mdash; nothing you need to do in the meantime.
++        </p>
++        <div className="mt-4">
++          <Button href={LINKS.report} variant="secondary" size="sm">
++            See a sample report
++          </Button>
+         </div>
+       </Panel>
+ 
+       {/* google link */}
+       <Panel title="Where your cards point" icon={Link2}>
+-        <div className="flex items-center gap-2 text-sm">
+-          <span className="h-2 w-2 rounded-full bg-accent" /> Connected to {D.restaurant}
+-        </div>
+-        <div className="mt-2 truncate rounded-xl bg-paper px-3 py-2 font-mono text-xs text-ink-2">{D.googleLink}</div>
+-        <p className="mt-2 text-xs text-muted">Every card and QR code goes through {D.shortLink}. If your listing ever changes, we re-point it and the cards keep working.</p>
++        {linkedOrder ? (
++          <>
++            <div className="flex items-center gap-2 text-sm">
++              <span className="h-2 w-2 rounded-full bg-accent" /> Connected to {linkedOrder.restaurant_name}
++            </div>
++            <div className="mt-2 truncate rounded-xl bg-paper px-3 py-2 font-mono text-xs text-ink-2">
++              {linkedOrder.google_review_link}
++            </div>
++            <p className="mt-2 text-xs text-muted">
++              If your listing ever changes, we re-point it and the cards keep working.
++            </p>
++          </>
++        ) : (
++          <div className="flex items-start gap-2 text-sm text-muted">
++            <Clock className="mt-0.5 h-4 w-4 shrink-0" />
++            <p>
++              We don&apos;t have your Google review link on file yet. Reply to your confirmation
++              email with it and we&apos;ll connect it within one business day.
++            </p>
++          </div>
++        )}
+         <div className="mt-3">
+           <Button href={`mailto:${BRAND.email}?subject=Update%20our%20Google%20link`} variant="secondary" size="sm">
+             Ask us to update it
+@@ -192,30 +165,51 @@ export function DashboardClient() {
+         </div>
+       </Panel>
+ 
+-      {/* settings */}
+-      <Panel title="Report settings" icon={Users}>
+-        <div className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Report goes to</div>
+-        <ul className="mt-2 space-y-1 text-sm">
+-          {D.recipients.map((r) => (
+-            <li key={r} className="rounded-lg bg-paper px-3 py-1.5">{r}</li>
+-          ))}
+-        </ul>
+-        <label className="mt-4 flex items-center justify-between gap-3 text-sm">
+-          <span>
+-            Name servers in the report
+-            <span className="block text-xs text-muted">Only when guests name them. Off keeps it to “a server”.</span>
+-          </span>
+-          <button type="button" role="switch" aria-checked={staffNames} onClick={() => setStaffNames((v) => !v)} className={cn("relative h-6 w-11 shrink-0 rounded-full transition-colors", staffNames ? "bg-accent" : "bg-line-strong")}>
+-            <span className={cn("absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform", staffNames ? "translate-x-5.5" : "translate-x-0.5")} />
+-          </button>
+-        </label>
+-        <div className="mt-4 flex flex-wrap gap-2">
+-          <Button href={`/print/staff-guide?name=${encodeURIComponent(D.restaurant)}`} variant="secondary" size="sm">
+-            <Download className="h-4 w-4" /> Staff guide
+-          </Button>
+-          <Button href={`mailto:${BRAND.email}?subject=Billing`} variant="secondary" size="sm">
+-            Manage billing
+-          </Button>
++      {/* replacements */}
++      <Panel title="Request replacement cards" icon={RefreshCw}>
++        {replState === "sent" ? (
++          <p className="text-sm text-accent">Request received. Replacements ship with the same design within a few days.</p>
++        ) : (
++          <div className="flex flex-col gap-2">
++            <div className="flex items-center gap-2">
++              <input
++                type="number"
++                min={1}
++                max={99}
++                value={replQty}
++                onChange={(e) => setReplQty(Math.max(1, Math.min(99, Number(e.target.value) || 1)))}
++                className={cn(inputCls, "w-20")}
++                aria-label="Number of replacement cards"
++              />
++              <span className="text-xs text-muted">
++                {hasReport ? `of ${PRICING.freeReplacementCardsPerMonth} free this month` : "cards"}
++              </span>
++            </div>
++            <input
++              className={inputCls}
++              value={replNote}
++              onChange={(e) => setReplNote(e.target.value.slice(0, 200))}
++              placeholder="Lost, damaged, new location…"
++              aria-label="Reason"
++            />
++            <Button size="sm" onClick={requestReplacements} disabled={replState === "sending"}>
++              {replState === "sending" ? "Sending" : "Send request"}
++            </Button>
++            {replState === "error" && <p className="text-xs text-[#9a3a12]">Could not send. Email {BRAND.email} instead.</p>}
++          </div>
++        )}
++      </Panel>
++
++      {/* account */}
++      <Panel title="Account" icon={Mail} className="lg:col-span-2">
++        <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
++          <span className="text-ink-2">Signed in as {email}</span>
++          <div className="flex items-center gap-4">
++            <a href={`mailto:${BRAND.email}?subject=Billing`} className="text-muted underline-offset-2 hover:text-ink hover:underline">
++              Manage billing
++            </a>
++            <LogoutButton />
++          </div>
+         </div>
+       </Panel>
+     </div>
+diff --git a/site/components/admin/StatusBadge.tsx b/site/components/ui/StatusBadge.tsx
+similarity index 100%
+rename from site/components/admin/StatusBadge.tsx
+rename to site/components/ui/StatusBadge.tsx
+diff --git a/site/data/sampleDashboard.ts b/site/data/sampleDashboard.ts
+deleted file mode 100644
+index 9e94413..0000000
+--- a/site/data/sampleDashboard.ts
++++ /dev/null
+@@ -1,30 +0,0 @@
+-import { SAMPLE_REPORT } from "./sampleReport";
+-
+-/** Fictional dashboard data for the demo owner dashboard. */
+-export const SAMPLE_DASHBOARD = {
+-  restaurant: SAMPLE_REPORT.restaurant,
+-  plan: "Cards + monthly report",
+-  nextReport: "October 1, 2026",
+-  owner: "Lucia Romano",
+-  recipients: ["lucia@luciastrattoria.com", "gm@luciastrattoria.com"],
+-  googleLink: "https://search.google.com/local/writereview?placeid=ChIJ...Ew",
+-  shortLink: "tblnt.com/r/lucias",
+-  cards: { inService: 12, replacedThisMonth: 2, freeReplacementsLeft: 8, lost: 1 },
+-  tapsByWeek: [
+-    { label: "Aug 3", value: 41 },
+-    { label: "Aug 10", value: 52 },
+-    { label: "Aug 17", value: 58 },
+-    { label: "Aug 24", value: 63 },
+-  ],
+-  reports: [
+-    { period: "August 2026", reviews: 87, rating: 4.6, status: "ready", href: "/sample-report" },
+-    { period: "July 2026", reviews: 41, rating: 4.4, status: "ready", href: "/sample-report" },
+-    { period: "June 2026", reviews: 38, rating: 4.4, status: "ready", href: "/sample-report" },
+-    { period: "May 2026", reviews: 31, rating: 4.3, status: "ready", href: "/sample-report" },
+-  ],
+-  awaitingReply: [
+-    { stars: 2, when: "3 days ago", excerpt: "Told 20 min, seated after 45. Food was great but we were hangry by then.", draft: SAMPLE_REPORT.repliesToWrite[0].draft },
+-    { stars: 3, when: "6 days ago", excerpt: "Loved the food, could not hear my husband.", draft: SAMPLE_REPORT.repliesToWrite[1].draft },
+-    { stars: 5, when: "1 day ago", excerpt: "Ask for the patio. Trust me.", draft: "Thank you. The patio is our favorite spot too. See you under the lights again soon." },
+-  ],
+-};
+diff --git a/site/db/schema.sql b/site/db/schema.sql
+index 313eb8e..15f1a32 100644
+--- a/site/db/schema.sql
++++ b/site/db/schema.sql
+@@ -9,6 +9,16 @@ create table if not exists admin_users (
+   created_at timestamptz not null default now()
+ );
+ 
++-- Restaurant-owner accounts for the customer dashboard. Created right after
++-- checkout completes (see app/api/customer/signup), not at signup-anywhere -
++-- an account always starts from a real completed order.
++create table if not exists customers (
++  id serial primary key,
++  email text not null unique,
++  password_hash text not null,
++  created_at timestamptz not null default now()
++);
++
+ create table if not exists orders (
+   id serial primary key,
+   -- Stripe identifiers, used to upsert from the webhook without duplicating on retries.
+@@ -53,6 +63,11 @@ create table if not exists orders (
+ 
+   notes text default '',
+ 
++  -- Set once the customer who placed this order creates a dashboard login
++  -- (see app/api/customer/signup). Null until then - most orders are linked
++  -- automatically by matching contact_email when the account is created.
++  customer_id integer references customers(id) on delete set null,
++
+   created_at timestamptz not null default now(),
+   updated_at timestamptz not null default now()
+ );
+@@ -60,6 +75,11 @@ create table if not exists orders (
+ create index if not exists orders_restaurant_name_idx on orders using gin (to_tsvector('english', restaurant_name));
+ create index if not exists orders_status_idx on orders (status);
+ create index if not exists orders_created_at_idx on orders (created_at desc);
++create index if not exists orders_customer_id_idx on orders (customer_id);
++-- Postgres.js sends the empty string for a blank contact_email, not null - a
++-- plain unique/lower() index would collide across every order missing one,
++-- so the customer-linking lookup filters those out with a partial index.
++create index if not exists orders_contact_email_idx on orders (lower(contact_email)) where contact_email <> '';
+ 
+ -- Free-form notes an admin adds while working an order, separate from the
+ -- customer-facing `notes` field they submitted at checkout.
+diff --git a/site/lib/customerAuth.ts b/site/lib/customerAuth.ts
+new file mode 100644
+index 0000000..bef827d
+--- /dev/null
++++ b/site/lib/customerAuth.ts
+@@ -0,0 +1,115 @@
++import { cookies } from "next/headers";
++import { SignJWT, jwtVerify } from "jose";
++import bcrypt from "bcryptjs";
++import { sql } from "@/lib/db";
++
++const COOKIE_NAME = "tn_customer_session";
++const SESSION_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days - owners check this occasionally, not daily
++
++function secretKey() {
++  const secret = process.env.SESSION_SECRET;
++  if (!secret || secret.length < 16) {
++    throw new Error(
++      "SESSION_SECRET is not set (or too short). Generate one with `openssl rand -base64 32` " +
++        "and add it to your environment."
++    );
++  }
++  return new TextEncoder().encode(secret);
++}
++
++export type CustomerSession = { customerId: number; email: string };
++
++/**
++ * Creates a dashboard login. Only called right after a real completed Stripe
++ * checkout (see app/api/customer/signup) - there is no open "sign up" form
++ * anywhere on the public site, on purpose: an account always starts from an
++ * order that already exists.
++ */
++export async function createCustomer(email: string, password: string): Promise<CustomerSession> {
++  const normalizedEmail = email.toLowerCase().trim();
++  const passwordHash = await bcrypt.hash(password, 12);
++  const rows = await sql<{ id: number }[]>`
++    insert into customers (email, password_hash) values (${normalizedEmail}, ${passwordHash})
++    returning id
++  `;
++  return { customerId: rows[0].id, email: normalizedEmail };
++}
++
++export async function getCustomerByEmail(email: string): Promise<{ id: number } | null> {
++  const rows = await sql<{ id: number }[]>`
++    select id from customers where email = ${email.toLowerCase().trim()} limit 1
++  `;
++  return rows[0] ?? null;
++}
++
++export async function verifyCustomerPassword(email: string, password: string): Promise<CustomerSession | null> {
++  const rows = await sql<{ id: number; email: string; password_hash: string }[]>`
++    select id, email, password_hash from customers where email = ${email.toLowerCase().trim()} limit 1
++  `;
++  const user = rows[0];
++  if (!user) return null;
++  const ok = await bcrypt.compare(password, user.password_hash);
++  if (!ok) return null;
++  return { customerId: user.id, email: user.email };
++}
++
++/**
++ * Attaches every existing order that matches this email (and has no owner
++ * yet) to this customer account, plus - by session id, when it is known and
++ * that order hasn't been picked up by the email match already - the specific
++ * order that triggered the signup. Safe to call more than once.
++ */
++export async function linkOrdersToCustomer(customerId: number, email: string, stripeSessionId?: string | null): Promise<void> {
++  const normalizedEmail = email.toLowerCase().trim();
++  if (normalizedEmail) {
++    await sql`
++      update orders set customer_id = ${customerId}, updated_at = now()
++      where customer_id is null and lower(contact_email) = ${normalizedEmail}
++    `;
++  }
++  if (stripeSessionId) {
++    await sql`
++      update orders set customer_id = ${customerId}, updated_at = now()
++      where customer_id is null and stripe_session_id = ${stripeSessionId}
++    `;
++  }
++}
++
++export async function createCustomerSessionCookie(session: CustomerSession) {
++  const token = await new SignJWT({ email: session.email })
++    .setProtectedHeader({ alg: "HS256" })
++    .setSubject(String(session.customerId))
++    .setIssuedAt()
++    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
++    .sign(secretKey());
++
++  const jar = await cookies();
++  jar.set(COOKIE_NAME, token, {
++    httpOnly: true,
++    secure: process.env.NODE_ENV === "production",
++    sameSite: "lax",
++    path: "/",
++    maxAge: SESSION_TTL_SECONDS,
++  });
++}
++
++export async function clearCustomerSessionCookie() {
++  const jar = await cookies();
++  jar.delete(COOKIE_NAME);
++}
++
++/** Reads and verifies the session cookie. Returns null if missing/invalid/expired. */
++export async function getCustomerSession(): Promise<CustomerSession | null> {
++  const jar = await cookies();
++  const token = jar.get(COOKIE_NAME)?.value;
++  if (!token) return null;
++  try {
++    const { payload } = await jwtVerify(token, secretKey());
++    if (!payload.sub || typeof payload.email !== "string") return null;
++    return { customerId: Number(payload.sub), email: payload.email };
++  } catch {
++    return null;
++  }
++}
++
++export { COOKIE_NAME as CUSTOMER_SESSION_COOKIE };
+diff --git a/site/lib/orders.ts b/site/lib/orders.ts
+index 0d718df..4ef5265 100644
+--- a/site/lib/orders.ts
++++ b/site/lib/orders.ts
+@@ -34,6 +34,7 @@ export type Order = {
+   shipping_postal_code: string;
+   shipping_country: string;
+   notes: string;
++  customer_id: number | null;
+   created_at: string;
+   updated_at: string;
+ };
+@@ -132,6 +133,16 @@ export async function getOrder(id: number): Promise<Order | null> {
+   return rows[0] ?? null;
+ }
+ 
++export async function getOrderByStripeSessionId(sessionId: string): Promise<Order | null> {
++  const rows = await sql<Order[]>`select * from orders where stripe_session_id = ${sessionId} limit 1`;
++  return rows[0] ?? null;
++}
++
++/** Every order linked to this dashboard account, newest first. */
++export async function listOrdersForCustomer(customerId: number): Promise<Order[]> {
++  return sql<Order[]>`select * from orders where customer_id = ${customerId} order by created_at desc`;
++}
++
+ export async function updateOrderStatus(id: number, status: OrderStatus): Promise<void> {
+   await sql`update orders set status = ${status}, updated_at = now() where id = ${id}`;
+ }
+diff --git a/site/middleware.ts b/site/middleware.ts
+index e875115..446185d 100644
+--- a/site/middleware.ts
++++ b/site/middleware.ts
+@@ -1,18 +1,24 @@
+ import { NextResponse, type NextRequest } from "next/server";
+ import { jwtVerify } from "jose";
+ 
+-const COOKIE_NAME = "tn_admin_session";
++const ADMIN_COOKIE = "tn_admin_session";
++const CUSTOMER_COOKIE = "tn_customer_session";
+ 
+ /**
+- * Gate everything under /admin behind a signed session cookie. Verified here
+- * (edge-safe with jose) rather than importing lib/auth.ts, which pulls in the
+- * Postgres client - middleware should stay dependency-light.
++ * Gate /admin and /dashboard behind their own signed session cookies.
++ * Verified here (edge-safe with jose) rather than importing lib/auth.ts or
++ * lib/customerAuth.ts, which pull in the Postgres client - middleware should
++ * stay dependency-light.
+  */
+ export async function middleware(req: NextRequest) {
+   const { pathname } = req.nextUrl;
+-  if (pathname === "/admin/login") return NextResponse.next();
++  if (pathname === "/admin/login" || pathname === "/login") return NextResponse.next();
+ 
+-  const token = req.cookies.get(COOKIE_NAME)?.value;
++  const isAdminRoute = pathname.startsWith("/admin");
++  const cookieName = isAdminRoute ? ADMIN_COOKIE : CUSTOMER_COOKIE;
++  const loginPath = isAdminRoute ? "/admin/login" : "/login";
++
++  const token = req.cookies.get(cookieName)?.value;
+   const secret = process.env.SESSION_SECRET;
+   if (token && secret) {
+     try {
+@@ -22,11 +28,11 @@ export async function middleware(req: NextRequest) {
+       // fall through to redirect
+     }
+   }
+-  const loginUrl = new URL("/admin/login", req.url);
++  const loginUrl = new URL(loginPath, req.url);
+   loginUrl.searchParams.set("next", pathname);
+   return NextResponse.redirect(loginUrl);
+ }
+ 
+ export const config = {
+-  matcher: ["/admin/:path*"],
++  matcher: ["/admin/:path*", "/dashboard/:path*"],
+ };
+-- 
+2.43.0
+
