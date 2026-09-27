@@ -37,7 +37,10 @@ export async function POST(req: Request) {
       amount_total: (s.amount_total ?? 0) / 100,
       currency: s.currency,
       email: s.customer_details?.email ?? s.customer_email ?? "",
-      phone: s.customer_details?.phone ?? "",
+      // Prefer the phone number the customer typed into our own contact form
+      // (always present, sent as metadata) over Stripe's own phone prompt,
+      // which the shopper can skip entirely.
+      phone: m.contact_phone || s.customer_details?.phone || "",
       name: m.contact_name ?? s.customer_details?.name ?? "",
       restaurant: m.restaurant ?? "",
       restaurant_address: m.restaurant_address ?? "",
