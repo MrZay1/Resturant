@@ -84,9 +84,16 @@ export type NewOrderInput = {
 /**
  * Insert or update the order for this Stripe session. Upsert on
  * stripe_session_id so a Stripe webhook retry never creates a duplicate row.
+ *
+ * If a dashboard account already exists for this email (a repeat customer,
+ * or one who signed up on a previous order before this one's webhook landed),
+ * the new order is linked to it immediately - it does not have to wait on
+ * customer/signup's one-time link step, which only runs at signup and never
+ * retries.
  */
 export async function upsertOrderFromStripe(input: NewOrderInput): Promise<Order> {
   const s = input.shipping;
+  const normalizedEmail = input.contactEmail.toLowerCase().trim();
   const rows = await sql<Order[]>`
     insert into orders (
       stripe_session_id, stripe_subscription_id, stripe_customer_id,
@@ -95,7 +102,7 @@ export async function upsertOrderFromStripe(input: NewOrderInput): Promise<Order
       link_mode, google_review_link,
       contact_name, contact_email, contact_phone,
       shipping_line1, shipping_line2, shipping_city, shipping_state, shipping_postal_code, shipping_country,
-      notes
+      notes, customer_id
     ) values (
       ${input.stripeSessionId}, ${input.stripeSubscriptionId}, ${input.stripeCustomerId},
       ${input.restaurantName}, ${input.restaurantAddress}, ${input.cards}, ${input.hasReport}, ${input.amountTotal},
@@ -103,11 +110,13 @@ export async function upsertOrderFromStripe(input: NewOrderInput): Promise<Order
       ${input.linkMode}, ${input.googleReviewLink},
       ${input.contactName}, ${input.contactEmail}, ${input.contactPhone},
       ${s?.line1 ?? ""}, ${s?.line2 ?? ""}, ${s?.city ?? ""}, ${s?.state ?? ""}, ${s?.postal_code ?? ""}, ${s?.country ?? ""},
-      ${input.notes}
+      ${input.notes},
+      ${normalizedEmail ? sql`(select id from customers where lower(email) = ${normalizedEmail} limit 1)` : null}
     )
     on conflict (stripe_session_id) do update set
       restaurant_name = excluded.restaurant_name,
       amount_total = excluded.amount_total,
+      customer_id = coalesce(orders.customer_id, excluded.customer_id),
       updated_at = now()
     returning *
   `;
