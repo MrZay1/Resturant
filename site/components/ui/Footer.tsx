@@ -60,11 +60,19 @@ export function Footer() {
             </div>
           ))}
         </div>
-        <div className="mt-12 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-paper/40 sm:flex-row sm:items-center sm:justify-between">
+               <div className="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/10 pt-6 text-xs text-paper/40">
           <div>© {new Date().getFullYear()} {BRAND.legalName}. All rights reserved.</div>
           <div>
             Google and Google Maps are trademarks of Google LLC. {BRAND.name} is not affiliated with or endorsed by Google.
           </div>
+          <a
+            href="https://www.vaguesite.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-paper/40 underline-offset-4 hover:text-paper/70 hover:underline"
+          >
+            Site by Vague LLC
+          </a>
         </div>
       </Container>
     </footer>
