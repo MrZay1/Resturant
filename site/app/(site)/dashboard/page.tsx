@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Section";
 import { Button } from "@/components/ui/Button";
 import { DashboardClient } from "@/components/dashboard/DashboardClient";
-import { getCustomerSession } from "@/lib/customerAuth";
+import { getCustomerSession, linkOrdersToCustomer } from "@/lib/customerAuth";
 import { listOrdersForCustomer } from "@/lib/orders";
 import { BRAND } from "@/lib/brand";
 
@@ -24,7 +24,18 @@ export default async function DashboardPage() {
   const session = await getCustomerSession();
   if (!session) redirect("/login");
 
-  const orders = await listOrdersForCustomer(session.customerId);
+  let orders = await listOrdersForCustomer(session.customerId);
+  // Linking normally happens once, at signup (see app/api/customer/signup) - but
+  // that runs before the Stripe webhook is guaranteed to have saved the order
+  // yet, so it can lose that race and never link anything. There is no retry
+  // anywhere else, so a customer who hit that race stayed stuck on an empty
+  // dashboard forever, no matter how long they waited. Retrying the same
+  // (idempotent, "where customer_id is null") link here means the first
+  // dashboard visit after the order actually lands fixes it automatically.
+  if (orders.length === 0) {
+    await linkOrdersToCustomer(session.customerId, session.email);
+    orders = await listOrdersForCustomer(session.customerId);
+  }
   const restaurantName = orders[0]?.restaurant_name;
 
   return (
