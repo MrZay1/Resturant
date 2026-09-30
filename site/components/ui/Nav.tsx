@@ -1,17 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { ChevronDown, Menu, User, X } from "lucide-react";
+import { useState } from "react";
+import { Menu, User, X } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { LINKS } from "@/lib/brand";
-import { cn } from "@/lib/cn";
 
-/** Grouped under the "How it works" dropdown, keeping the top-level bar short. */
-const dropdownItems = [
+/** Laid out flat across the bar - no dropdown. */
+const navItems = [
   { href: LINKS.howItWorks, label: "How it works" },
   { href: LINKS.report, label: "Sample report" },
   { href: LINKS.pricing, label: "Pricing" },
@@ -20,16 +18,6 @@ const dropdownItems = [
 
 export function Nav() {
   const [open, setOpen] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function onClick(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
-    }
-    document.addEventListener("click", onClick);
-    return () => document.removeEventListener("click", onClick);
-  }, []);
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-ink">
@@ -39,39 +27,15 @@ export function Nav() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-          <div ref={menuRef} className="relative">
-            <button
-              type="button"
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-expanded={menuOpen}
-              className="flex items-center gap-1 rounded-full px-3 py-2 text-[15px] text-paper/75 transition-colors hover:text-paper"
+          {navItems.map((it) => (
+            <Link
+              key={it.href}
+              href={it.href}
+              className="rounded-full px-3 py-2 text-[15px] text-paper/75 transition-colors hover:text-paper"
             >
-              How it works
-              <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", menuOpen && "rotate-180")} />
-            </button>
-            <AnimatePresence>
-              {menuOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute left-0 top-full mt-2 w-56 overflow-hidden rounded-xl2 border border-white/10 bg-ink-2 p-1.5 shadow-lift"
-                >
-                  {dropdownItems.map((it) => (
-                    <Link
-                      key={it.href}
-                      href={it.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="block rounded-lg px-3 py-2.5 text-[14px] text-paper/80 transition-colors hover:bg-white/5 hover:text-paper"
-                    >
-                      {it.label}
-                    </Link>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+              {it.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="hidden items-center gap-1.5 md:flex">
@@ -104,7 +68,7 @@ export function Nav() {
       {open && (
         <div className="border-t border-white/10 bg-ink md:hidden">
           <Container className="flex flex-col gap-1 py-4">
-            {dropdownItems.map((it) => (
+            {navItems.map((it) => (
               <Link
                 key={it.href}
                 href={it.href}
