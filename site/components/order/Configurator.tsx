@@ -241,15 +241,15 @@ export function Configurator({
   }
 
   return (
-    <div className="grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-14">
+    <div className="grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
       {/* MOBILE: compact sticky preview so changes are visible while editing */}
       <div className="sticky top-16 z-10 -mx-5 border-b border-line bg-paper/95 px-5 py-3 backdrop-blur sm:-mx-8 sm:px-8 lg:hidden">
         <div className="flex items-center gap-4">
-          <div className="w-[150px] shrink-0">
+          <div className="w-[120px] shrink-0 sm:w-[150px]">
             <Card3D design={preview} side={side} interactive={false} />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted">Live preview</div>
               <div className="inline-flex rounded-full border border-line p-0.5 text-xs">
                 {(["front", "back"] as const).map((s) => (
@@ -266,11 +266,11 @@ export function Configurator({
       </div>
 
       {/* LEFT: studio rail + active panel */}
-      <div className="flex gap-3 sm:gap-5">
+      <div className="flex min-w-0 flex-col gap-3 sm:gap-5 lg:flex-row">
         {/* Rail: vertical icon strip on desktop, horizontal scroller on mobile */}
         <nav
           aria-label="Design sections"
-          className="flex shrink-0 gap-1 overflow-x-auto pb-1 lg:sticky lg:top-24 lg:h-fit lg:flex-col lg:gap-1.5 lg:overflow-visible lg:self-start lg:pb-0"
+          className="flex min-w-0 shrink-0 items-start gap-1 overflow-x-auto pb-1 lg:sticky lg:top-24 lg:h-fit lg:flex-col lg:gap-1.5 lg:overflow-visible lg:self-start lg:pb-0"
         >
           {TABS.map(({ key, label, icon: Icon }) => {
             const active = activeTab === key;
