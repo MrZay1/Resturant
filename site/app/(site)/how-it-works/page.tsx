@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import type { LucideIcon } from "lucide-react";
 import {
   BarChart3,
@@ -249,7 +250,7 @@ export default function Page() {
                 <Eyebrow>The report</Eyebrow>
                 <Heading className="mt-4">One email a month that reads every review for you</Heading>
                 <Lede className="mt-5">
-                  For ${PRICING.monthlyReport} a month, we read every new Google review and write
+                  With Regulars Program at ${ORDER_PLANS.regulars.monthly} a month plus ${ORDER_PLANS.regulars.setup} setup, we read every new Google review and write
                   up what matters. Subscribers also get {PRICING.freeReplacementCardsPerMonth} free
                   replacement cards each month.
                 </Lede>
@@ -352,7 +353,7 @@ export default function Page() {
             </Eyebrow>
             <Heading className="mt-5 text-paper">Cards on every table by the end of the month</Heading>
             <Lede className="mx-auto mt-5 max-w-xl text-paper/70">
-              ${PRICING.cardPrice} per card, one time. The monthly report is optional and you can
+              Review Starter is ${ORDER_PLANS.starter.setup} for 10 cards, setup and a Google profile check. Extra cards are ${PRICING.cardPrice} each. Regulars Program adds managed texts and monthly results for ${ORDER_PLANS.regulars.monthly}/month; you can
               add it whenever you like.
             </Lede>
             <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">

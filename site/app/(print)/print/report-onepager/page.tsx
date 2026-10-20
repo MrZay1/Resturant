@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import { BRAND } from "@/lib/brand";
 import { SAMPLE_REPORT as R } from "@/data/sampleReport";
 import { TapMark } from "@/components/ui/Logo";
@@ -112,7 +113,7 @@ export default function ReportOnePager() {
               <span style={{ width: 18, height: 18, borderRadius: 5, background: "#15130f", display: "grid", placeItems: "center" }}>
                 <TapMark className="h-3 w-3" color="#f7f4ee" />
               </span>
-              <span>{BRAND.name} · Cards from $15 · Report $50/month, cancel anytime · {BRAND.email}</span>
+              <span>{BRAND.name} · Review Starter ${ORDER_PLANS.starter.setup} · Regulars ${ORDER_PLANS.regulars.setup} setup + ${ORDER_PLANS.regulars.monthly}/month · {BRAND.email}</span>
             </div>
             <div>Full sample at {BRAND.domain}/sample-report</div>
           </div>

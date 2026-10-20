@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import Link from "next/link";
 import { listOrders, type OrderStatus } from "@/lib/orders";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -65,7 +66,7 @@ export default async function OrdersPage({
                 <th className="px-4 py-3">Restaurant</th>
                 <th className="px-4 py-3">Contact</th>
                 <th className="px-4 py-3">Cards</th>
-                <th className="px-4 py-3">Report</th>
+                <th className="px-4 py-3">Plan</th>
                 <th className="px-4 py-3">Paid</th>
                 <th className="px-4 py-3">Status</th>
                 <th className="px-4 py-3">Placed</th>
@@ -81,7 +82,7 @@ export default async function OrdersPage({
                   </td>
                   <td className="px-4 py-3 text-muted">{o.contact_name || o.contact_email}</td>
                   <td className="px-4 py-3">{o.cards}</td>
-                  <td className="px-4 py-3">{o.has_report ? "Yes" : "No"}</td>
+                  <td className="px-4 py-3">{o.plan ? ORDER_PLANS[o.plan].name : o.has_report ? "Monthly report (original)" : "Cards (original)"}</td>
                   <td className="px-4 py-3">${Number(o.amount_total).toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <StatusBadge status={o.status} />

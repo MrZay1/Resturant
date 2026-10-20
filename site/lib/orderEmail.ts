@@ -1,4 +1,5 @@
 import { BRAND, PRICING } from "@/lib/brand";
+import { ORDER_PLANS, type OrderPlan } from "@/lib/orderPlans";
 import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
 
 export type OrderRecord = {
@@ -12,6 +13,8 @@ export type OrderRecord = {
   restaurant_address: string;
   cards: number;
   report: boolean;
+  plan?: OrderPlan | null;
+  monthly_amount?: number | null;
   template: string;
   headline: string;
   subline: string;
@@ -53,8 +56,9 @@ export function renderOrderEmail(o: OrderRecord) {
     ["Restaurant", o.restaurant || "not given"],
     ["Contact", `${o.name || "not given"}${o.email ? ` · ${o.email}` : ""}${o.phone ? ` · ${o.phone}` : ""}`],
     ["Paid today", money(o.amount_total)],
-    ["Cards", `${o.cards} × ${money(PRICING.cardPrice)}`],
-    ["Monthly report", o.report ? `Yes, ${money(PRICING.monthlyReport)}/month` : "No"],
+    ["Plan", o.plan ? ORDER_PLANS[o.plan].name : "Original card/report pricing"],
+    ["Cards", o.plan ? `${o.cards} total; 10 included, additional cards ${money(PRICING.cardPrice)} each` : `${o.cards} × ${money(PRICING.cardPrice)}`],
+    ["Monthly service", o.report ? `${o.plan ? "Regulars Program" : "Monthly report"}, ${money(o.monthly_amount ?? PRICING.monthlyReport)}/month` : "No subscription"],
     ["Design", templateName],
     ["Headline", o.headline || "default"],
     ["Small line", o.subline || "none"],
@@ -75,7 +79,7 @@ export function renderOrderEmail(o: OrderRecord) {
     "Build the design preview and email it. Nothing prints before they approve.",
     o.link_mode === "have" ? "Test their Google link on your phone." : "Find their Google listing, grab the Place ID, and test the link on your phone.",
     `Add their slug to data/links.json and deploy, then order the cards encoded with https://${BRAND.shortLinkHost}/r/their-slug?s=card`,
-    o.report ? "Note the first report date: the first of next month." : "No subscription on this order.",
+    o.plan === "regulars" ? "Coordinate text club signup, welcome offer, win-back and birthday campaigns, and the monthly results report." : o.report ? "Note the first report date: the first of next month." : "No subscription on this order.",
   ];
 
   const html = `<!doctype html><html><body style="margin:0;background:#f7f4ee;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;color:#15130f">

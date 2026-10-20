@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import type { Metadata } from "next";
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
@@ -330,7 +331,7 @@ export default function SampleReportPage() {
             <div className="mt-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-paper-2 p-6">
               <div>
                 <div className="font-display text-2xl">Want this for your restaurant?</div>
-                <div className="mt-1 text-sm text-muted">Cards from $15. The report is $50 a month, cancel anytime.</div>
+                <div className="mt-1 text-sm text-muted">Review Starter: ${ORDER_PLANS.starter.setup} one-time. Regulars Program: ${ORDER_PLANS.regulars.setup} setup + ${ORDER_PLANS.regulars.monthly}/month, cancel anytime.</div>
               </div>
               <Button href={`${LINKS.order}?report=1`}>
                 Order cards and report <ArrowUpRight className="h-4 w-4" />

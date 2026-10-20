@@ -108,3 +108,6 @@ create table if not exists order_notes (
 );
 
 create index if not exists order_notes_order_id_idx on order_notes (order_id);
+-- Package and price snapshot. Null on orders placed before package pricing.
+alter table orders add column if not exists plan text check (plan in ('starter', 'regulars'));
+alter table orders add column if not exists monthly_amount numeric(10, 2);

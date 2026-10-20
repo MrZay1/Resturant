@@ -17,6 +17,8 @@ const cols = [
   {
     title: "Company",
     links: [
+      { href: LINKS.about, label: "About me" },
+      { href: "/contact", label: "Contact" },
       { href: LINKS.demo, label: "Book a demo" },
       { href: LINKS.faq, label: "FAQ" },
       { href: "/guides/google-review-link", label: "Find your Google review link" },

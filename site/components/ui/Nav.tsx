@@ -14,6 +14,7 @@ const navItems = [
   { href: LINKS.report, label: "Sample report" },
   { href: LINKS.pricing, label: "Pricing" },
   { href: LINKS.faq, label: "FAQ" },
+  { href: LINKS.about, label: "About me" },
 ];
 
 export function Nav() {
@@ -26,7 +27,7 @@ export function Nav() {
           <Logo inverse />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
           {navItems.map((it) => (
             <Link
               key={it.href}
@@ -38,7 +39,7 @@ export function Nav() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-1.5 md:flex">
+        <div className="hidden items-center gap-1.5 lg:flex">
           <Link
             href={LINKS.login}
             aria-label="Restaurant login"
@@ -56,7 +57,7 @@ export function Nav() {
         </div>
 
         <button
-          className="grid h-10 w-10 place-items-center rounded-full text-paper hover:bg-white/5 md:hidden"
+          className="grid h-10 w-10 place-items-center rounded-full text-paper hover:bg-white/5 lg:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -66,7 +67,7 @@ export function Nav() {
       </Container>
 
       {open && (
-        <div className="border-t border-white/10 bg-ink md:hidden">
+        <div className="border-t border-white/10 bg-ink lg:hidden">
           <Container className="flex flex-col gap-1 py-4">
             {navItems.map((it) => (
               <Link

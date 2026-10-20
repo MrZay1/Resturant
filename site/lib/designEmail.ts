@@ -1,4 +1,5 @@
 import { BRAND, PRICING } from "@/lib/brand";
+import { ORDER_PLANS, type OrderPlan } from "@/lib/orderPlans";
 import { TEMPLATE_META, relativeLuminance, type CardTemplate } from "@/components/card/cardSpec";
 
 /**
@@ -18,6 +19,7 @@ export type DesignRecord = {
   logoFilename: string | null;
   cards: number;
   report: boolean;
+  plan?: OrderPlan | null;
   contactName: string;
   contactEmail: string;
   contactPhone: string;
@@ -91,7 +93,7 @@ export function renderDesignEmail(d: DesignRecord) {
     ["Brand colour", d.brandColor],
     ["Logo file", hasLogo ? `${d.logoFilename} — attached to this email` : "none uploaded, design a type-only card"],
     ["Stars on card", d.showStars ? "yes" : "no"],
-    ["Basket", `${d.cards} cards${d.report ? ` + report at $${PRICING.monthlyReport}/mo` : ", no report"}`],
+    ["Basket", d.plan ? `${ORDER_PLANS[d.plan].name}, ${d.cards} cards, $${ORDER_PLANS[d.plan].setup} setup + extra cards, $${ORDER_PLANS[d.plan].monthly}/month` : `${d.cards} cards${d.report ? ` + report at $${PRICING.monthlyReport}/mo` : ", no report"}`],
     ["Where cards point", d.linkMode === "have" && d.googleReviewLink ? d.googleReviewLink : `find the listing — ${d.address || "no address given"}`],
     ["Notes", d.notes || "none"],
   ];

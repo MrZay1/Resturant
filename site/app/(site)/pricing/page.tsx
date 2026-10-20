@@ -6,10 +6,11 @@ import { Container } from "@/components/ui/Container";
 import { Section, Eyebrow, Heading, Lede } from "@/components/ui/Section";
 import { PricingCards, formatPrice } from "@/components/sections/PricingCards";
 import { PRICING, LINKS } from "@/lib/brand";
+import { ORDER_PLANS } from "@/lib/orderPlans";
 
 export const metadata = {
   title: "Pricing",
-  description: `Tap-to-review cards are ${formatPrice(PRICING.cardPrice)} each, one time. The monthly AI review report is ${formatPrice(PRICING.monthlyReport)} a month per location and includes ${PRICING.freeReplacementCardsPerMonth} free replacement cards. Cancel any time.`,
+  description: `Review Starter includes 10 cards, setup and a Google profile check for $149. Regulars Program adds managed texts and monthly results for $79/month.`,
 };
 
 const questions: { q: string; a: string }[] = [
@@ -23,7 +24,7 @@ const questions: { q: string; a: string }[] = [
   },
   {
     q: "We have more than one location. How does that work?",
-    a: `Each location is its own subscription at ${formatPrice(PRICING.monthlyReport)} a month, because each has its own Google listing and its own report. Cards are printed per location. If you run three or more, ask us about a bundle.`,
+    a: `Each location is its own subscription at ${formatPrice(ORDER_PLANS.regulars.monthly)} a month, plus the $149 setup package, because each has its own Google listing and its own program. Cards are printed per location. If you run three or more, ask us about a bundle.`,
   },
   {
     q: "What about sales tax and shipping?",
@@ -31,7 +32,7 @@ const questions: { q: string; a: string }[] = [
   },
   {
     q: "What is the refund policy?",
-    a: "Printed cards are custom, so there are no refunds once you approve the digital design preview. If a card arrives damaged, we replace it. The report subscription can be cancelled any time and stays active until the end of the current billing period.",
+    a: "Printed cards are custom, so there are no refunds once you approve the digital design preview. If a card arrives damaged, we replace it. The Regulars Program subscription can be cancelled any time and stays active until the end of the current billing period.",
   },
 ];
 

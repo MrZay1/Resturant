@@ -8,6 +8,7 @@ import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
 import type { Order } from "@/lib/orders";
 import { BRAND, LINKS, PRICING } from "@/lib/brand";
 import { cn } from "@/lib/cn";
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import { FileText, Link2, Mail, RefreshCw, Package, Clock } from "lucide-react";
 
 const inputCls =
@@ -101,7 +102,7 @@ export function DashboardClient({ orders, email }: { orders: Order[]; email: str
             <li key={o.id} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
               <div>
                 <div className="font-medium text-ink">
-                  {o.restaurant_name} <span className="font-normal text-muted">· {templateName(o.template)}</span>
+                  {o.restaurant_name}{o.plan && <span className="ml-2 text-sm text-muted">{ORDER_PLANS[o.plan].name}</span>} <span className="font-normal text-muted">· {templateName(o.template)}</span>
                 </div>
                 <div className="mt-0.5 text-xs text-muted">
                   {o.cards} cards · placed {new Date(o.created_at).toLocaleDateString()}

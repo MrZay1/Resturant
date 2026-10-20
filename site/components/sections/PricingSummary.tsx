@@ -3,30 +3,26 @@ import { Container } from "@/components/ui/Container";
 import { Section, Eyebrow, Heading, Lede } from "@/components/ui/Section";
 import { LINKS, PRICING } from "@/lib/brand";
 import { Check } from "lucide-react";
+import { ORDER_PLANS } from "@/lib/orderPlans";
 
 export function PricingSummary() {
   const plans = [
     {
-      name: "Cards",
-      price: `$${PRICING.cardPrice}`,
-      unit: "per card, one time",
-      blurb: "Custom printed, NFC and QR, yours to keep.",
-      features: ["Your logo or one of four designs", "Printed both sides", "Digital design preview before printing", "Ships in about 10 business days"],
-      cta: { label: "Order cards", href: LINKS.order, variant: "secondary" as const },
+      name: ORDER_PLANS.starter.name,
+      price: `$${ORDER_PLANS.starter.setup}`,
+      unit: "one-time",
+      blurb: "10 custom tap cards, QR backup, setup and a Google profile check.",
+      features: ORDER_PLANS.starter.features,
+      cta: { label: "Choose Review Starter", href: `${LINKS.order}?plan=starter`, variant: "secondary" as const },
+      highlight: false,
     },
     {
-      name: "Cards + monthly report",
-      price: `$${PRICING.monthlyReport}`,
-      unit: "per month, per location",
-      blurb: "Everything above, plus the report and free replacement cards.",
-      features: [
-        "Every Google review read and summarized monthly",
-        "Servers and dishes mentioned by name",
-        "Priority actions and drafted replies",
-        `${PRICING.freeReplacementCardsPerMonth} free replacement cards every month`,
-        "Cancel anytime",
-      ],
-      cta: { label: "Start with cards + report", href: `${LINKS.order}?report=1`, variant: "primary" as const },
+      name: ORDER_PLANS.regulars.name,
+      price: `$${ORDER_PLANS.regulars.monthly}`,
+      unit: `per month + $${ORDER_PLANS.regulars.setup} setup`,
+      blurb: "Everything in Review Starter, plus a managed text club and monthly results.",
+      features: ORDER_PLANS.regulars.features,
+      cta: { label: "Choose Regulars Program", href: `${LINKS.order}?plan=regulars`, variant: "primary" as const },
       highlight: true,
     },
   ];
@@ -36,7 +32,7 @@ export function PricingSummary() {
         <div className="mx-auto max-w-2xl text-center">
           <Eyebrow className="justify-center">Pricing</Eyebrow>
           <Heading className="mt-4">Simple enough to explain to your accountant.</Heading>
-          <Lede className="mt-5">Cards are a one-time purchase. The report is a monthly subscription you can cancel any time.</Lede>
+          <Lede className="mt-5">Two options: review cards with no monthly fee, or managed texts and monthly results.</Lede>
         </div>
         <div className="mx-auto mt-14 grid max-w-4xl gap-6 md:grid-cols-2">
           {plans.map((p) => (
@@ -46,7 +42,7 @@ export function PricingSummary() {
             >
               {p.highlight && (
                 <span className="absolute -top-3 left-8 rounded-full bg-gold px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink">
-                  Most restaurants pick this
+                  Managed service
                 </span>
               )}
               <div className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">{p.name}</div>
@@ -72,8 +68,7 @@ export function PricingSummary() {
           ))}
         </div>
         <p className="mt-8 text-center text-sm text-muted">
-          Most restaurants start with {PRICING.starterKitCards} cards, one per server, plus the report: $
-          {PRICING.starterKitCards * PRICING.cardPrice + PRICING.monthlyReport} today, then ${PRICING.monthlyReport} a month.{" "}
+          Regulars Program with {PRICING.starterKitCards} cards: ${ORDER_PLANS.regulars.setup + ORDER_PLANS.regulars.monthly} today, then ${ORDER_PLANS.regulars.monthly} a month.{" "}
           <a href={LINKS.pricing} className="underline underline-offset-4">
             Full pricing details
           </a>

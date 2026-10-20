@@ -1,4 +1,5 @@
 "use client";
+import { ORDER_PLANS } from "@/lib/orderPlans";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -394,14 +395,14 @@ export function Deck() {
         <h2 className="font-display mt-4 text-[48px] leading-[1.05]">Simple enough to explain to your accountant.</h2>
         <div className="mt-9 grid grid-cols-2 gap-6">
           <div className="rounded-3xl border border-line bg-white p-8">
-            <div className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Cards</div>
-            <div className="mt-3 flex items-baseline gap-2"><span className="font-display text-[64px] leading-none">${PRICING.cardPrice}</span><span className="text-muted">per card, one time</span></div>
+            <div className="text-sm font-semibold uppercase tracking-[0.16em] text-muted">Review Starter</div>
+            <div className="mt-3 flex items-baseline gap-2"><span className="font-display text-[64px] leading-none">${ORDER_PLANS.starter.setup}</span><span className="text-muted">one-time, 10 cards + setup</span></div>
             <p className="mt-3 text-[17px] text-ink-2">Your logo or one of four designs. Printed both sides. Yours to keep.</p>
           </div>
           <div className="rounded-3xl border-2 border-accent bg-white p-8">
-            <div className="text-sm font-semibold uppercase tracking-[0.16em] text-accent">Monthly report</div>
-            <div className="mt-3 flex items-baseline gap-2"><span className="font-display text-[64px] leading-none">${PRICING.monthlyReport}</span><span className="text-muted">per month, cancel anytime</span></div>
-            <p className="mt-3 text-[17px] text-ink-2">Every review read and summarized. {PRICING.freeReplacementCardsPerMonth} free replacement cards every month.</p>
+            <div className="text-sm font-semibold uppercase tracking-[0.16em] text-accent">Regulars Program</div>
+            <div className="mt-3 flex items-baseline gap-2"><span className="font-display text-[64px] leading-none">${ORDER_PLANS.regulars.monthly}</span><span className="text-muted">per month + ${ORDER_PLANS.regulars.setup} setup</span></div>
+            <p className="mt-3 text-[17px] text-ink-2">Managed text club, welcome offers, win-back and birthday texts, and a monthly results report.</p>
           </div>
         </div>
         <div className="mt-7 rounded-2xl bg-accent-soft px-6 py-4 text-[19px] text-ink">{p.offer}</div>

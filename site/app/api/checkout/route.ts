@@ -3,6 +3,7 @@ import { z } from "zod";
 import { put } from "@vercel/blob";
 import { getStripe } from "@/lib/stripe";
 import { BRAND, PRICING } from "@/lib/brand";
+import { orderLineItems, priceOrder } from "@/lib/orderPlans";
 import { guard } from "@/lib/apiGuard";
 import { sendEmail, parseDataUrl, extensionFor } from "@/lib/email";
 import { renderDesignEmail, type DesignRecord } from "@/lib/designEmail";
@@ -12,7 +13,7 @@ const MAX_LOGO_CHARS = 2 * 1024 * 1024 * 1.4;
 
 const Body = z.object({
   cards: z.number().int().min(PRICING.minCards).max(PRICING.maxCards),
-  report: z.boolean(),
+  plan: z.enum(["starter", "regulars"]),
   design: z.object({
     template: z.enum(["classic", "noir", "logo", "brand"]),
     restaurantName: z.string().min(1).max(40),
@@ -79,40 +80,16 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid order", issues: parsed.error.issues }, { status: 400 });
   }
-  const { cards, report, design, googleReviewLink, address, linkMode, contact, notes, logoDataUrl, logoName } = parsed.data;
+  const { cards, plan, design, googleReviewLink, address, linkMode, contact, notes, logoDataUrl, logoName } = parsed.data;
   const origin = siteBase();
+  const report = plan === "regulars";
+  const totals = priceOrder(plan, cards);
 
   // Upload before creating the session so the Blob URL can ride along in
   // metadata - the webhook has no access to the raw upload, only metadata.
   const storedLogo = await storeLogo(logoDataUrl, logoName);
 
-  const line_items: Array<Record<string, unknown>> = [
-    {
-      quantity: cards,
-      price_data: {
-        currency: "usd",
-        unit_amount: PRICING.cardPrice * 100,
-        product_data: {
-          name: `${BRAND.name} tap-to-review card`,
-          description: `Custom printed NFC card, "${design.template}" design for ${design.restaurantName}`,
-        },
-      },
-    },
-  ];
-  if (report) {
-    line_items.push({
-      quantity: 1,
-      price_data: {
-        currency: "usd",
-        unit_amount: PRICING.monthlyReport * 100,
-        recurring: { interval: "month" },
-        product_data: {
-          name: `${BRAND.name} monthly review report`,
-          description: `AI review report every month, plus ${PRICING.freeReplacementCardsPerMonth} free replacement cards/month`,
-        },
-      },
-    });
-  }
+  const line_items = orderLineItems(plan, cards, `"${design.template}" design for ${design.restaurantName}`);
 
   const metadata: Record<string, string> = {
     restaurant: design.restaurantName,
@@ -129,6 +106,10 @@ export async function POST(req: Request) {
     link_mode: linkMode,
     cards: String(cards),
     report: String(report),
+    plan,
+    setup_amount: String(totals.setup),
+    monthly_amount: String(totals.monthly),
+    extra_cards_amount: String(totals.extras),
     contact_name: contact.name,
     contact_phone: contact.phone,
     notes: notes.slice(0, 480),
@@ -140,10 +121,9 @@ export async function POST(req: Request) {
     session = await stripe.checkout.sessions.create({
       mode: report ? "subscription" : "payment",
       customer_email: contact.email,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      line_items: line_items as any,
+      line_items,
       success_url: `${origin}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/order?canceled=1`,
+      cancel_url: `${origin}/order?canceled=1&plan=${plan}&cards=${cards}`,
       shipping_address_collection: { allowed_countries: ["US"] },
       // Stripe Tax must be activated in the dashboard before this is switched on
       ...(process.env.STRIPE_AUTOMATIC_TAX === "1" ? { automatic_tax: { enabled: true } } : {}),
@@ -179,6 +159,7 @@ export async function POST(req: Request) {
       logoFilename: filename,
       cards,
       report,
+      plan,
       contactName: contact.name,
       contactEmail: contact.email,
       contactPhone: contact.phone,

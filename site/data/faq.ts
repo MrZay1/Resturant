@@ -1,3 +1,4 @@
+import { ORDER_PLANS, INCLUDED_CARDS } from "@/lib/orderPlans";
 import { BRAND, PRICING } from "@/lib/brand";
 
 export type FaqItem = {
@@ -118,7 +119,7 @@ export const FAQ: FaqItem[] = [
   {
     group: "The monthly report",
     q: "Is the report written by a person or by AI?",
-    a: `The reading and sorting is done by AI, which is what makes it affordable at $${PRICING.monthlyReport} a month. A person on our team checks each report before it goes out. If something looks off, reply to the email and a human answers.`,
+    a: `The reading and sorting is done by AI, which is what makes it affordable at $${ORDER_PLANS.regulars.monthly} a month as part of Regulars Program. A person on our team checks each report before it goes out. If something looks off, reply to the email and a human answers.`,
   },
   {
     group: "The monthly report",
@@ -135,7 +136,7 @@ export const FAQ: FaqItem[] = [
   {
     group: "Pricing and billing",
     q: "How much does it cost?",
-    a: `Cards are $${PRICING.cardPrice} each, one time, with a minimum order of ${PRICING.minCards}. Most restaurants start with ${PRICING.starterKitCards}, one per server on the floor plus a couple of spares. The monthly report is $${PRICING.monthlyReport} per location and includes ${PRICING.freeReplacementCardsPerMonth} free replacement cards a month. No setup fee.`,
+    a: `Review Starter is $${ORDER_PLANS.starter.setup} once for ${INCLUDED_CARDS} cards, setup and a Google profile check. Regulars Program includes the same package plus $${ORDER_PLANS.regulars.monthly}/month per location for managed texts and monthly results. Its first month is paid at checkout. Extra cards are $${PRICING.cardPrice} each, up to ${PRICING.maxCards} total. US shipping is included; applicable tax is shown at checkout.`,
   },
   {
     group: "Pricing and billing",

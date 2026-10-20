@@ -2,7 +2,8 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { Eyebrow } from "@/components/ui/Section";
 import { HeroVisual } from "./HeroVisual";
-import { LINKS, PRICING } from "@/lib/brand";
+import { LINKS } from "@/lib/brand";
+import { ORDER_PLANS } from "@/lib/orderPlans";
 
 export function Hero() {
   return (
@@ -33,7 +34,7 @@ export function Hero() {
             </Button>
           </div>
           <p className="mt-5 text-sm text-muted">
-            ${PRICING.cardPrice} per card, one time. Report ${PRICING.monthlyReport}/month, cancel anytime.
+            Review Starter ${ORDER_PLANS.starter.setup} one-time. Regulars Program adds ${ORDER_PLANS.regulars.monthly}/month, cancel anytime.
             Works with iPhone and Android.
           </p>
         </div>

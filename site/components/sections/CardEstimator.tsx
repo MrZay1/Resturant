@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { PRICING, LINKS } from "@/lib/brand";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
+import { priceOrder } from "@/lib/orderPlans";
 
 const MIN_TABLES = 4;
 const MAX_TABLES = 60;
@@ -28,12 +29,11 @@ export function CardEstimator({ className }: { className?: string }) {
   const toggleId = useId();
 
   const cards = suggestCards(tables);
-  const cardsTotal = cards * PRICING.cardPrice;
-  const monthly = report ? PRICING.monthlyReport : 0;
-  const today = cardsTotal + monthly;
+  const plan = report ? "regulars" : "starter";
+  const { today, monthly } = priceOrder(plan, cards);
   const pct = ((tables - MIN_TABLES) / (MAX_TABLES - MIN_TABLES)) * 100;
 
-  const orderHref = `${LINKS.order}?cards=${cards}${report ? "&report=1" : ""}`;
+  const orderHref = `${LINKS.order}?cards=${cards}&plan=${plan}`;
 
   return (
     <div className={cn("rounded-2xl border border-line bg-white p-6 shadow-card sm:p-8", className)}>
@@ -76,7 +76,7 @@ export function CardEstimator({ className }: { className?: string }) {
 
       <div className="mt-4 flex items-center justify-between gap-4">
         <label htmlFor={toggleId} className="text-sm text-ink-2">
-          Include the monthly report
+          Choose Regulars Program
         </label>
         <button
           id={toggleId}
@@ -103,7 +103,7 @@ export function CardEstimator({ className }: { className?: string }) {
           <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">Today</dt>
           <dd className="mt-1 font-display text-3xl leading-none tabular-nums">{usd(today)}</dd>
           <dd className="mt-1 text-xs text-muted">
-            {cards} cards at {usd(PRICING.cardPrice)}
+            {cards} cards, setup and profile check
             {report ? ` plus first month` : ""}
           </dd>
         </div>
@@ -117,7 +117,7 @@ export function CardEstimator({ className }: { className?: string }) {
       </dl>
 
       <Button href={orderHref} className="mt-6 w-full">
-        {report ? "Order cards + report" : "Order cards"}
+        {report ? "Choose Regulars Program" : "Choose Review Starter"}
       </Button>
       <p className="mt-3 text-center text-xs text-muted">US shipping included. Sales tax added at checkout where required.</p>
     </div>

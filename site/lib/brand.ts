@@ -9,12 +9,12 @@ export const BRAND = {
   phone: "",
   city: "Stonecrest",
   state: "Georgia", // Governing law and venue, Terms section 16. Change if the LLC is formed in another state.
-  founderName: "Zay",
+  founderName: "Isiah Cameron",
 };
 
 export const PRICING = {
   cardPrice: 15, // USD, one-time, per card
-  monthlyReport: 50, // USD per month per location
+  monthlyReport: 50, // Legacy report-only subscriptions; new order packages live in orderPlans.ts
   freeReplacementCardsPerMonth: 10,
   minCards: 10,
   maxCards: 200,
@@ -30,4 +30,5 @@ export const LINKS = {
   howItWorks: "/how-it-works",
   faq: "/faq",
   login: "/login",
+  about: "/about",
 };

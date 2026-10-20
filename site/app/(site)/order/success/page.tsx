@@ -11,6 +11,7 @@ import { CreateAccountForm } from "@/components/customer/CreateAccountForm";
 import { TEMPLATE_META, type CardTemplate } from "@/components/card/cardSpec";
 import { BRAND, LINKS, PRICING } from "@/lib/brand";
 import { getStripe } from "@/lib/stripe";
+import { isOrderPlan, ORDER_PLANS, type OrderPlan } from "@/lib/orderPlans";
 import { getCustomerSession } from "@/lib/customerAuth";
 
 export const metadata = {
@@ -24,6 +25,9 @@ type OrderSummary = {
   template: string | null;
   cards: number | null;
   report: boolean | null;
+  plan: OrderPlan | null;
+  monthlyAmount: number | null;
+  amountPaid: number | null;
   email: string | null;
 };
 
@@ -52,6 +56,9 @@ async function loadOrder(sessionId: string | undefined): Promise<OrderSummary | 
       template: md.template && isTemplate(md.template) ? TEMPLATE_META[md.template].name : md.template || null,
       cards,
       report,
+      plan: isOrderPlan(md.plan) ? md.plan : null,
+      monthlyAmount: reportLine?.price?.unit_amount != null ? reportLine.price.unit_amount / 100 : null,
+      amountPaid: session.amount_total != null ? session.amount_total / 100 : null,
       email: session.customer_details?.email ?? session.customer_email ?? null,
     };
   } catch {
@@ -105,10 +112,12 @@ export default async function Page(props: { searchParams: Promise<Record<string,
   if (order) {
     if (order.restaurant) rows.push({ label: "Restaurant", value: order.restaurant });
     if (order.template) rows.push({ label: "Design", value: order.template });
-    if (order.cards !== null) rows.push({ label: "Cards", value: `${order.cards} at $${PRICING.cardPrice} each` });
+    if (order.plan) rows.push({ label: "Plan", value: ORDER_PLANS[order.plan].name });
+    if (order.cards !== null) rows.push({ label: "Cards", value: order.plan ? `${order.cards} (10 included in setup)` : `${order.cards} at $${PRICING.cardPrice} each` });
+    if (order.amountPaid !== null) rows.push({ label: "Paid today", value: `$${order.amountPaid.toFixed(2)}` });
     rows.push({
-      label: "Monthly report",
-      value: order.report ? `Included, $${PRICING.monthlyReport}/month` : "Not included",
+      label: order.plan ? "Monthly service" : "Monthly report",
+      value: order.report ? `${order.plan === "regulars" ? "Regulars Program" : "Included"}, $${order.monthlyAmount ?? PRICING.monthlyReport}/month` : "No subscription",
     });
     if (order.email) rows.push({ label: "Confirmation sent to", value: order.email });
   }
@@ -187,9 +196,11 @@ export default async function Page(props: { searchParams: Promise<Record<string,
         <Section tone="white">
           <Container size="narrow">
             <Eyebrow>What happens next</Eyebrow>
-            <Heading className="mt-4">Five steps between now and your first shift</Heading>
+            <Heading className="mt-4">What to expect after checkout</Heading>
             <ol className="mt-12 space-y-0">
-              {STEPS.map((s, i) => (
+              {STEPS.filter((s) => s.icon !== Sparkles || order?.report !== false).map((step, i) => {
+                const s = step.icon === Sparkles && order?.plan === "regulars" ? { ...step, title: "We set up your Regulars Program", body: "We coordinate your text club signup, welcome offer, win-back and birthday texts, promotions, and monthly results report." } : step;
+                return (
                 <li key={s.title} className="relative flex gap-5 border-t border-line py-7 first:border-t-0 first:pt-0">
                   <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent font-display text-lg text-paper">
                     {i + 1}
@@ -202,7 +213,7 @@ export default async function Page(props: { searchParams: Promise<Record<string,
                     <p className="mt-2 text-[15px] leading-relaxed text-muted">{s.body}</p>
                   </div>
                 </li>
-              ))}
+              ); })}
             </ol>
           </Container>
         </Section>

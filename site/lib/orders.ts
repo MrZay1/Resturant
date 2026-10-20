@@ -1,4 +1,5 @@
 import { sql } from "@/lib/db";
+import type { OrderPlan } from "@/lib/orderPlans";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/orderStatus";
 
 export { ORDER_STATUSES, type OrderStatus };
@@ -13,6 +14,8 @@ export type Order = {
   restaurant_address: string;
   cards: number;
   has_report: boolean;
+  plan: OrderPlan | null;
+  monthly_amount: string | null;
   amount_total: string; // numeric comes back as string from postgres.js
   template: string;
   headline: string;
@@ -56,6 +59,8 @@ export type NewOrderInput = {
   restaurantAddress: string;
   cards: number;
   hasReport: boolean;
+  plan?: OrderPlan | null;
+  monthlyAmount?: number | null;
   amountTotal: number;
   template: string;
   headline: string;
@@ -97,7 +102,7 @@ export async function upsertOrderFromStripe(input: NewOrderInput): Promise<Order
   const rows = await sql<Order[]>`
     insert into orders (
       stripe_session_id, stripe_subscription_id, stripe_customer_id,
-      restaurant_name, restaurant_address, cards, has_report, amount_total,
+      restaurant_name, restaurant_address, cards, has_report, amount_total, plan, monthly_amount,
       template, headline, subline, brand_color, show_stars, has_logo, logo_url, logo_filename,
       link_mode, google_review_link,
       contact_name, contact_email, contact_phone,
@@ -105,7 +110,7 @@ export async function upsertOrderFromStripe(input: NewOrderInput): Promise<Order
       notes, customer_id
     ) values (
       ${input.stripeSessionId}, ${input.stripeSubscriptionId}, ${input.stripeCustomerId},
-      ${input.restaurantName}, ${input.restaurantAddress}, ${input.cards}, ${input.hasReport}, ${input.amountTotal},
+      ${input.restaurantName}, ${input.restaurantAddress}, ${input.cards}, ${input.hasReport}, ${input.amountTotal}, ${input.plan ?? null}, ${input.monthlyAmount ?? null},
       ${input.template}, ${input.headline}, ${input.subline}, ${input.brandColor}, ${input.showStars}, ${input.hasLogo}, ${input.logoUrl}, ${input.logoFilename},
       ${input.linkMode}, ${input.googleReviewLink},
       ${input.contactName}, ${input.contactEmail}, ${input.contactPhone},

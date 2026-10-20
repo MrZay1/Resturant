@@ -4,6 +4,7 @@ import { Section } from "@/components/ui/Section";
 import { Container } from "@/components/ui/Container";
 import { Prose, ProseNote, LegalHeader } from "@/components/sections/Prose";
 import { BRAND, PRICING } from "@/lib/brand";
+import { INCLUDED_CARDS, ORDER_PLANS } from "@/lib/orderPlans";
 
 const UPDATED = "September 4, 2026";
 
@@ -47,14 +48,12 @@ export default function TermsPage() {
               <p>
                 {BRAND.name} cards are credit-card-size NFC cards printed with your restaurant&rsquo;s design. Each card is
                 encoded with a short link on our domain that redirects a guest&rsquo;s phone to your restaurant&rsquo;s Google
-                review page. Cards are sold one-time at ${PRICING.cardPrice} each, with a minimum order of{" "}
-                {PRICING.minCards} cards and a maximum of {PRICING.maxCards} per order. The redirect link stays active for
+                review page. Review Starter includes {INCLUDED_CARDS} cards, setup and a Google profile check for ${ORDER_PLANS.starter.setup} one-time. Additional cards cost ${PRICING.cardPrice} each, up to {PRICING.maxCards} cards per order. The redirect link stays active for
                 as long as we operate the service, whether or not you subscribe to the report.
               </p>
-              <h3>Monthly report subscription</h3>
+              <h3>Regulars Program subscription</h3>
               <p>
-                The report is an optional subscription billed at ${PRICING.monthlyReport} per month per restaurant
-                location. Each month we read the new public Google reviews for your location and deliver a written report
+                Regulars Program includes the ${ORDER_PLANS.regulars.setup} setup package plus ${ORDER_PLANS.regulars.monthly} per month per restaurant location, with the first month paid at checkout. It adds managed text club signup, welcome offers, win-back and birthday texts, promotions, and a monthly results report. Setup and offers are coordinated after purchase. Existing report-only subscriptions retain their agreed pricing. Each month we read the new public Google reviews for your location and deliver a written report
                 covering what guests praise, what they complain about, staff and dishes mentioned by name, trends over
                 time, and suggested actions.
               </p>

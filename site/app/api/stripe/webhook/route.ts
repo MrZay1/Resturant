@@ -3,6 +3,7 @@ import { getStripe } from "@/lib/stripe";
 import { sendEmail } from "@/lib/email";
 import { renderOrderEmail, type OrderRecord } from "@/lib/orderEmail";
 import { upsertOrderFromStripe } from "@/lib/orders";
+import { isOrderPlan } from "@/lib/orderPlans";
 
 /**
  * Stripe webhook: turns a completed Checkout into an order record.
@@ -46,6 +47,8 @@ export async function POST(req: Request) {
       restaurant_address: m.restaurant_address ?? "",
       cards: Number(m.cards ?? 0),
       report: m.report === "true",
+      plan: isOrderPlan(m.plan) ? m.plan : null,
+      monthly_amount: m.monthly_amount !== undefined ? Number(m.monthly_amount) : null,
       template: m.template ?? "",
       headline: m.headline ?? "",
       subline: m.subline ?? "",
@@ -61,8 +64,7 @@ export async function POST(req: Request) {
     };
 
     // Save the real record first - this is the thing /admin/orders reads from.
-    // A failure here should not silently vanish, so it's logged loudly, but it
-    // also should not block the email or Stripe retrying, so it does not throw.
+    // Return 500 if persistence fails so Stripe retries instead of losing the order.
     try {
       await upsertOrderFromStripe({
         stripeSessionId: order.session_id,
@@ -72,6 +74,8 @@ export async function POST(req: Request) {
         restaurantAddress: order.restaurant_address,
         cards: order.cards,
         hasReport: order.report,
+        plan: order.plan,
+        monthlyAmount: order.monthly_amount,
         amountTotal: order.amount_total,
         template: order.template,
         headline: order.headline,
@@ -91,6 +95,7 @@ export async function POST(req: Request) {
       });
     } catch (e) {
       console.error("[order] failed to save order record:", (e as Error).message);
+      return NextResponse.json({ error: "Order storage unavailable; retry required" }, { status: 500 });
     }
 
     // Email next: this is the copy you actually act on.

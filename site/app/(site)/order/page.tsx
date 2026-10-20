@@ -6,16 +6,17 @@ import { Eyebrow } from "@/components/ui/Section";
 import { Configurator } from "@/components/order/Configurator";
 import type { CardTemplate } from "@/components/card/cardSpec";
 import { PRICING } from "@/lib/brand";
+import { isOrderPlan, type OrderPlan } from "@/lib/orderPlans";
 
 export const metadata: Metadata = {
   title: "Design and order your cards",
-  description: "Design your tap-to-review card, choose a quantity, add the monthly report, and check out securely.",
+  description: "Design your tap-to-review card, choose a quantity and a plan, and check out securely.",
 };
 
 export default async function OrderPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
-  // The report is included by default; ?report=0 removes it.
-  const report = !(sp.report === "0" || sp.report === "false");
+  // Preserve existing report links while allowing explicit package selection.
+  const initialPlan: OrderPlan = isOrderPlan(sp.plan) ? sp.plan : (sp.report === "1" || sp.report === "true") ? "regulars" : "starter";
   const t = Array.isArray(sp.template) ? sp.template[0] : sp.template;
   const template = (["classic", "noir", "logo", "brand"].includes(t ?? "") ? t : undefined) as CardTemplate | undefined;
   const canceled = sp.canceled === "1";
@@ -41,7 +42,7 @@ export default async function OrderPage({ searchParams }: { searchParams: Promis
             )}
           </div>
           <div className="mt-12">
-            <Configurator initialReport={report} initialTemplate={template} initialCards={initialCards} />
+            <Configurator initialPlan={initialPlan} initialTemplate={template} initialCards={initialCards} />
           </div>
         </Container>
       </main>

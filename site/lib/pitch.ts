@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import type { CardTemplate } from "@/components/card/cardSpec";
 
 /** A restaurant you are about to pitch. Stored in localStorage on the device you prep on. */
@@ -43,7 +44,7 @@ export type PitchProfile = {
 export const PITCH_KEY = "tn.pitch.profiles.v1";
 export const PITCH_CURRENT_KEY = "tn.pitch.current.v1";
 
-export const DEFAULT_OFFER = "Start with 10 cards and the monthly report: $200 today, then $50 a month. Cancel anytime.";
+export const DEFAULT_OFFER = `Review Starter: $${ORDER_PLANS.starter.setup} one-time for 10 cards + setup. Regulars Program: $${ORDER_PLANS.regulars.setup + ORDER_PLANS.regulars.monthly} today, then $${ORDER_PLANS.regulars.monthly}/month.`;
 
 export function newProfile(): PitchProfile {
   return {

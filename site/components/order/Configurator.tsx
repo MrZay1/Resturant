@@ -8,6 +8,7 @@ import { DEFAULT_DESIGN, TEMPLATE_META, qrColorsFor, type CardDesign, type CardT
 import { Button } from "@/components/ui/Button";
 import { PRICING, LINKS, BRAND } from "@/lib/brand";
 import { cn } from "@/lib/cn";
+import { INCLUDED_CARDS, ORDER_PLANS, priceOrder, type OrderPlan } from "@/lib/orderPlans";
 import {
   Minus,
   Plus,
@@ -64,11 +65,11 @@ const FIELD_LABELS: Record<string, string> = {
 };
 
 export function Configurator({
-  initialReport,
+  initialPlan,
   initialTemplate,
   initialCards = PRICING.starterKitCards,
 }: {
-  initialReport: boolean;
+  initialPlan: OrderPlan;
   initialTemplate?: CardTemplate;
   initialCards?: number;
 }) {
@@ -81,7 +82,8 @@ export function Configurator({
   const [activeTab, setActiveTab] = useState<TabKey>("template");
   const [cards, setCards] = useState(initialCards);
   const [cardsText, setCardsText] = useState(String(initialCards));
-  const [report, setReport] = useState(initialReport);
+  const [plan, setPlan] = useState<OrderPlan>(initialPlan);
+  const report = plan === "regulars";
   const [googleLink, setGoogleLink] = useState("");
   const [linkMode, setLinkMode] = useState<"find" | "have">("find");
   const [address, setAddress] = useState("");
@@ -123,7 +125,8 @@ export function Configurator({
     };
   }, [shortUrl, design.template, design.brandColor]);
 
-  const today = cards * PRICING.cardPrice + (report ? PRICING.monthlyReport : 0);
+  const totals = priceOrder(plan, cards);
+  const today = totals.today;
   const linkTooLong = linkMode === "have" && googleLink.trim().length > 500;
   const canSubmit =
     design.restaurantName.trim().length > 1 &&
@@ -177,7 +180,7 @@ export function Configurator({
     setStatus({ state: "loading" });
     const payload = {
       cards: clampCards(cards),
-      report,
+      plan,
       design: {
         template: design.template,
         restaurantName: design.restaurantName.trim(),
@@ -227,7 +230,7 @@ export function Configurator({
           restaurant: design.restaurantName.trim(),
           email: contact.email.trim(),
           phone: contact.phone.trim().slice(0, 40),
-          message: `ORDER REQUEST: ${clampCards(cards)} cards (${design.template}, headline "${design.headline.trim()}", color ${design.brandColor}, logo ${design.logoDataUrl ? "yes" : "no"}), report: ${report}. Google link: ${linkMode === "have" ? googleLink.trim() || "n/a" : "find it for us"}. Address: ${address.trim() || "n/a"}. Notes: ${notes}`.slice(0, 1000),
+          message: `ORDER REQUEST: ${clampCards(cards)} cards (${design.template}, headline "${design.headline.trim()}", color ${design.brandColor}, logo ${design.logoDataUrl ? "yes" : "no"}), plan: ${ORDER_PLANS[plan].name}, due today: $${totals.today}, then $${totals.monthly}/month. Google link: ${linkMode === "have" ? googleLink.trim() || "n/a" : "find it for us"}. Address: ${address.trim() || "n/a"}. Notes: ${notes}`.slice(0, 1000),
         }),
       });
       if (!res.ok) {
@@ -241,7 +244,34 @@ export function Configurator({
   }
 
   return (
-    <div className="grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
+    <div className="space-y-10">
+      <section aria-labelledby="order-plan-heading">
+        <h2 id="order-plan-heading" className="font-display text-3xl">Choose your plan</h2>
+        <p className="mt-2 text-sm text-muted">Both include {INCLUDED_CARDS} cards, setup and a Google profile check. Additional cards are {money(PRICING.cardPrice)} each.</p>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          {(Object.keys(ORDER_PLANS) as OrderPlan[]).map((key) => {
+            const offer = ORDER_PLANS[key];
+            return (
+              <button key={key} type="button" aria-pressed={plan === key} onClick={() => setPlan(key)}
+                className={cn("min-w-0 rounded-2xl border p-5 text-left transition-colors sm:p-6", plan === key ? "border-accent bg-white ring-2 ring-accent" : "border-line bg-white/60 hover:border-line-strong")}>
+                <span className="flex items-center justify-between gap-3">
+                  <span className="text-lg font-semibold">{offer.name}</span>
+                  <span className={cn("grid h-6 w-6 shrink-0 place-items-center rounded-full border", plan === key ? "border-accent bg-accent text-white" : "border-line-strong")}>
+                    {plan === key && <Check className="h-4 w-4" />}
+                  </span>
+                </span>
+                <span className="mt-3 block font-display text-3xl">{money(offer.setup)}<span className="font-sans text-sm text-muted">{offer.monthly ? ` setup + ${money(offer.monthly)}/month` : " one-time"}</span></span>
+                <span className="mt-2 block text-sm text-muted">{offer.monthly ? `${money(offer.setup + offer.monthly)} due today for ${INCLUDED_CARDS} cards; then ${money(offer.monthly)}/month. Cancel anytime.` : "No subscription. Yours to keep."}</span>
+                <span className="mt-5 block space-y-2">
+                  {offer.features.map((feature) => <span key={feature} className="flex items-start gap-2 text-sm text-ink-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{feature}</span>)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="mt-3 text-xs text-muted">Regulars Program is a managed service. We coordinate your text club setup and offers after checkout. Shipping is included; applicable tax is shown at checkout.</p>
+      </section>
+      <div className="grid min-w-0 grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-14">
       {/* MOBILE: compact sticky preview so changes are visible while editing */}
       <div className="sticky top-16 z-10 -mx-5 border-b border-line bg-paper/95 px-5 py-3 backdrop-blur sm:-mx-8 sm:px-8 lg:hidden">
         <div className="flex items-center gap-4">
@@ -522,7 +552,7 @@ export function Configurator({
                         </button>
                       </div>
                       <div className="text-sm text-muted">
-                        Rule of thumb: two cards per server on the floor, so nobody waits when several tables close at once. Minimum {PRICING.minCards}.
+                        Rule of thumb: two cards per server on the floor, so nobody waits when several tables close at once. {INCLUDED_CARDS} cards included; extras {money(PRICING.cardPrice)} each. Minimum {PRICING.minCards}.
                       </div>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -532,31 +562,6 @@ export function Configurator({
                         </Chip>
                       ))}
                     </div>
-                  </Panel>
-
-                  <Panel title="Your monthly report">
-                    <button
-                      type="button"
-                      onClick={() => setReport((r) => !r)}
-                      aria-pressed={report}
-                      className={cn("flex w-full items-start gap-4 rounded-2xl border p-5 text-left transition-all", report ? "border-ink bg-white shadow-card" : "border-line bg-white/60")}
-                    >
-                      <span className={cn("mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border", report ? "border-ink bg-ink text-paper" : "border-line-strong bg-white")}>
-                        {report && <Check className="h-4 w-4" />}
-                      </span>
-                      <span>
-                        <span className="flex flex-wrap items-baseline gap-x-2">
-                          <span className="text-[15px] font-semibold">Monthly AI review report</span>
-                          <span className="text-sm text-muted">
-                            {report ? "Included" : "Not included"} · {money(PRICING.monthlyReport)}/month, cancel anytime
-                          </span>
-                        </span>
-                        <span className="mt-1 block text-sm leading-relaxed text-muted">
-                          Every new Google review read and summarized on the first business day of the month: wins, issues with fixes, staff and dish mentions, priority actions,
-                          drafted replies. Includes {PRICING.freeReplacementCardsPerMonth} free replacement cards every month.
-                        </span>
-                      </span>
-                    </button>
                   </Panel>
 
                   <Panel title="Where to send your design preview">
@@ -622,14 +627,15 @@ export function Configurator({
           <p className="mt-4 text-center text-xs text-muted">Preview is close, not exact. You approve a design preview before we print.</p>
 
           <div className="mt-7 space-y-2.5 border-t border-line pt-5 text-sm">
-            <Row label={`${cards} cards × ${money(PRICING.cardPrice)}`} value={money(cards * PRICING.cardPrice)} />
-            {report && <Row label="Monthly report, first month" value={money(PRICING.monthlyReport)} />}
+            <Row label={`${ORDER_PLANS[plan].name} · ${INCLUDED_CARDS} cards + setup`} value={money(totals.setup)} />
+            {totals.extraCards > 0 && <Row label={`${totals.extraCards} extra cards × ${money(PRICING.cardPrice)}`} value={money(totals.extras)} />}
+            {report && <Row label="Regulars Program, first month" value={money(totals.monthly)} />}
             <Row label="US shipping" value="included" muted />
             <div className="flex items-baseline justify-between border-t border-line pt-3">
               <span className="font-semibold">Due today</span>
               <span className="text-2xl font-semibold tracking-tight">{money(today)}</span>
             </div>
-            {report && <div className="text-right text-xs text-muted">then {money(PRICING.monthlyReport)}/month, cancel anytime</div>}
+            {report && <div className="text-right text-xs text-muted">then {money(totals.monthly)}/month, cancel anytime</div>}
           </div>
 
           {fallbackMode ? (
@@ -664,6 +670,7 @@ export function Configurator({
             <a href={LINKS.pricing} className="underline underline-offset-4">Pricing details</a>
           </p>
         </div>
+      </div>
       </div>
     </div>
   );
@@ -710,7 +717,7 @@ function Row({ label, value, muted }: { label: string; value: string; muted?: bo
   return (
     <div className={cn("flex justify-between", muted && "text-muted")}>
       <span>{label}</span>
-      <span style={{ fontVariantNumeric: "tabular-nums" }}>{value}</span>
+      <span className="shrink-0" style={{ fontVariantNumeric: "tabular-nums" }}>{value}</span>
     </div>
   );
 }

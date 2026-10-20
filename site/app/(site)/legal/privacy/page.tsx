@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
 import { Section } from "@/components/ui/Section";
@@ -285,7 +286,7 @@ export default function PrivacyPage() {
                 Website: {BRAND.domain}
               </p>
               <p className="text-sm text-muted">
-                Reference: the monthly report is billed at ${PRICING.monthlyReport} per month per location and includes{" "}
+                Reference: new Regulars Program subscriptions are billed at ${ORDER_PLANS.regulars.monthly} per month per location plus ${ORDER_PLANS.regulars.setup} setup and include{" "}
                 {PRICING.freeReplacementCardsPerMonth} replacement cards per month. Pricing terms are set out in our{" "}
                 <a href="/legal/terms">Terms of service</a>.
               </p>

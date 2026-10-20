@@ -1,3 +1,4 @@
+import { ORDER_PLANS } from "@/lib/orderPlans";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getOrder, listNotes, type Order } from "@/lib/orders";
@@ -88,7 +89,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
             <h2 className="mb-4 font-display text-lg text-ink">Order</h2>
             <div className="grid grid-cols-2 gap-4">
               <Field label="Cards" value={order.cards} />
-              <Field label="Monthly report" value={order.has_report ? "Yes" : "No"} />
+              <Field label="Plan" value={order.plan ? ORDER_PLANS[order.plan].name : order.has_report ? "Monthly report (original)" : "Cards (original)"} />
+              {order.monthly_amount != null && <Field label="Monthly service" value={`$${Number(order.monthly_amount).toFixed(2)}/month`} />}
               <Field label="Paid" value={`$${Number(order.amount_total).toFixed(2)}`} />
               <Field label="Placed" value={new Date(order.created_at).toLocaleString()} />
               <Field label="Template" value={order.template} />
